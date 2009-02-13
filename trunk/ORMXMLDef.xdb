@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdb="http://www.borland.com/schemas/delphi/10.0/XMLDataBinding">
+	<xs:element name="ORMEntidades" type="ORMEntidadesType"/>
+	<xs:complexType name="ORMEntidadesType"><xs:annotation>
+			<xs:appinfo xdb:docElement="ORMEntidades"/>
+		</xs:annotation>
+		<xs:attribute name="Driver" type="xs:string"/>
+		<xs:attribute name="StringConexion" type="xs:string"/>
+		<xs:sequence>
+			<xs:element name="Entidades" type="EntidadesType"/>
+			<xs:element name="Listas" type="ListasType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EntidadesType">
+		<xs:sequence>
+			<xs:element name="Entidad" type="EntidadType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EntidadType">
+		<xs:sequence>
+			<xs:element name="Campos" type="CamposType"/>
+			<xs:element name="Relacion1a1" type="ForeignkeysType" minOccurs="0"/>
+			<xs:element name="Relacion1an" type="ForeignkeysType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Nombre" type="xs:string"/>
+		<xs:attribute name="TieneGenerador" type="xs:string"><xs:annotation>
+				<xs:appinfo xdb:dataType="Boolean"/>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Alias" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="CamposType">
+		<xs:sequence>
+			<xs:element name="Campo" type="CampoType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CampoType">
+		<xs:sequence/>
+		<xs:attribute name="Nombre" type="xs:string"/>
+		<xs:attribute name="Alias" type="xs:string"/>
+		<xs:attribute name="Tipo" type="xs:string"/>
+		<xs:attribute name="SubTipo" type="xs:string"/>
+		<xs:attribute name="Longitud" type="xs:integer"/>
+		<xs:attribute name="AceptaNull" type="xs:string"><xs:annotation>
+				<xs:appinfo xdb:dataType="Boolean"/>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EsClavePrimaria" type="xs:string"><xs:annotation>
+				<xs:appinfo xdb:dataType="Boolean"/>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EsClaveForanea" type="xs:string"><xs:annotation>
+				<xs:appinfo xdb:dataType="Boolean"/>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="FuncionAgregacion" type="xs:integer"/>
+		<xs:attribute name="ValorDefault" type="xs:string"><xs:annotation>
+				<xs:appinfo xdb:dataType="Variant"/>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ForeignkeysType">
+		<xs:sequence>
+			<xs:element name="Foreignkey" type="ForeignkeyType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ForeignkeyType">
+		<xs:annotation>
+			<xs:appinfo xdb:repeated="True"/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Origen" type="OrigenType"/>
+			<xs:element name="Destino" type="DestinoType"/>
+		</xs:sequence>
+		<xs:attribute name="TablaRelacionada" type="xs:string"/>
+		<xs:attribute name="NombreRelacion" type="xs:string"/>
+		<xs:attribute name="NombreRelacionAMuchos" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="OrigenType">
+		<xs:sequence>
+			<xs:element name="CampoRed" type="CampoRedType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CampoRedType">
+		<xs:sequence/>
+		<xs:attribute name="Tabla" type="xs:string"/>
+		<xs:attribute name="Nombre" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="DestinoType">
+		<xs:sequence>
+			<xs:element name="CampoRed" type="CampoRedType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ListasType">
+		<xs:sequence>
+			<xs:element name="Lista" type="ListaType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ListaType">
+		<xs:annotation>
+			<xs:appinfo xdb:repeated="True"/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Entidades" type="EntidadesType"/>
+			<xs:element name="Relaciones" type="RelacionesType"/>
+		</xs:sequence>
+		<xs:attribute name="Nombre" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="RelacionesType">
+		<xs:sequence>
+			<xs:element name="Relacion" type="RelacionType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RelacionType">
+		<xs:annotation>
+			<xs:appinfo xdb:repeated="True"/>
+		</xs:annotation>
+		<xs:attribute name="TablaOrigen" type="xs:string"/>
+		<xs:attribute name="TablaDestino" type="xs:string"/>
+		<xs:attribute name="NombreRelacion" type="xs:string"/>
+		<xs:attribute name="NombreRelacionAMuchos" type="xs:string"/>
+		<xs:attribute name="TipoRelacion" type="xs:string"/>
+	</xs:complexType>
+</xs:schema>

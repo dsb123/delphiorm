@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2008/12/29 17:03:30.421.dproj,C:\Documents and Settings\Adrian\Mis documentos\RAD Studio\Projects\Package1.dproj=C:\Desarrollos\Delphi\DelphiORM\DelphiORM.MSSQLServer.Driver.dproj</Transaction>
+    <Transaction>2008/12/29 17:04:35.796.pas,C:\Desarrollos\Delphi\DelphiORM\Unit1.pas=C:\Desarrollos\Delphi\DelphiORM\uDelphiORM.MSSQLServer.Driver.pas</Transaction>
+    <Transaction>2008/12/29 19:32:01.500.pas,C:\Desarrollos\Delphi\DelphiORM\uDelphiORM.MSSQLServer.Driver.pas=C:\Desarrollos\Delphi\DelphiORM\uDelphiORMMSSQLServerDriver.pas</Transaction>
+    <Transaction>2008/12/29 19:33:34.031.dproj,C:\Desarrollos\Delphi\DelphiORM\DelphiORM.MSSQLServer.Driver.dproj=C:\Desarrollos\Delphi\DelphiORM\DelphiORMMSSQLServerDriver.dproj</Transaction>
+    <Transaction>2008/12/29 21:06:40.828.pas,C:\Desarrollos\Delphi\DelphiORM\uDelphiORMMSSQLServerDriver.pas=</Transaction>
+    <Transaction>2008/12/29 21:06:49.906.pas,C:\Desarrollos\Delphi\DelphiORM\Unit1.pas=C:\Desarrollos\Delphi\DelphiORM\uDelphiORMMSSQLServerDriver.pas</Transaction>
+    <Transaction>2008/12/29 21:06:49.906.dfm,C:\Desarrollos\Delphi\DelphiORM\Unit1.dfm=C:\Desarrollos\Delphi\DelphiORM\uDelphiORMMSSQLServerDriver.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

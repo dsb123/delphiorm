@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2008/12/26 12:34:09.015.pas,C:\Documents and Settings\Adrian\Mis documentos\RAD Studio\Projects\Unit1.pas=C:\Desarrollos\Delphi\DelphiORM\uMainMenu.pas</Transaction>
+    <Transaction>2008/12/26 12:34:09.015.dfm,C:\Documents and Settings\Adrian\Mis documentos\RAD Studio\Projects\Unit1.dfm=C:\Desarrollos\Delphi\DelphiORM\uMainMenu.dfm</Transaction>
+    <Transaction>2008/12/26 12:34:15.156.dproj,C:\Documents and Settings\Adrian\Mis documentos\RAD Studio\Projects\Project1.dproj=C:\Desarrollos\Delphi\DelphiORM\DelphiORM.dproj</Transaction>
+    <Transaction>2008/12/26 14:30:41.781.pas,C:\Desarrollos\Delphi\DelphiORM\Unit1.pas=C:\Desarrollos\Delphi\DelphiORM\uInterfaces.pas</Transaction>
+    <Transaction>2008/12/26 14:32:44.031.pas,C:\Desarrollos\Delphi\DelphiORM\Unit1.pas=C:\Desarrollos\Delphi\DelphiORM\uFormCrearNuevo.pas</Transaction>
+    <Transaction>2008/12/26 14:32:44.031.dfm,C:\Desarrollos\Delphi\DelphiORM\Unit1.dfm=C:\Desarrollos\Delphi\DelphiORM\uFormCrearNuevo.dfm</Transaction>
+    <Transaction>2008/12/26 15:23:18.406.pas,C:\Desarrollos\Delphi\DelphiORM\uInterfaces.pas=C:\Desarrollos\Delphi\DelphiORM\uFormGenerico.pas</Transaction>
+    <Transaction>2009/01/04 08:53:07.312.pas,C:\Desarrollos\Delphi\DelphiORM\Unit1.pas=C:\Desarrollos\Delphi\DelphiORM\uFrmInfoEntidades.pas</Transaction>
+    <Transaction>2009/01/04 08:53:07.312.dfm,C:\Desarrollos\Delphi\DelphiORM\Unit1.dfm=C:\Desarrollos\Delphi\DelphiORM\uFrmInfoEntidades.dfm</Transaction>
+    <Transaction>2009/01/04 12:19:00.718.pas,C:\Desarrollos\Delphi\DelphiORM\Unit1.pas=C:\Desarrollos\Delphi\DelphiORM\uGUIInterfaces.pas</Transaction>
+    <Transaction>2009/01/04 12:20:35.234.pas,C:\Desarrollos\Delphi\DelphiORM\uGUIInterfaces.pas=</Transaction>
+    <Transaction>2009/01/06 11:52:55.625.pas,C:\Desarrollos\Delphi\DelphiORM\Unit1.pas=C:\Desarrollos\Delphi\DelphiORM\uFrmListas.pas</Transaction>
+    <Transaction>2009/01/06 11:52:55.625.dfm,C:\Desarrollos\Delphi\DelphiORM\Unit1.dfm=C:\Desarrollos\Delphi\DelphiORM\uFrmListas.dfm</Transaction>
+    <Transaction>2009/01/10 10:17:51.531.pas,C:\Desarrollos\Delphi\DelphiORM\uCodGen.pas=</Transaction>
+    <Transaction>2009/01/10 10:17:51.531.dfm,C:\Desarrollos\Delphi\DelphiORM\uCodGen.dfm=</Transaction>
+    <Transaction>2009/01/10 10:35:30.937.pas,C:\Desarrollos\Delphi\DelphiORM\uGeneradorCodigo.pas=C:\Desarrollos\Delphi\DelphiORM\uDialogoGenerador.pas</Transaction>
+    <Transaction>2009/01/10 10:35:30.937.dfm,C:\Desarrollos\Delphi\DelphiORM\uGeneradorCodigo.dfm=C:\Desarrollos\Delphi\DelphiORM\uDialogoGenerador.dfm</Transaction>
+    <Transaction>2009/01/10 10:36:01.296.pas,C:\Desarrollos\Delphi\DelphiORM\Unit1.pas=C:\Desarrollos\Delphi\DelphiORM\uGeneradorCodigo.pas</Transaction>
+    <Transaction>2009/01/10 13:49:50.609.pas,C:\Desarrollos\Delphi\DelphiORM\uFormCrearNuevo.pas=C:\Desarrollos\Delphi\DelphiORM\uFrmDriverManager.pas</Transaction>
+    <Transaction>2009/01/10 13:49:50.609.dfm,C:\Desarrollos\Delphi\DelphiORM\uFormCrearNuevo.dfm=C:\Desarrollos\Delphi\DelphiORM\uFrmDriverManager.dfm</Transaction>
+    <Transaction>2009/01/10 13:51:07.234.pas,C:\Desarrollos\Delphi\DelphiORM\uFrmDriverManager.pas=C:\Desarrollos\Delphi\DelphiORM\uFrmMetadataHandler.pas</Transaction>
+    <Transaction>2009/01/10 13:51:07.234.dfm,C:\Desarrollos\Delphi\DelphiORM\uFrmDriverManager.dfm=C:\Desarrollos\Delphi\DelphiORM\uFrmMetadataHandler.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

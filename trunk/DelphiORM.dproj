@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{1811cc7c-6e65-449c-88af-4dd7bef89a54}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>DelphiORM.exe</DCC_DependencyCheckOutputName>
+    <MainSource>DelphiORM.dpr</MainSource>
+    <DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;bdertl;vcldbx;dsnap;dbxcds;dbexpress;DbxCommonDriver;dsnapcon;teeUI;tee;teedb;vclib;ibxpress;adortl;xmlrtl;inet;IntrawebDB_90_100;Intraweb_90_100;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;JclVcl;Jcl;JvCoreD11R;JvSystemD11R;JvStdCtrlsD11R;JvAppFrmD11R;JvBandsD11R;JvDBD11R;JvDlgsD11R;JvBDED11R;JvCmpD11R;JvCryptD11R;JvCtrlsD11R;JvCustomD11R;JvDockingD11R;JvDotNetCtrlsD11R;JvEDID11R;JvGlobusD11R;JvHMID11R;JvInterpreterD11R;JvJansD11R;JvManagedThreadsD11R;JvMMD11R;JvNetD11R;JvPageCompsD11R;JvPluginD11R;JvPrintPreviewD11R;JvRuntimeDesignD11R;JvTimeFrameworkD11R;JvUIBD11R;JvValidatorsD11R;JvWizardD11R;JvXPCtrlsD11R;NxCommonRun;NxInspectorRun;NxCollectionRun;ADAPck;tb2k_d10;tbx_d10;SnapDataset;RVDBPkgD2007;RVPkgD2007;SynEdit_R2006;rppack_del2007;rppackvcl_del2007;rppackdesignvcl_del2007;NxCommonDsgn;NxGridRun;NxGridDsgn;NxDBGridRun;NxInspectorDsgn;NxCollectionDsgn;NxAddonsRun;IndyCore110;IndySystem110;IndyProtocols110;DelphiORMBaseDriver</DCC_UsePackage>
+    <DCC_EnabledPackages>true</DCC_EnabledPackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Define>DEBUG</DCC_Define>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">3082</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="C:\Documents and Settings\All Users\Documentos\RAD Studio\5.0\Bpl\mbTBXLibD10D.bpl">Toolbar2000 -- mbTBX Lib Pack v1.6</Excluded_Packages>
+      <Excluded_Packages Name="C:\Componentes\NextComponents\Lib\Delphi 2006\NxSheetRun.bpl">File C:\Componentes\NextComponents\Lib\Delphi 2006\NxSheetRun.bpl not found</Excluded_Packages>
+      <Excluded_Packages Name="C:\Documents and Settings\All Users\Documentos\RAD Studio\5.0\Bpl\dclshlctrls100.bpl">Shell Control Property and Component Editors</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages><Source><Source Name="MainSource">DelphiORM.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="DelphiORM.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="dlgConfirmReplace.pas">
+      <Form>ConfirmReplaceDialog</Form>
+    </DCCReference>
+    <DCCReference Include="dlgReplaceText.pas">
+      <Form>TextReplaceDialog</Form>
+    </DCCReference>
+    <DCCReference Include="dlgSearchText.pas">
+      <Form>TextSearchDialog</Form>
+    </DCCReference>
+    <DCCReference Include="ORMXMLDef.pas" />
+    <DCCReference Include="uDialogoGenerador.pas">
+      <Form>FormCodGen</Form>
+    </DCCReference>
+    <DCCReference Include="uFormGenerico.pas" />
+    <DCCReference Include="uFrmInfoEntidades.pas">
+      <Form>FrmInfoEntidades</Form>
+    </DCCReference>
+    <DCCReference Include="uFrmListas.pas">
+      <Form>FrmListas</Form>
+    </DCCReference>
+    <DCCReference Include="uFrmMetadataHandler.pas">
+      <Form>FrmMetadataHandler</Form>
+    </DCCReference>
+    <DCCReference Include="uGeneradorCodigo.pas" />
+    <DCCReference Include="uMainMenu.pas">
+      <Form>FrmMain</Form>
+    </DCCReference>
+    <None Include="DelphiORM.todo" />
+  </ItemGroup>
+</Project>
