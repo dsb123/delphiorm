@@ -1,0 +1,64 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{18a92172-7587-4502-85bc-27e98c042ffd}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="DelphiORM.dproj" />
+    <Projects Include="DelphiORMBaseDriver.dproj" />
+    <Projects Include="DelphiORMFirebirdDriver.dproj" />
+    <Projects Include="DelphiORMMSSQLServerDriver.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="DelphiORM">
+    <MSBuild Projects="DelphiORM.dproj" Targets="" />
+  </Target>
+  <Target Name="DelphiORM:Clean">
+    <MSBuild Projects="DelphiORM.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DelphiORM:Make">
+    <MSBuild Projects="DelphiORM.dproj" Targets="Make" />
+  </Target>
+  <Target Name="DelphiORMFirebirdDriver">
+    <MSBuild Projects="DelphiORMFirebirdDriver.dproj" Targets="" />
+  </Target>
+  <Target Name="DelphiORMFirebirdDriver:Clean">
+    <MSBuild Projects="DelphiORMFirebirdDriver.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DelphiORMFirebirdDriver:Make">
+    <MSBuild Projects="DelphiORMFirebirdDriver.dproj" Targets="Make" />
+  </Target>
+  <Target Name="DelphiORMBaseDriver">
+    <MSBuild Projects="DelphiORMBaseDriver.dproj" Targets="" />
+  </Target>
+  <Target Name="DelphiORMBaseDriver:Clean">
+    <MSBuild Projects="DelphiORMBaseDriver.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DelphiORMBaseDriver:Make">
+    <MSBuild Projects="DelphiORMBaseDriver.dproj" Targets="Make" />
+  </Target>
+  <Target Name="DelphiORMMSSQLServerDriver">
+    <MSBuild Projects="DelphiORMMSSQLServerDriver.dproj" Targets="" />
+  </Target>
+  <Target Name="DelphiORMMSSQLServerDriver:Clean">
+    <MSBuild Projects="DelphiORMMSSQLServerDriver.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DelphiORMMSSQLServerDriver:Make">
+    <MSBuild Projects="DelphiORMMSSQLServerDriver.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="DelphiORM;DelphiORMFirebirdDriver;DelphiORMBaseDriver;DelphiORMMSSQLServerDriver" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="DelphiORM:Clean;DelphiORMFirebirdDriver:Clean;DelphiORMBaseDriver:Clean;DelphiORMMSSQLServerDriver:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="DelphiORM:Make;DelphiORMFirebirdDriver:Make;DelphiORMBaseDriver:Make;DelphiORMMSSQLServerDriver:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>

@@ -1,0 +1,10 @@
+{TODO : Habilitar varios templates}
+{TODO : Grabar y Grabar Como}
+{TODO : Habilitar listas con expresiones}
+{TODO : Armar listas (Consultas)}
+{TODO : Agregar las entidades virtuales}
+{DONE :
+Realizar form con lista de entidades que me permita ver:
+1) Que campos tiene cada entidad
+2) Que campo es PK y FK
+3) Haciendo click sobre una FK me tiene que seleccionar la entidad asociada}
