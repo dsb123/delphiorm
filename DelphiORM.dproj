@@ -7,7 +7,7 @@
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>DelphiORM.exe</DCC_DependencyCheckOutputName>
     <MainSource>DelphiORM.dpr</MainSource>
-    <DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;bdertl;vcldbx;dsnap;dbxcds;dbexpress;DbxCommonDriver;dsnapcon;teeUI;tee;teedb;vclib;ibxpress;adortl;xmlrtl;inet;IntrawebDB_90_100;Intraweb_90_100;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;JclVcl;Jcl;JvCoreD11R;JvSystemD11R;JvStdCtrlsD11R;JvAppFrmD11R;JvBandsD11R;JvDBD11R;JvDlgsD11R;JvBDED11R;JvCmpD11R;JvCryptD11R;JvCtrlsD11R;JvCustomD11R;JvDockingD11R;JvDotNetCtrlsD11R;JvEDID11R;JvGlobusD11R;JvHMID11R;JvInterpreterD11R;JvJansD11R;JvManagedThreadsD11R;JvMMD11R;JvNetD11R;JvPageCompsD11R;JvPluginD11R;JvPrintPreviewD11R;JvRuntimeDesignD11R;JvTimeFrameworkD11R;JvUIBD11R;JvValidatorsD11R;JvWizardD11R;JvXPCtrlsD11R;NxCommonRun;NxInspectorRun;NxCollectionRun;ADAPck;tb2k_d10;tbx_d10;SnapDataset;RVDBPkgD2007;RVPkgD2007;SynEdit_R2006;rppack_del2007;rppackvcl_del2007;rppackdesignvcl_del2007;NxCommonDsgn;NxGridRun;NxGridDsgn;NxDBGridRun;NxInspectorDsgn;NxCollectionDsgn;NxAddonsRun;IndyCore110;IndySystem110;IndyProtocols110;DelphiORMBaseDriver</DCC_UsePackage>
+    <DCC_UsePackage>DelphiORMBaseDriver</DCC_UsePackage>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
