@@ -42,7 +42,7 @@ var
 
 implementation
 
-uses uDataModule;
+uses uDataModule, uExpresiones;
 
 {$R *.dfm}
 
@@ -145,10 +145,16 @@ begin
 end;
 
 procedure TFrmPrincipal.btnVerListaClick(Sender: TObject);
+var
+  unFiltro: TExpresionCondicion;
 begin
   if not Assigned(unaLista) then
     unaLista := TListaPersona.Create;
-  unaLista.ObtenerTodos;
+
+  unFiltro := TExpresionCondicion.Create;
+  unFiltro.Agregar(TCondicionComparacion.Create(TFabricaCampoTipoDocumento.TipoDocumentoID,
+                    tcIgual, 1 ));
+  unaLista.ObtenerMuchos(unFiltro);
 
   ds.DataSet := unaLista.AsDataSet;
   ds.DataSet.Open;
