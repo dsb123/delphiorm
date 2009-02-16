@@ -126,6 +126,7 @@ var
   unaTabla     : TTabla;
   unaListaTabla: TListaTabla;
   unCampo      : TCampo;
+  unCampoInfo  : TCampo;
   unCampoFK    : TCamposFK;
   unaRelacion  : TRelacion;
 
@@ -241,9 +242,17 @@ begin
               for nCampo := 0 to Campos.Count - 1 do
               begin
                 unCampo := TCampo.Create(unaTabla.Campos);
+                unCampoInfo := Tablas.ObtenerTabla(unaTabla.Nombre).Campos.ObtenerCampo(Campos.Campo[nCampo].Nombre);
+
                 unCampo.Nombre            := Campos.Campo[nCampo].Nombre;
                 unCampo.Alias             := Campos.Campo[nCampo].Alias;
                 unCampo.FuncionAgregacion := Campos.Campo[nCampo].FuncionAgregacion;
+
+                unCampo.TipoVariable      := unCampoInfo.TipoVariable;
+                unCampo.AsKeyWord         := unCampoInfo.AsKeyWord;
+                unCampo.Longitud          := unCampoInfo.Longitud;
+                unCampo.TipoORM           := unCampoInfo.TipoORM;
+                unCampo.TipoBD            := unCampoInfo.TipoBD;
               end;
             end;
           end;
