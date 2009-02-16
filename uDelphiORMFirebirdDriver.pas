@@ -325,7 +325,8 @@ begin
           ' LEFT JOIN RDB$TYPES c ON  b.RDB$FIELD_TYPE = c.RDB$TYPE and'+
           '                           c.RDB$FIELD_NAME = ''RDB$FIELD_TYPE'''+
           ' WHERE a.RDB$FIELD_SOURCE = b.RDB$FIELD_NAME and'+
-          ' a.RDB$RELATION_NAME NOT LIKE ''RDB$%'' and a.RDB$VIEW_CONTEXT is null'+
+          ' a.RDB$RELATION_NAME NOT LIKE ''RDB$%'' and '+
+          ' a.RDB$RELATION_NAME NOT LIKE ''MON$%'' and a.RDB$VIEW_CONTEXT is null'+
           ' ORDER BY a.RDB$RELATION_NAME, a.RDB$FIELD_POSITION';
 end;
 
