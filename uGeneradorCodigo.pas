@@ -196,31 +196,36 @@ end;
 function TGeneradorCodigo.ContextoBlobType(unaEntidad: TTabla;
   sVariableContexto: string): string;
 var
-  j,nPosStart,nPosEnd : integer;
-  sVarAux,sVarAux2:string;
+  nCampo, nPosStart, nPosEnd : integer;
+  sVarAux, sVarAux2: string;
+  bTieneBlobBinary : Boolean;
 begin
   Result:='';
+  bTieneBlobBinary := false;
   sVarAux := sVariableContexto;
-  for j := 0 to unaEntidad.Campos.Count - 1 do
+  for nCampo := 0 to unaEntidad.Campos.Count - 1 do
   begin
-    if unaEntidad.Campos.Campo[j].TipoORM = 'tdBlobBinary' then
+    bTieneBlobBinary := unaEntidad.Campos.Campo[nCampo].TipoORM = 'tdBlobBinary';
+    if bTieneBlobBinary then break;
+  end;
+
+  if bTieneBlobBinary then
+  begin
+    sVarAux := StringReplace(sVarAux, '<BlobType>', '', [rfReplaceAll]);
+    sVarAux := StringReplace(sVarAux, '</BlobType>','', [rfReplaceAll]);
+  end
+  else
+  begin
+    nPosStart := -1;
+    nPosEnd   := -2;
+    while nPosStart <> nPosEnd  do
     begin
-      sVarAux := StringReplace(sVarAux, '<BlobType>', '', [rfReplaceAll]);
-      sVarAux := StringReplace(sVarAux, '</BlobType>','', [rfReplaceAll]);
-    end
-    else
-    begin
-      nPosStart := -1;
-      nPosEnd   := -2;
-      while nPosStart <> nPosEnd  do
+      nPosStart := Pos('<BlobType>', sVarAux);
+      nPosEnd   := Pos('</BlobType>',sVarAux);
+      if nPosStart <> nPosEnd then
       begin
-        nPosStart := Pos('<BlobType>', sVarAux);
-        nPosEnd   := Pos('</BlobType>',sVarAux);
-        if nPosStart <> nPosEnd then
-        begin
-          sVarAux2  := MidStr(sVarAux, nPosStart, nPosEnd + 11 - nPosStart);
-          sVarAux   := StringReplace(sVarAux, sVarAux2,'', [rfReplaceAll]);
-        end;
+        sVarAux2  := MidStr(sVarAux, nPosStart, nPosEnd + 11 - nPosStart);
+        sVarAux   := StringReplace(sVarAux, sVarAux2,'', [rfReplaceAll]);
       end;
     end;
   end;
@@ -244,18 +249,18 @@ begin
     begin
       for nComponente := 0 to Tabla[nEntidad].Campos.Count - 1 do
       begin
-        if Tabla[nEntidad].Campos.Campo[nComponente].TipoORM = 'tdBlobBinary' then
-        begin
-          sVarAux := StringReplace(sVarAux, '<BlobType>','', [rfReplaceAll]);
-          sVarAux := StringReplace(sVarAux, '</BlobType>','', [rfReplaceAll]);
-          bPaso:=True;
-        end;
+        bPaso:= (Tabla[nEntidad].Campos.Campo[nComponente].TipoORM = 'tdBlobBinary');
         if bPaso then Break;
       end;
       if bPaso then Break;
     end;
 
-    if not bPaso then
+    if bPaso then
+    begin
+      sVarAux := StringReplace(sVarAux, '<BlobType>','', [rfReplaceAll]);
+      sVarAux := StringReplace(sVarAux, '</BlobType>','', [rfReplaceAll]);
+    end
+    else
     begin
       nPosStart := -1;
       nPosEnd   := -2;
