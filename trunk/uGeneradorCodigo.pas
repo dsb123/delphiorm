@@ -193,7 +193,6 @@ begin
 
 end;
 
-
 function TGeneradorCodigo.ContextoBlobType(unaEntidad: TTabla;
   sVariableContexto: string): string;
 var
@@ -205,21 +204,25 @@ begin
   for j := 0 to unaEntidad.Campos.Count - 1 do
   begin
     if unaEntidad.Campos.Campo[j].TipoORM = 'tdBlobBinary' then
+    begin
+      sVarAux := StringReplace(sVarAux, '<BlobType>', '', [rfReplaceAll]);
+      sVarAux := StringReplace(sVarAux, '</BlobType>','', [rfReplaceAll]);
+    end
+    else
+    begin
+      nPosStart := -1;
+      nPosEnd   := -2;
+      while nPosStart <> nPosEnd  do
       begin
-        sVarAux := StringReplace(sVarAux, '<BlobType>', '', [rfReplaceAll]);
-        sVarAux := StringReplace(sVarAux, '</BlobType>','', [rfReplaceAll]);
-      end
-    else if (unaEntidad.Campos.Campo[j].TipoORM<>'tdBlobBinary') and
-            (j = unaEntidad.Campos.Count-1) then
-     begin
-      nPosStart   :=Pos('<BlobType>',sVarAux);
-      nPosEnd     :=Pos('</BlobType>',sVarAux);
-      if nPosStart <> nPosEnd then
-      begin
-        sVarAux2  := MidStr(sVarAux,nPosStart,nPosEnd+11-nPosStart);
-        sVarAux   := StringReplace(sVarAux, sVarAux2,'', [rfReplaceAll]);
+        nPosStart := Pos('<BlobType>', sVarAux);
+        nPosEnd   := Pos('</BlobType>',sVarAux);
+        if nPosStart <> nPosEnd then
+        begin
+          sVarAux2  := MidStr(sVarAux, nPosStart, nPosEnd + 11 - nPosStart);
+          sVarAux   := StringReplace(sVarAux, sVarAux2,'', [rfReplaceAll]);
+        end;
       end;
-     end;
+    end;
   end;
   Result  := sVarAux;
 end;
@@ -233,12 +236,12 @@ var
 begin
   Result  := '';
   bPaso   := False;
-
   with unaEntidad.Componentes do
   begin
+    sVarAux :=  sVariableContexto;
+
     for nEntidad:=0 to Count- 1 do
     begin
-      sVarAux :=  sVariableContexto;
       for nComponente := 0 to Tabla[nEntidad].Campos.Count - 1 do
       begin
         if Tabla[nEntidad].Campos.Campo[nComponente].TipoORM = 'tdBlobBinary' then
@@ -246,25 +249,29 @@ begin
           sVarAux := StringReplace(sVarAux, '<BlobType>','', [rfReplaceAll]);
           sVarAux := StringReplace(sVarAux, '</BlobType>','', [rfReplaceAll]);
           bPaso:=True;
-        end
-        else
-        if  (Tabla[nEntidad].Campos.Campo[nComponente].TipoORM <> 'tdBlobBinary') and
-            (nComponente = Tabla[nEntidad].Campos.Count - 1) then
-        begin
-          nPosStart := Pos('<BlobType>', sVarAux);
-          nPosEnd   := Pos('</BlobType>',sVarAux);
-          if nPosStart<>nPosEnd then
-          begin
-            sVarAux2  := MidStr(sVarAux, nPosStart, nPosEnd + 11 - nPosStart);
-            sVarAux   := StringReplace(sVarAux, sVarAux2,'', [rfReplaceAll]);
-          end;
         end;
         if bPaso then Break;
       end;
-
-      Result := sVarAux;
       if bPaso then Break;
     end;
+
+    if not bPaso then
+    begin
+      nPosStart := -1;
+      nPosEnd   := -2;
+      while nPosStart <> nPosEnd  do
+      begin
+        nPosStart := Pos('<BlobType>', sVarAux);
+        nPosEnd   := Pos('</BlobType>',sVarAux);
+        if nPosStart <> nPosEnd then
+        begin
+          sVarAux2  := MidStr(sVarAux, nPosStart, nPosEnd + 11 - nPosStart);
+          sVarAux   := StringReplace(sVarAux, sVarAux2,'', [rfReplaceAll]);
+        end;
+      end;
+    end;
+
+    Result := sVarAux;
   end;
 end;
 
@@ -413,7 +420,7 @@ var
   nCampo, nPosStart, nPosEnd: integer;
   sVarAux, sVarAuxIzq, sVarAuxDer, sVarAux2: string;
   EntidadActiva : TTabla;
-  unCampoInfo: TCampo;
+  //unCampoInfo: TCampo;
   nTablas: integer;
   nIndice : integer;
 begin
@@ -463,17 +470,19 @@ begin
           sVarAux := StringReplace(sVarAux, '<NombreCampo>',Campo[nCampo].Nombre, [rfReplaceAll]);
         end;
 
-        unCampoInfo := Tablas.ObtenerTabla(EntidadActiva.Nombre).Campos.ObtenerCampo(Campo[nCampo].Nombre);
-        {
+        //unCampoInfo := Tablas.ObtenerTabla(EntidadActiva.Nombre).Campos.ObtenerCampo(Campo[nCampo].Nombre);
         sVarAux := StringReplace(sVarAux, '<TipoCampo>',    Campo[nCampo].TipoVariable, [rfReplaceAll]);
         sVarAux := StringReplace(sVarAux, '<AsKeyWord>',    Campo[nCampo].AsKeyWord, [rfReplaceAll]);
         sVarAux := StringReplace(sVarAux, '<LongitudCampo>',IntToStr(Campo[nCampo].Longitud), [rfReplaceAll]);
         sVarAux := StringReplace(sVarAux, '<tdTipoCampo>',  Campo[nCampo].TipoORM, [rfReplaceAll]);
-        }
+
+        {
         sVarAux := StringReplace(sVarAux, '<TipoCampo>',    unCampoInfo.TipoVariable, [rfReplaceAll]);
         sVarAux := StringReplace(sVarAux, '<AsKeyWord>',    unCampoInfo.AsKeyWord, [rfReplaceAll]);
         sVarAux := StringReplace(sVarAux, '<LongitudCampo>',IntToStr(unCampoInfo.Longitud), [rfReplaceAll]);
         sVarAux := StringReplace(sVarAux, '<tdTipoCampo>',  unCampoInfo.TipoORM, [rfReplaceAll]);
+        }
+
       end;
 
       if nCampo<(EntidadActiva.Campos.Count - 1) then begin
