@@ -218,6 +218,7 @@ begin
   if not assigned(FBlobField) then
     FBlobField := TMemoryStream.Create;
   FueCambiado := true;
+  EsNulo := false;
   Result := FBlobField;
 end;
 
@@ -256,6 +257,7 @@ begin
   if assigned(FBlobField) then
     FreeAndNil(FBlobField);
   FBlobField := Value;
+  EsNulo := not Assigned(Value);
 end;
 
 procedure TCampo.SetAsBoolean(const Value: boolean);
