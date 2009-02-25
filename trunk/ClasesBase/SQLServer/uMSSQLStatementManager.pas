@@ -68,8 +68,11 @@ begin
       begin
         if not insert.Campos.Campo[insert.Generadores.Generador[nGenerador].IndiceCampo].EsClaveForanea then
         begin
+          {$ifdef DELPHI2006UP}
           SQLDataSet.CommandText := insert.Generadores.Generador[nGenerador].Generador;
-          SQLDataSet.Open;
+          {$else}
+          SQLDataSet.SQL.Text := insert.Generadores.Generador[nGenerador].Generador;
+          {$endif}          SQLDataSet.Open;
           if not (SQLDataSet.Eof and SQLDataSet.Bof) then begin
             //nIndiceParametro := insert.Generadores.Generador[nGenerador].IndiceParametro;
             //insert.SQLParams.Items[nIndiceParametro].AsInteger := SQLDataSet.Fields[0].AsInteger;
@@ -95,7 +98,11 @@ begin
   Result := true;
   try
     select.Datos.SQLConnection := FSQLConnection;
+    {$ifdef DELPHI2006UP}
     select.Datos.CommandText := select.SQLStatement;
+    {$else}
+    select.Datos.SQL.Text := select.SQLStatement;
+    {$endif}
     select.Datos.Params.AssignValues(select.SQLParams);
     select.Datos.Prepared := true;
     //FSQLConnection.Execute(select.SQLStatement, select.SQLParams, @select.Datos);

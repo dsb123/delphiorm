@@ -2,7 +2,7 @@ object FrmMain: TFrmMain
   Left = 0
   Top = 0
   Caption = 'Delphi ORM'
-  ClientHeight = 650
+  ClientHeight = 670
   ClientWidth = 745
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -22,7 +22,7 @@ object FrmMain: TFrmMain
     Left = 0
     Top = 0
     Width = 161
-    Height = 650
+    Height = 670
     Align = alLeft
     Pages = <
       item
@@ -71,16 +71,16 @@ object FrmMain: TFrmMain
       end>
     LargeImages = ilMenu
     TabOrder = 0
-    ExplicitHeight = 630
+    ExplicitHeight = 650
   end
   object jvxpcntnrContainer: TJvXPContainer
     Left = 161
     Top = 0
     Width = 584
-    Height = 650
+    Height = 670
     Caption = 'jvxpcntnrContainer'
     Align = alClient
-    ExplicitHeight = 630
+    ExplicitHeight = 650
   end
   object ilMenu: TImageList
     Height = 32
