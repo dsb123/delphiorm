@@ -144,7 +144,11 @@ end;
 function TColeccionEntidades.EliminarTodosFisico: boolean;
 var
   bCerrarTransaccion: boolean;
+  {$ifdef DELPHI2006UP}
   unaEntidad: TCollectionItem;
+  {$else}
+  nEntidad: integer;
+  {$endif}
 begin
   bCerrarTransaccion := false;
   if not Conexion.EnTransaccion then begin
@@ -152,8 +156,13 @@ begin
     bCerrarTransaccion := true;
   end;
   Result := true;
+  {$ifdef DELPHI2006UP}
   for unaEntidad in Self do
     Result := Result and (unaEntidad as TEntidadBase).Eliminar;
+  {$else}
+  for nEntidad:= 0 to Count-1 do
+    Result := Result and (Items[nEntidad] as TEntidadBase).Eliminar;
+  {$endif}
 
   if bCerrarTransaccion then
   begin
@@ -195,7 +204,9 @@ end;
 function TColeccionEntidades.Guardar: boolean;
 var
   bCerrarTransaccion: boolean;
+  {$ifdef DELPHI2006UP}
   unaEntidad: TCollectionItem;
+  {$endif}
   nEntidad: integer;
 begin
   bCerrarTransaccion := false;
@@ -209,8 +220,13 @@ begin
   for nEntidad := 0 to FEntidadesEliminadas.Count - 1 do
     Result := Result and TEntidadBase(FEntidadesEliminadas[nEntidad]).Eliminar;
 
+  {$ifdef DELPHI2006UP}
   for unaEntidad in Self do
     Result := Result and (unaEntidad as TEntidadBase).Guardar;
+  {$else}
+  for nEntidad := 0 to Count -1 do
+    Result := Result and (Items[nEntidad] as TEntidadBase).Guardar;
+  {$endif}
 
   if bCerrarTransaccion then
   begin

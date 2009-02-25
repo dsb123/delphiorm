@@ -20,6 +20,7 @@ type
     btnPersDom: TButton;
     btnPersonaDocumento: TButton;
     btnObtener: TButton;
+    btn1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure btnAgregarTipoDocumentoClick(Sender: TObject);
     procedure btnAgregarTipoDomicilioClick(Sender: TObject);
@@ -29,10 +30,12 @@ type
     procedure btnPersDomClick(Sender: TObject);
     procedure btnPersonaDocumentoClick(Sender: TObject);
     procedure btnVerListaClick(Sender: TObject);
+    procedure btn1Click(Sender: TObject);
   private
     { Private declarations }
     unaPersonaPrivada: TPersona;
     unaLista: TListaPersona;
+    procedure AtraparErrores(e: exception);
   public
     { Public declarations }
   end;
@@ -45,6 +48,17 @@ implementation
 uses uDataModule, uExpresiones;
 
 {$R *.dfm}
+
+procedure TFrmPrincipal.AtraparErrores(e: exception);
+begin
+  ShowMessage(e.Message);
+end;
+
+procedure TFrmPrincipal.btn1Click(Sender: TObject);
+begin
+  ds.DataSet.Post;
+  unaPersonaPrivada.Guardar;
+end;
 
 procedure TFrmPrincipal.btnAgregarPersonaClick(Sender: TObject);
 var
@@ -84,7 +98,8 @@ begin
   unTipoDoc.Descripcion := 'Documento Nacional de Identidad';
   unTipoDoc.DescripcionReducida := 'DNI';
   unTipoDoc.Observaciones := 'Nada';
-  unTipoDoc.Guardar;
+  if not unTipoDoc.Guardar then
+    ShowMessage(SingleConnection.LastException.Message);
   unTipoDoc.Free;
 
   unTipoDoc:= TTipoDocumento.Create;
@@ -131,6 +146,7 @@ end;
 procedure TFrmPrincipal.btnObtenerClick(Sender: TObject);
 begin
   unaPersonaPrivada := TPersona.Create(1); // Le paso el ID = 1
+  SingleConnection.LastException
 end;
 
 procedure TFrmPrincipal.btnPersDomClick(Sender: TObject);
@@ -164,6 +180,7 @@ procedure TFrmPrincipal.FormCreate(Sender: TObject);
 begin
   uDataModule.sDataBase := 'localhost:c:\Desarrollos\Delphi\DelphiORM\DelphiORMTest\Datos\DelphiORM.fdb';
   SingleConnection := TFabricauTestEntidades.CrearNuevaEntidadConexion(true);
+  OnuTestEntidadesException := AtraparErrores;
 end;
 
 procedure TFrmPrincipal.FormDestroy(Sender: TObject);

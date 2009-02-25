@@ -19,7 +19,7 @@ unit uConexion;
 
 interface
 
-uses SysUtils, DBXCommon, SqlExpr, uSQLBuilder;
+uses SysUtils, {$ifdef DELPHI2007}DBXCommon, {$else}dbxpress, {$endif}SqlExpr, uSQLBuilder;
 
 type
   TOnExceptionEvent = procedure(e: exception) of object;
@@ -47,7 +47,12 @@ type
 
   TEntidadConexion=class
   private
+    {$ifdef DELPHI2006UP}
     FTransaccion: TDBXTransaction;
+    {$else}
+    FTransaccion: TTransactionDesc;
+    FEnTransaccion: boolean;
+    {$endif}
     FSQLConnection: TSQLConnection;
 
     FSQLStatementManager: TSQLStatementManager;
@@ -78,7 +83,16 @@ implementation
 
 procedure TEntidadConexion.BeginTransaction;
 begin
-  FTransaccion := FSQLConnection.BeginTransaction(TDBXIsolations.ReadCommitted)
+  {$ifdef DELPHI2006UP}
+  FTransaccion := FSQLConnection.BeginTransaction(TDBXIsolations.ReadCommitted);
+  {$else}
+  FTransaccion.TransactionID := Random(100000000);
+  FTransaccion.GlobalID := 0;
+  FTransaccion.IsolationLevel := xilREADCOMMITTED;
+
+  FSQLConnection.StartTransaction(FTransaccion);
+  FEnTransaccion := true;
+  {$endif}
 end;
 
 function TEntidadConexion.Close: boolean;
@@ -91,12 +105,22 @@ end;
 
 procedure TEntidadConexion.Commit;
 begin
+  {$ifdef DELPHI2006UP}
   FSQLConnection.CommitFreeAndNil(FTransaccion);
+  {$else}
+  FSQLConnection.Commit(FTransaccion);
+  FEnTransaccion := false;
+  {$endif}
 end;
 
 constructor TEntidadConexion.Create(Conexion: TSQLConnection; SQLStatementManager: TSQLStatementManager);
 begin
+  {$ifdef DELPHI2006UP}
   FTransaccion := nil;
+  {$else}
+  Randomize;
+  FEnTransaccion := false;
+  {$endif}
   FPublicConnection := false;
   FSQLConnection := Conexion;
   FSQLStatementManager := SQLStatementManager;
@@ -112,7 +136,11 @@ end;
 
 function TEntidadConexion.GetEnTransaccion: boolean;
 begin
+  {$ifdef DELPHI2006UP}
   Result := assigned(FTransaccion);
+  {$else}
+  Result := FEnTransaccion;
+  {$endif}
 end;
 
 function TEntidadConexion.GetLastException: Exception;
@@ -130,8 +158,12 @@ end;
 
 procedure TEntidadConexion.RollBack;
 begin
+  {$ifdef DELPHI2006UP}
   FSQLConnection.RollbackFreeAndNil(FTransaccion);
-
+  {$else}
+  FSQLConnection.Rollback(FTransaccion);
+  FEnTransaccion := false;
+  {$endif}
 end;
 
 { TSQLStatementManager }

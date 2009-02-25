@@ -61,7 +61,7 @@ object FrmPrincipal: TFrmPrincipal
     Width = 75
     Height = 25
     Caption = 'Ver Tipo Doc'
-    TabOrder = 7
+    TabOrder = 8
   end
   object btnVerTipoDom: TButton
     Left = 288
@@ -69,7 +69,7 @@ object FrmPrincipal: TFrmPrincipal
     Width = 75
     Height = 25
     Caption = 'Ver Tipo Dom'
-    TabOrder = 8
+    TabOrder = 9
   end
   object btnVerPersonas: TButton
     Left = 369
@@ -77,7 +77,7 @@ object FrmPrincipal: TFrmPrincipal
     Width = 75
     Height = 25
     Caption = 'Ver Personas'
-    TabOrder = 9
+    TabOrder = 10
   end
   object btnVerLista: TButton
     Left = 450
@@ -85,7 +85,7 @@ object FrmPrincipal: TFrmPrincipal
     Width = 75
     Height = 25
     Caption = 'Ver Lista'
-    TabOrder = 10
+    TabOrder = 11
     OnClick = btnVerListaClick
   end
   object btnPersDom: TButton
@@ -114,6 +114,15 @@ object FrmPrincipal: TFrmPrincipal
     Caption = 'Obtener Persona ID = 1'
     TabOrder = 4
     OnClick = btnObtenerClick
+  end
+  object btn1: TButton
+    Left = 110
+    Top = 222
+    Width = 75
+    Height = 25
+    Caption = 'btn1'
+    TabOrder = 7
+    OnClick = btn1Click
   end
   object ds: TDataSource
     Left = 120

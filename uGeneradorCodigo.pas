@@ -490,7 +490,8 @@ begin
 
       end;
 
-      if nCampo<(EntidadActiva.Campos.Count - 1) then begin
+      if (nCampo<(EntidadActiva.Campos.Count - 1)) or
+         (nTablas < ListaEntidad.Componentes.Count - 1) then begin
         sVarAux := StringReplace(sVarAux, '</ComaParaEnum>',  ',', [rfReplaceAll]);
         sVarAux := StringReplace(sVarAux, '</PComaParaEnum>', ';', [rfReplaceAll]);
       end
