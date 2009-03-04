@@ -296,8 +296,10 @@ function TEntidadBase.Clonar(Coleccion: TCollection): TEntidadBase;
 begin
   Result := TEntidadBase(Coleccion.ItemClass.Create(Coleccion));
   Result.Campos.Free;
-  Result.Campos := Campos.Clonar;
-  Result.Tabla  := FTabla;
+  Result.Campos   := Campos.Clonar;
+  Result.Tabla    := FTabla;
+  Result.EsNueva  := FEsNueva;
+  Result.EnEdicion:= FEnEdicion;
 end;
 
 function TEntidadBase.CrearNuevaConexionEntidad: TEntidadConexion;
