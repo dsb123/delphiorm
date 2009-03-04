@@ -18,8 +18,6 @@ unit uCampos;
 
 interface
 
-{$I delphiorm.inc}
-
 uses SysUtils, DB, Classes, Contnrs;
 
 type
@@ -181,7 +179,11 @@ begin
   Result := TCampo.Create(FTabla, FNombre, FSecuencia, FAliasCampo, FAliasTabla,
   FIndice, FLongitud, FEsIdentidad, FEsClavePrimaria, FEsClaveForanea, FAceptaNull, FTipoDato,
   FFuncionAgregacion,  FValorPorDefecto);
+
   Result.ValorActual := ValorActual;
+  
+  if Assigned(FBlobField) then
+    Result.AsStream.LoadFromStream(FBlobField);
 end;
 
 constructor TCampo.Create(const Tabla, NombreCampo: string);
@@ -328,11 +330,11 @@ begin
   Result := Add(Campo);
 end;
 
-{$ifdef DELPHI2006UP}
 function TColeccionCampos.CampoPorNombre(sCampo: string): TCampo;
 var
   unCampo: TCampo;
 begin
+  Result := nil;
   for unCampo in Self do
   begin
     if unCampo.Nombre = sCampo then
@@ -342,21 +344,6 @@ begin
     end;
   end;
 end;
-{$else}
-function TColeccionCampos.CampoPorNombre(sCampo: string): TCampo;
-var
-  nCampo: integer;
-begin
-  for nCampo:= 0 to Count-1 do
-  begin
-    if Campo[nCampo].Nombre = sCampo then
-    begin
-      Result := Campo[nCampo];
-      Break;
-    end;
-  end;
-end;
-{$endif}
 
 function TColeccionCampos.Clonar: TColeccionCampos;
 var
@@ -376,10 +363,9 @@ end;
 
 function TColeccionCampos.GetEnumerator: TCamposEnumerator;
 begin
-  Result := TCamposEnumerator.Create(self);
+  REsult := TCamposEnumerator.Create(self);
 end;
 
-{$ifdef DELPHI2006UP}
 function TColeccionCampos.GetFueronCambiados: boolean;
 var
   unCampo : TCampo;
@@ -392,46 +378,23 @@ begin
       Break;
   end;
 end;
-{$else}
-function TColeccionCampos.GetFueronCambiados: boolean;
-var
-  nCampo: integer;
-begin
-  Result := false;
-  for nCampo:= 0 to Count-1 do
-  begin
-    Result := Result or Campo[nCampo].FueCambiado;
-    if Result then
-      Break;
-  end;
-end;
-{$endif}
 
 procedure TColeccionCampos.SetCampo(index: integer; const Value: TCampo);
 begin
   inherited Items[index] := Value;
 end;
 
-{$ifdef DELPHI2006UP}
 procedure TColeccionCampos.SetFueronCambiados(const Value: boolean);
 var
   unCampo : TCampo;
 begin
   for unCampo in self do
     unCampo.FueCambiado := Value;
-
+    
 end;
-{$else}
-procedure TColeccionCampos.SetFueronCambiados(const Value: boolean);
-var
-  nCampo: integer;
-begin
-  for nCampo:= 0 to Count-1 do
-    Campo[nCampo].FueCambiado := Value;
-end;
-{$endif}
 
 { TCamposEnumerator }
+
 constructor TCamposEnumerator.Create(ColeccionCampos: TColeccionCampos);
 begin
   inherited Create;
