@@ -294,7 +294,10 @@ end;
 
 function TEntidadBase.Clonar(Coleccion: TCollection): TEntidadBase;
 begin
-  Result := TEntidadBase(Coleccion.ItemClass.Create(Coleccion));
+  if Assigned(Coleccion) then
+    Result := TEntidadBase(Coleccion.ItemClass.Create(Coleccion))
+  else
+    Result := TEntidadBase.Create(Coleccion);
   Result.Campos.Free;
   Result.Campos   := Campos.Clonar;
   Result.Tabla    := FTabla;
