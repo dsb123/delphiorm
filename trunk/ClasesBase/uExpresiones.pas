@@ -503,7 +503,10 @@ end;
 function TExpresionCondicion.AgregarConOR(Condicion: TCondicion;
   const Negada: boolean): integer;
 begin
-  Condicion.FOperador := ocOperadorOR;
+  if FCondiciones.Count = 0 then
+    Condicion.FOperador := ocNinguno
+  else
+    Condicion.FOperador := ocOperadorOR;
   Condicion.FNegacion := Negada;
 
   Result := FCondiciones.Agregar(Condicion);
