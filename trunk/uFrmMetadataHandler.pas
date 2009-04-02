@@ -48,7 +48,8 @@ type
     procedure CargarDelphiORMDrivers;
     procedure EliminarTabladeListas(const sTabla: string);
     procedure CargarComboDrivers(sModulo: string);
-    procedure ControlarCambios(TablasNuevas: TColeccionTabla);
+    procedure ControlarCambios(TablasNuevas: TColeccionTabla); overload;
+    procedure ControlarCambios(GeneradoresNuevos: TColeccionGenerador); overload;
     procedure ControlarTabla(unaTablaNueva, unaTablaOriginal: TTabla);
     procedure ControlarRelaciones(unaTablaNueva, unaTablaOriginal: TTabla);
     procedure ControlarCampo(CampoOriginal, CampoNuevo: TCampo);
@@ -91,6 +92,8 @@ begin
         begin
           FreeAndNil(FColeccionTablas);
           FColeccionTablas := GetTablesInfo;
+          FColeccionGeneradores := GetGeneratorsInfo;
+          
           mmoDBInfo.Lines.Add('Se ha obtenido información de las siguientes tablas:');
           for i := 0 to FColeccionTablas.Count - 1 do
           begin
@@ -101,6 +104,7 @@ begin
         end
         else begin
           ControlarCambios(GetTablesInfo);
+          ControlarCambios(GetGeneratorsInfo);
         end;
         Disconnect;
 
@@ -248,6 +252,66 @@ begin
     end;
   end;
   FreeAndNil(TablasNuevas);
+end;
+
+procedure TFrmMetadataHandler.ControlarCambios(
+  GeneradoresNuevos: TColeccionGenerador);
+var
+  nGenerador: integer;
+  unGen: TGenerador;
+
+  nTabla: integer;
+  unaTabla: TTabla;
+begin
+  for nGenerador := FColeccionGeneradores.Count - 1 downto 0 do
+  begin
+    unGen := GeneradoresNuevos.ObtenerGenerador(FColeccionGeneradores.Generador[nGenerador].Nombre);
+    if not Assigned(unGen) then
+    begin
+      //Estos fueron eliminados
+      mmoDBInfo.Lines.Add('Se eliminó el generador ' + FColeccionGeneradores.Generador[nGenerador].Nombre);
+
+      //Busco la tabla que lo busca y le saco el generador
+      for nTabla := 0 to FColeccionTablas.Count - 1 do
+      begin
+        unaTabla := FColeccionTablas.Tabla[nTabla];
+        if unaTabla.NombreGenerador = FColeccionGeneradores.Generador[nGenerador].Nombre then
+        begin
+          mmoDBInfo.Lines.Add('La entidad '+ unaTabla.Nombre + ' se ha quedado sin generador para la clave');
+          unaTabla.NombreGenerador := '';
+          unaTabla.TieneGenerador  := false;
+        end;
+      end;
+      FColeccionGeneradores.Delete(nGenerador);
+    end;
+  end;
+
+  for nGenerador := GeneradoresNuevos.Count-1 downto 0 do
+  begin
+    //Ahora los que se agregaron
+    unGen := FColeccionGeneradores.ObtenerGenerador(GeneradoresNuevos.Generador[nGenerador].Nombre);
+    if not Assigned(unGen) then
+    begin
+      mmoDBInfo.Lines.Add('Se agregó el generador ' + GeneradoresNuevos.Generador[nGenerador].Nombre);
+
+      with TGenerador.Create(FColeccionGeneradores) do
+      begin
+        Nombre := GeneradoresNuevos.Generador[nGenerador].Nombre;
+
+        for nTabla := 0 to FColeccionTablas.Count - 1 do
+        begin
+          unaTabla := FColeccionTablas.Tabla[nTabla];
+          if (unaTabla.Nombre = Nombre) and (unaTabla.NombreGenerador = '') then
+          begin
+            unaTabla.NombreGenerador := Nombre;
+            unaTabla.TieneGenerador  := True;
+            mmoDBInfo.Lines.Add('La entidad ' + unaTabla.Nombre + ' ahora posee generador');
+          end;
+        end;
+      end;
+    end;
+  end;
+  FreeAndNil(GeneradoresNuevos);
 end;
 
 procedure TFrmMetadataHandler.ControlarCampo(CampoOriginal, CampoNuevo: TCampo);
@@ -483,7 +547,6 @@ end;
 
 procedure TFrmMetadataHandler.EliminarListaConRelacion(unCampoFK: TCamposFK);
 var
-  unaLista: TListaTabla;
   unaRelacion: TRelacion;
   nLista: integer;
 begin

@@ -23,6 +23,7 @@ uses Forms, Graphics, Classes, uCoreClasses;
 type
   TFormGenerico = class(TForm)
   protected
+    FColeccionGeneradores: TColeccionGenerador;
     FColeccionTablas: TColeccionTabla;
     FColeccionListas: TColeccionListaTabla;
     FStringConexion: string;
@@ -36,6 +37,7 @@ type
 
     property ColeccionTablas: TColeccionTabla read FColeccionTablas write FColeccionTablas;
     property ColeccionListas: TColeccionListaTabla read FColeccionListas write FColeccionListas;
+    property ColeccionGeneradores: TColeccionGenerador read FColeccionGeneradores write FColeccionGeneradores;
     property StringConexion: string read FStringConexion write FStringConexion;
     property Driver: string read FDriver write FDriver;
     property CambioDatosMapeo: TNotifyEvent read FCambioDatosMapeo write FCambioDatosMapeo;

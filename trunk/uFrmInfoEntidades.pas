@@ -47,6 +47,7 @@ type
     Clonar1: TMenuItem;
     N1: TMenuItem;
     EliminarEntidadClonada1: TMenuItem;
+    Editar1: TMenuItem;
     procedure tvEntidadesClick(Sender: TObject);
     procedure tvRelacionesEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
@@ -56,9 +57,11 @@ type
     procedure tvEntidadesEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
     procedure EliminarEntidadClonada1Click(Sender: TObject);
+    procedure Editar1Click(Sender: TObject);
   private
     { Private declarations }
     function CargarItemTabla(unaTabla: TTabla): TTreeNode;
+    procedure CargarDatosCampos(nodo: TTreeNode; unaTabla: TTabla);
   public
     { Public declarations }
     procedure Inicializar; override;
@@ -74,30 +77,20 @@ implementation
 
 {$R *.dfm}
 
+uses uFrmEditorEntidad;
 { TFrmInfoEntidades }
 
-function TFrmInfoEntidades.CargarItemTabla(unaTabla: TTabla): TTreeNode;
+procedure TFrmInfoEntidades.CargarDatosCampos(nodo: TTreeNode;
+  unaTabla: TTabla);
 var
   unItemCampo : TTreeNode;
   nCampo: integer;
   unCampo: TCampo;
 begin
-  Result := tvEntidades.Items.AddChild(nil, unaTabla.Nombre);
-  if Trim(unaTabla.Alias) <> '' then
-  begin
-    Result.ImageIndex := 1;
-    Result.SelectedIndex := 1;
-    Result.Text := unaTabla.Alias;
-  end
-  else begin
-    Result.ImageIndex := 0;
-    Result.SelectedIndex := 0;
-  end;
-  Result.Data := unaTabla;
   for nCampo := 0 to unaTabla.Campos.Count -1 do
   begin
     unCampo := unaTabla.Campos.Campo[nCampo];
-    unItemCampo := tvEntidades.Items.AddChild(Result, unCampo.Nombre);
+    unItemCampo := tvEntidades.Items.AddChild(nodo, unCampo.Nombre);
     unItemCampo.ImageIndex := 4;
     unItemCampo.SelectedIndex := 4;
 
@@ -120,6 +113,23 @@ begin
   end;
 end;
 
+function TFrmInfoEntidades.CargarItemTabla(unaTabla: TTabla): TTreeNode;
+begin
+  Result := tvEntidades.Items.AddChild(nil, unaTabla.Nombre);
+  if Trim(unaTabla.Alias) <> '' then
+  begin
+    Result.ImageIndex := 1;
+    Result.SelectedIndex := 1;
+    Result.Text := unaTabla.Alias;
+  end
+  else begin
+    Result.ImageIndex := 0;
+    Result.SelectedIndex := 0;
+  end;
+  Result.Data := unaTabla;
+  CargarDatosCampos(Result, unaTabla);
+end;
+
 function TFrmInfoEntidades.Cerrar: Boolean;
 begin
   Result := true;
@@ -138,6 +148,23 @@ begin
     Selected := true;
     SetFocus;
   end;
+end;
+
+procedure TFrmInfoEntidades.Editar1Click(Sender: TObject);
+var
+  unForm: TFrmEditorEntidad;
+begin
+  unForm := TFrmEditorEntidad.Create(Self);
+  unForm.SetTopColor(barSuperior.StartColor, barSuperior.EndColor);
+
+  unForm.Tabla := TTabla(tvEntidades.Selected.Data);
+  unForm.Generadores := FColeccionGeneradores;
+
+  unForm.ShowModal;
+  FreeAndNil(unForm);
+
+  tvEntidades.Selected.DeleteChildren;
+  CargarDatosCampos(tvEntidades.Selected, TTabla(tvEntidades.Selected.Data));
 end;
 
 procedure TFrmInfoEntidades.EliminarEntidadClonada1Click(Sender: TObject);
@@ -280,10 +307,13 @@ var
 begin
   if tvEntidades.SelectionCount > 0 then
   begin
-    unaTabla := TTabla(tvEntidades.Selected.Data);
-    EliminarEntidadClonada1.Enabled := (Trim(unaTabla.Alias) <> '');
-    Clonar1.Enabled := (Trim(unaTabla.Alias) = '');
-    pmEntidades.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+    if tvEntidades.Selected.HasChildren then
+    begin
+      unaTabla := TTabla(tvEntidades.Selected.Data);
+      EliminarEntidadClonada1.Enabled := (Trim(unaTabla.Alias) <> '');
+      Clonar1.Enabled := (Trim(unaTabla.Alias) = '');
+      pmEntidades.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+    end;
   end;
 end;
 

@@ -47,6 +47,7 @@ type
     function Connect: Boolean;
     function Disconnect: Boolean;
     function GetTablesInfo: TColeccionTabla;
+    function GetGeneratorsInfo: TColeccionGenerador;
   end;
 
   TDatosTabla=class
@@ -164,6 +165,26 @@ begin
   Result := Result + '; Password=' + edtPassword.Text;
 end;
 
+function TORMDriverManager.GetGeneratorsInfo: TColeccionGenerador;
+var
+  unDataSet: TDataSet;
+  sSQL: string;
+begin
+  Result := TColeccionGenerador.Create;
+
+  unDataSet := TSQLDataSet.Create(nil);
+  sSQL := 'SELECT RDB$GENERATOR_NAME FROM RDB$GENERATORS WHERE RDB$SYSTEM_FLAG IS NULL or RDB$SYSTEM_FLAG = 0 order by 1';
+  sqlConn.Execute(sSQL, nil, @unDataSet);
+
+  while not unDataSet.Eof do
+  begin
+    with TGenerador.Create(Result) do
+      Nombre := Trim(unDataSet.Fields[0].AsString);
+    unDataSet.Next;
+  end;
+  FreeAndNil(unDataSet);
+end;
+
 function TORMDriverManager.GetModule: THandle;
 begin
   Result := Windows.GetModuleHandle ('DelphiORMFirebirdDriver.bpl');
@@ -185,19 +206,7 @@ var
   sRelacionAnterior: string;
 begin
   Result := TColeccionTabla.Create;
-  Generadores := TColeccionGenerador.Create;
-
-  unDataSet := TSQLDataSet.Create(nil);
-  sSQL := 'SELECT RDB$GENERATOR_NAME FROM RDB$GENERATORS WHERE RDB$SYSTEM_FLAG IS NULL or RDB$SYSTEM_FLAG = 0 order by 1';
-  sqlConn.Execute(sSQL, nil, @unDataSet);
-
-  while not unDataSet.Eof do
-  begin
-    with TGenerador.Create(Generadores) do
-      Nombre := Trim(unDataSet.Fields[0].AsString);
-    unDataSet.Next;
-  end;
-  FreeAndNil(unDataSet);
+  Generadores := GetGeneratorsInfo;
 
   unDataSet := TSQLDataSet.Create(nil);
   sSQL := ObtenerSQLInfoTablas;
@@ -213,6 +222,7 @@ begin
       sTablaAnterior := unDataSet.Fields[TDatosTabla.Tabla].AsString;
       unaTabla.Nombre := Trim(sTablaAnterior);
       unaTabla.TieneGenerador := Generadores.ExisteGenerador(unaTabla.Nombre);
+      unaTabla.NombreGenerador := unaTabla.Nombre;
     end;
 
     unCampo := TCampo.Create(unaTabla.Campos);
@@ -220,7 +230,7 @@ begin
     unCampo.Longitud := unDataSet.Fields[TDatosTabla.LongitudChar].AsInteger;
     ConvertirTipo(unCampo,  unDataSet.Fields[TDatosTabla.TipoDato].AsString,
                             unDataSet.Fields[TDatosTabla.SubTipoDato].AsString);
-    unCampo.AceptaNull := (unDataSet.Fields[TDatosTabla.PermiteNulo].AsInteger = 1);
+    unCampo.AceptaNull := not (unDataSet.Fields[TDatosTabla.PermiteNulo].AsInteger = 1);
     unCampo.EsClavePrimaria := (unDataSet.Fields[TDatosTabla.EsClavePrimaria].AsInteger = 1);
     unCampo.ValorDefault := unDataSet.Fields[TDatosTabla.ValorDefault].AsVariant;
 

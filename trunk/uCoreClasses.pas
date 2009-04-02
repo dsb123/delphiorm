@@ -140,6 +140,7 @@ type
     FAlias : string;
     FCampos : TColeccionCampos;
     FTieneGenerador: boolean;
+    FNombreGenerador: string;
     FCamposFK: TColeccionCamposFK;
     FCamposColeccion: TColeccionCamposFK;
     function GetCamposColeccion: TColeccionCamposFK;
@@ -152,6 +153,7 @@ type
     property Nombre: string read FNombre write FNombre;
     property Alias: string read FAlias write FAlias;
     property TieneGenerador: boolean read FTieneGenerador write FTieneGenerador;
+    property NombreGenerador: string read FNombreGenerador write FNombreGenerador;
     property Campos: TColeccionCampos read GetCampos write FCampos;
     property CamposFK: TColeccionCamposFK read GetCamposFK write FCamposFK;
     property CamposColeccion: TColeccionCamposFK read GetCamposColeccion write FCamposColeccion;
