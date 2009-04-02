@@ -6,15 +6,25 @@
 		</xs:annotation>
 		<xs:attribute name="Driver" type="xs:string"/>
 		<xs:attribute name="StringConexion" type="xs:string"/>
+		<xs:attribute name="NombreArchivoDefault" type="xs:string"/>
 		<xs:sequence>
+			<xs:element name="Generadores" type="GeneradoresType"/>
 			<xs:element name="Entidades" type="EntidadesType"/>
 			<xs:element name="Listas" type="ListasType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GeneradoresType">
+		<xs:sequence>
+			<xs:element name="Generador" type="GeneradorType" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="EntidadesType">
 		<xs:sequence>
 			<xs:element name="Entidad" type="EntidadType" maxOccurs="unbounded"/>
 		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GeneradorType">
+		<xs:attribute name="Nombre" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="EntidadType">
 		<xs:sequence>
@@ -27,6 +37,7 @@
 				<xs:appinfo xdb:dataType="Boolean"/>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="NombreGenerador" type="xs:string"/>
 		<xs:attribute name="Alias" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="CamposType">

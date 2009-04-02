@@ -1,0 +1,680 @@
+unit <NombreUnidad>;
+
+interface
+
+uses Classes, SysUtils, uEntidades, uColeccionEntidades, uCampos, uExpresiones,
+	 uConexion, uSQLConnectionGenerator, uFBSQLStatementManager;
+
+type
+
+<PorCadaEntidad>
+TIndice<NombreEntidad>=class
+const
+	<PorCadaCampo>
+	<NombreCampo>=<IndiceCampo>;
+	</PorCadaCampo>
+end;
+</PorCadaEntidad>
+<PorCadaEntidad>
+TCampo<NombreEntidad>=class
+const
+	<PorCadaCampo>
+	<NombreCampo>='<NombreCampo>';
+	</PorCadaCampo>
+end;
+</PorCadaEntidad>
+<PorCadaLista>
+<PorCadaListaEntidad>
+TIndice<NombreListaEntidad>=class
+const
+	<PorCadaCampo>
+	<AliasCampo>=<IndiceCampo>;
+	</PorCadaCampo>
+end;
+</PorCadaListaEntidad>
+</PorCadaLista>
+<PorCadaEntidad>
+TFabricaCampo<NombreEntidad>=class
+public
+	<PorCadaCampo>
+	class function <NombreCampo>: TCampo;
+	</PorCadaCampo>
+end;
+</PorCadaEntidad>
+TFabrica<NombreUnidad>=class
+public
+	class function CrearNuevaEntidadConexion(ConexionPublica: boolean = false): TEntidadConexion;
+end;
+<PorCadaEntidad>
+<IfTieneRelacion>
+TRelacion<NombreEntidad>=class
+public
+	{Relaciones 1 a 1}
+<PorCadaEntidadAsociada>
+	class function <NombreRelacion>(TipoRelacion: TTipoRelacion=TrAmbas): TRelacion;
+</PorCadaEntidadAsociada>
+<IfTieneRelacionAMuchos>
+	{Relaciones 1 a n}
+<PorCadaColeccionAsociada>
+	class function <NombreRelacionAMuchos>(TipoRelacion: TTipoRelacion = TrAmbas): TRelacion;
+</PorCadaColeccionAsociada>
+</IfTieneRelacionAMuchos>
+end;
+</IfTieneRelacion>
+</PorCadaEntidad>
+
+
+<PorCadaEntidad>
+T<NombreEntidad>=class;
+TColeccion<NombreEntidad>=class;
+</PorCadaEntidad>
+
+<PorCadaEntidad>
+T<NombreEntidad>=class(TEntidadBase)
+private
+	<PorCadaEntidadAsociada>
+	F<NombreRelacion>: T<NombreEntidadAsociada>;
+	</PorCadaEntidadAsociada>
+
+	<PorCadaColeccionAsociada>
+	FColeccion<NombreRelacionAMuchos>: TColeccion<NombreEntidadAsociada>;
+	</PorCadaColeccionAsociada>
+
+	<PorCadaCampo>
+	function Get<NombreCampo>: <TipoCampo>;
+	procedure Set<NombreCampo>(const Value:<TipoCampo>);
+	</PorCadaCampo>
+
+	<PorCadaEntidadAsociada>
+	function Get<NombreRelacion>: T<NombreEntidadAsociada>;
+	</PorCadaEntidadAsociada>
+		
+	<PorCadaColeccionAsociada>
+	function GetColeccion<NombreRelacionAMuchos>: TColeccion<NombreEntidadAsociada>;
+	</PorCadaColeccionAsociada>
+public
+	constructor Create(Coleccion: TCollection = nil; ComoEntidadNueva: boolean = true); overload;
+	constructor Create(<PorCadaCampoClave>const <NombreCampoClave>: <TipoCampoClave></PComaParaEnum></PorCadaCampoClave>); overload;
+	function ObtenerEntidad(<PorCadaCampoClave>const <NombreCampoClave>: <TipoCampoClave></PComaParaEnum></PorCadaCampoClave>): boolean;
+	destructor Destroy; override;
+
+	function CrearNuevaConexionEntidad: TEntidadConexion; override;
+	function GetCampo(IndiceCampo: integer): TCampo; overload;
+	<PorCadaEntidadAsociada>
+	procedure Liberar<NombreRelacion>;
+	</PorCadaEntidadAsociada>
+	<PorCadaCampo>
+	function EsNulo<NombreCampo>: boolean;
+	</PorCadaCampo>
+
+	<PorCadaEntidadAsociada>
+	property <NombreRelacion>: T<NombreEntidadAsociada> read Get<NombreRelacion>;
+	</PorCadaEntidadAsociada>
+	<PorCadaColeccionAsociada>
+	property Coleccion<NombreRelacionAMuchos>: TColeccion<NombreEntidadAsociada> read GetColeccion<NombreRelacionAMuchos>;
+	</PorCadaColeccionAsociada>
+published
+	<PorCadaCampo>
+	property <NombreCampo>: <TipoCampo> read Get<NombreCampo> write Set<NombreCampo>;
+	</PorCadaCampo>
+end;
+</PorCadaEntidad>
+<PorCadaColeccion>
+TColeccion<NombreEntidad>=class(TColeccionEntidades)
+private
+	type
+		TColeccion<NombreEntidad>Enumerador = record
+		private
+			nEntidad: integer;
+			FColeccion : TColeccion<NombreEntidad>;
+		public
+			constructor Create(Coleccion: TColeccion<NombreEntidad>);
+			function  GetCurrent: T<NombreEntidad>; inline;
+			function  MoveNext: boolean;
+			property Current: T<NombreEntidad> read GetCurrent;
+		end;
+private
+	function Get<NombreEntidad>(index: integer): T<NombreEntidad>;
+	function GetCampo(indiceCampo: integer): TCampo;
+protected
+	procedure ProcesarDataSet; override;
+published
+public
+	constructor Create; overload;
+
+	function CrearNuevaConexionEntidad: TEntidadConexion; override;
+
+	function GetEnumerator: TColeccion<NombreEntidad>Enumerador;
+	property <NombreEntidad>[index: integer]: T<NombreEntidad> read Get<NombreEntidad>; default;
+	property Campo[indiceCampo: integer]: TCampo read GetCampo;
+end;
+</PorCadaColeccion>
+<PorCadaLista>
+<PorCadaListaEntidad>
+TFila<NombreListaEntidad>=class(TEntidadBase)
+private
+	<PorCadaCampo>
+	function Get<AliasCampo>: <TipoCampo>;
+	procedure Set<AliasCampo>(const Value: <TipoCampo>);
+	</PorCadaCampo>
+public
+	constructor Create(Coleccion: TCollection = nil); overload;
+	destructor Destroy; override;
+	function CrearNuevaConexionEntidad: TEntidadConexion; override;
+published
+	<PorCadaCampo>
+	property <AliasCampo>: <TipoCampo> read Get<AliasCampo> write Set<AliasCampo>;
+	</PorCadaCampo>
+end;
+</PorCadaListaEntidad>
+</PorCadaLista>
+<PorCadaLista>
+<PorCadaListaEntidad>
+T<NombreListaEntidad>=class(TColeccionEntidades)
+private
+	type
+		T<NombreListaEntidad>Enumerador = record
+		private
+			nEntidad: integer;
+			FColeccion : T<NombreListaEntidad>;
+		public
+			constructor Create(Coleccion: T<NombreListaEntidad>);
+			function  GetCurrent: TFila<NombreListaEntidad>;
+			function  MoveNext: boolean;
+			property Current: TFila<NombreListaEntidad> read GetCurrent;
+		end;
+private
+	function GetFila(index: integer): TFila<NombreListaEntidad>;
+protected
+	procedure ProcesarDataSet; override;
+public
+	constructor Create; overload;
+	destructor Destroy; override;
+
+	function CrearNuevaConexionEntidad: TEntidadConexion; override;
+
+	function GetEnumerator: T<NombreListaEntidad>Enumerador;
+	function ObtenerTodos: integer; override;
+	function ObtenerMuchos( Filtro: TExpresionCondicion;
+							Orden: TExpresionOrdenamiento = nil;
+							Agrupamiento: TExpresionAgrupamiento = nil;
+							Relaciones: TExpresionRelacion = nil;
+							FiltroHaving: TExpresionCondicion = nil;
+							const CantFilas: integer = 0; const TamPagina: integer = 0;
+							const NroPagina: integer = 0; const SinDuplicados: boolean = false): integer; override;
+	property Fila[index: integer]: TFila<NombreListaEntidad> read GetFila; default;
+end;
+</PorCadaListaEntidad>
+</PorCadaLista>
+
+var
+	SQLConnectionGenerator: TSQLConnectionGenerator;
+	SingleConnection : TEntidadConexion;
+	On<NombreUnidad>Exception: TOnExceptionEvent;
+
+implementation
+
+uses DB, uSQLBuilder;
+
+{TFabrica<NombreUnidad>}
+
+class function TFabrica<NombreUnidad>.CrearNuevaEntidadConexion(ConexionPublica: boolean): TEntidadConexion;
+begin
+	if not assigned(SingleConnection) then
+	begin
+		Result := TEntidadConexion.Create(SQLConnectionGenerator.GetConnection, TFBSQLStatementManager.Create); 
+		Result.ConexionPublica := ConexionPublica;
+	end
+	else
+		Result := SingleConnection; 
+end;
+
+
+<PorCadaEntidad>
+{ T<NombreEntidad> }
+constructor T<NombreEntidad>.Create(Coleccion: TCollection; ComoEntidadNueva: boolean);
+begin
+	inherited Create(Coleccion, ComoEntidadNueva);
+	FTabla:='<NombreEntidad>';
+	<PorCadaCampo>
+	FCampos.Agregar(TCampo.Create(Tabla,'<NombreCampo>', '<TieneGenerador>','','',TIndice<NombreEntidad>.<NombreCampo>, <LongitudCampo>,  <bTieneGenerador>, <bEsClavePrimaria>,<bEsClaveForanea>, <bAceptaNull>, <tdTipoCampo>, faNinguna,<TipoORM>));
+	</PorCadaCampo>
+	<PorCadaEntidadAsociada>
+	F<NombreRelacion>:=nil;
+	</PorCadaEntidadAsociada>
+	<PorCadaColeccionAsociada>
+	FColeccion<NombreRelacionAMuchos>:=nil;
+	</PorCadaColeccionAsociada>
+end;
+destructor T<NombreEntidad>.Destroy;
+begin
+	<PorCadaEntidadAsociada>
+	if assigned(F<NombreRelacion>) then
+		F<NombreRelacion>.Free;
+	</PorCadaEntidadAsociada>
+	<PorCadaColeccionAsociada>
+	if assigned(FColeccion<NombreRelacionAMuchos>) then
+		FColeccion<NombreRelacionAMuchos>.Free;
+	</PorCadaColeccionAsociada>
+	inherited;
+end;
+
+function T<NombreEntidad>.CrearNuevaConexionEntidad: TEntidadConexion;
+begin
+	Result := TFabrica<NombreUnidad>.CrearNuevaEntidadConexion; 
+	if assigned(On<NombreUnidad>Exception) then
+	   Result.SQLManager.OnExceptionEvent := On<NombreUnidad>Exception; 
+end;
+
+function T<NombreEntidad>.GetCampo(IndiceCampo: integer): TCampo;
+begin
+	Result := FCampos.Campo[IndiceCampo];
+end;	
+	
+constructor T<NombreEntidad>.Create(<PorCadaCampoClave>const <NombreCampoClave>: <TipoCampoClave></PComaParaEnum></PorCadaCampoClave>);
+begin
+	Create;
+	ObtenerEntidad(<PorCadaCampoClave><NombreCampoClave></ComaParaEnum></PorCadaCampoClave>);
+end;	
+
+<PorCadaCampo>
+function T<NombreEntidad>.EsNulo<NombreCampo>: boolean;
+begin
+	Result := FCampos.Campo[TIndice<NombreEntidad>.<NombreCampo>].EsNulo;
+end;
+</PorCadaCampo>
+
+<PorCadaCampo>
+function T<NombreEntidad>.Get<NombreCampo>: <TipoCampo>;
+begin
+	Result := FCampos.Campo[TIndice<NombreEntidad>.<NombreCampo>].<AsKeyWord>;
+end;
+</PorCadaCampo>
+<PorCadaCampo>
+procedure T<NombreEntidad>.Set<NombreCampo>(const Value: <TipoCampo>);
+begin
+	FCampos.Campo[TIndice<NombreEntidad>.<NombreCampo>].<AsKeyWord>:= Value;
+end;	
+</PorCadaCampo>
+function T<NombreEntidad>.ObtenerEntidad(<PorCadaCampoClave>const <NombreCampoClave>: <TipoCampoClave></PComaParaEnum></PorCadaCampoClave>): boolean;
+var
+	select : TSelectStatement;
+begin
+	select := TSelectStatement.Create(FCampos);
+	<PorCadaCampoClave>
+	select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.Campo[TIndice<NombreEntidad>.<NombreCampoClave>], tcIgual, <NombreCampoClave>));
+	</PorCadaCampoClave>
+	Result := AsignarCamposDesdeSeleccion(select);
+	select.Free;
+end;
+<PorCadaEntidadAsociada>
+function T<NombreEntidad>.Get<NombreRelacion>: T<NombreEntidadAsociada>;
+var
+	nEntidadAsociada: integer;
+begin
+	if not assigned(F<NombreRelacion>) then begin
+		//F<NombreRelacion> := T<NombreEntidadAsociada>.Create(<PorCadaCampoFK><NombreCampoFKOrigen></ComaParaEnum></PorCadaCampoFK>);
+		F<NombreRelacion> := T<NombreEntidadAsociada>.Create;
+		F<NombreRelacion>.AsignarConexion(Conexion);
+		F<NombreRelacion>.ObtenerEntidad(<PorCadaCampoFK><NombreCampoFKOrigen></ComaParaEnum></PorCadaCampoFK>);
+		nEntidadAsociada := AgregarEntidadAsociada(F<NombreRelacion>);
+		<PorCadaCampoFK>
+		AgregarCamposAsociadosEntidad(nEntidadAsociada, TIndice<NombreEntidad>.<NombreCampoFKOrigen>,TIndice<NombreEntidadAsociada>.<NombreCampoFKDestino>);
+		</PorCadaCampoFK>
+	end;
+	Result := F<NombreRelacion>;
+end;
+procedure T<NombreEntidad>.Liberar<NombreRelacion>;
+begin
+	EliminarEntidadAsociada(F<NombreRelacion>);	
+	F<NombreRelacion> := nil;
+end;
+</PorCadaEntidadAsociada>
+<PorCadaColeccionAsociada>
+function T<NombreEntidad>.GetColeccion<NombreRelacionAMuchos>: TColeccion<NombreEntidadAsociada>;
+var
+	unFiltro : TExpresionCondicion;
+	nColeccionAsociada: integer;
+begin
+	if not assigned(FColeccion<NombreRelacionAMuchos>) then begin
+		FColeccion<NombreRelacionAMuchos>:= TColeccion<NombreEntidadAsociada>.Create;
+		FColeccion<NombreRelacionAMuchos>.AsignarConexion(Conexion);
+		nColeccionAsociada:= AgregarColeccionAsociada(FColeccion<NombreRelacionAMuchos>);
+		unFiltro := TExpresionCondicion.Create;
+		<PorCadaCampoFK>
+		unFiltro.Agregar(TCondicionComparacion.Create(FColeccion<NombreRelacionAMuchos>.FCampos.Campo[TIndice<NombreEntidadAsociada>.<NombreCampoFKDestino>], tcIgual, <NombreCampoFKOrigen>));
+		AgregarCamposAsociadosColeccion(nColeccionAsociada, TIndice<NombreEntidad>.<NombreCampoFKOrigen>,TIndice<NombreEntidadAsociada>.<NombreCampoFKDestino>);
+		</PorCadaCampoFK>
+		FColeccion<NombreRelacionAMuchos>.ObtenerMuchos(unFiltro);
+		unFiltro.Free;
+	end;
+	Result := FColeccion<NombreRelacionAMuchos>;
+end;
+</PorCadaColeccionAsociada>
+</PorCadaEntidad>
+<PorCadaColeccion>
+{TColeccion<NombreEntidad>}
+constructor TColeccion<NombreEntidad>.Create;
+var
+	unaEntidad: T<NombreEntidad>;
+begin
+	inherited Create( T<NombreEntidad> );
+
+	unaEntidad := T<NombreEntidad>.Create;
+	FCampos := unaEntidad.Campos.Clonar;
+	unaEntidad.Free;
+end;
+function TColeccion<NombreEntidad>.CrearNuevaConexionEntidad: TEntidadConexion;
+begin
+	Result := TFabrica<NombreUnidad>.CrearNuevaEntidadConexion;
+	if assigned(On<NombreUnidad>Exception) then
+	   Result.SQLManager.OnExceptionEvent := On<NombreUnidad>Exception; 
+end;
+function TColeccion<NombreEntidad>.GetEnumerator: TColeccion<NombreEntidad>Enumerador;
+begin
+	Result := TColeccion<NombreEntidad>Enumerador.Create(self); 
+end;
+function TColeccion<NombreEntidad>.Get<NombreEntidad>(index: integer): T<NombreEntidad>;
+begin
+	Result := Items[index] as T<NombreEntidad>
+end;
+
+function TColeccion<NombreEntidad>.GetCampo(indiceCampo: integer):TCampo;
+begin
+	Result := ObtenerCampo(indiceCampo);
+end;
+
+procedure TColeccion<NombreEntidad>.ProcesarDataSet;
+var
+	unaEntidad: T<NombreEntidad>;
+	<BlobType>stream: TStream;</BlobType>
+begin
+	with FSelectStatement do
+	begin
+		if not Datos.Active then
+			Datos.Active := true;
+		Datos.First;
+		while not Datos.Eof  do
+		begin
+			unaEntidad := T<NombreEntidad>.Create(self, false);
+			<PorCadaCampo>
+			<IfBlobBinary>
+			stream := Datos.CreateBlobStream(Datos.Fields[TIndice<NombreEntidad>.<NombreCampo>],bmRead);
+			unaEntidad.<NombreCampo>.LoadFromStream(stream);
+			FreeAndNil(stream);
+			<ElseBlobBinary>
+			if (Datos.Fields[TIndice<NombreEntidad>.<NombreCampo>].IsNull) then
+			   unaEntidad.Campos[TIndice<NombreEntidad>.<NombreCampo>].EsNulo := true
+			else
+				unaEntidad.<NombreCampo> := Datos.Fields[TIndice<NombreEntidad>.<NombreCampo>].<AsKeyWord>;
+			</IfBlobBinary>
+			</PorCadaCampo>
+			unaEntidad.Campos.FueronCambiados := false;
+			unaEntidad.AsignarConexion(Conexion);
+			Datos.Next;
+		end;
+	end;
+end;
+
+{TColeccion<NombreEntidad>Enumerador}
+constructor TColeccion<NombreEntidad>.TColeccion<NombreEntidad>Enumerador.Create(Coleccion: TColeccion<NombreEntidad>);
+begin
+	nEntidad := -1;
+	FColeccion := Coleccion;
+end;
+
+function TColeccion<NombreEntidad>.TColeccion<NombreEntidad>Enumerador.GetCurrent: T<NombreEntidad>;
+begin
+	Result := FColeccion[nEntidad];
+end;
+
+function TColeccion<NombreEntidad>.TColeccion<NombreEntidad>Enumerador.MoveNext: boolean;
+begin
+	Result := nEntidad < (FColeccion.Count - 1);
+	if Result then
+	   Inc(nEntidad);
+end;
+</PorCadaColeccion>
+<PorCadaEntidad>
+<IfTieneRelacion>
+<PorCadaEntidadAsociada>
+{TRelacion<NombreEntidad>}
+
+class function TRelacion<NombreEntidad>.<NombreRelacion>(TipoRelacion: TTipoRelacion): TRelacion;
+var
+	sCamposOrigen, sCamposDestino: TStringList;
+	CamposOrigen, CamposDestino: TCamposRelacion; 
+begin
+	sCamposOrigen := TStringList.Create;
+	sCamposDestino:= TStringList.Create;
+    
+	<PorCadaCampoFK>
+	sCamposOrigen.Add(TCampo<NombreEntidad>.<NombreCampoFKOrigen>);
+	sCamposDestino.Add(TCampo<NombreEntidadAsociada>.<NombreCampoFKDestino>);
+	</PorCadaCampoFK>
+	CamposOrigen := TCamposRelacion.Create('<NombreEntidad>', sCamposOrigen);
+	CamposDestino:= TCamposRelacion.Create('<NombreEntidadAsociada>', sCamposDestino);  
+	Result := TRelacion.Create(	CamposOrigen, CamposDestino,
+		   	  					TipoRelacion);
+	FreeAndNil(CamposOrigen);
+	FreeAndNil(CamposDestino);    
+	FreeAndNil(sCamposOrigen);
+	FreeAndNil(sCamposDestino);	   	  														   				  						   
+end;
+</PorCadaEntidadAsociada>
+<IfTieneRelacionAMuchos>
+<PorCadaColeccionAsociada>
+class function TRelacion<NombreEntidad>.<NombreRelacionAMuchos>(TipoRelacion: TTipoRelacion): TRelacion;
+var
+	sCamposOrigen, sCamposDestino: TStringList;
+	CamposOrigen, CamposDestino: TCamposRelacion; 
+begin
+	sCamposOrigen := TStringList.Create;
+	sCamposDestino:= TStringList.Create;
+    
+	<PorCadaCampoFK>
+	sCamposOrigen.Add(TCampo<NombreEntidad>.<NombreCampoFKOrigen>);
+	sCamposDestino.Add(TCampo<NombreEntidadAsociada>.<NombreCampoFKDestino>);
+	</PorCadaCampoFK>
+
+	CamposOrigen:= TCamposRelacion.Create('<NombreEntidad>', sCamposOrigen);
+	CamposDestino:= TCamposRelacion.Create('<NombreEntidadAsociada>', sCamposDestino); 
+	Result := TRelacion.Create(CamposOrigen, CamposDestino, TipoRelacion);
+	FreeAndNil(CamposOrigen);
+	FreeAndNil(CamposDestino);    	   	  		
+	FreeAndNil(sCamposOrigen);
+	FreeAndNil(sCamposDestino);												   				  						   
+end;
+</PorCadaColeccionAsociada>
+</IfTieneRelacionAMuchos>
+</IfTieneRelacion>
+</PorCadaEntidad>
+
+<PorCadaLista>
+<PorCadaListaEntidad>
+{TFila<NombreListaEntidad>}
+constructor TFila<NombreListaEntidad>.Create(Coleccion: TCollection);
+begin
+	inherited Create(Coleccion, false);
+	FTabla:='<NombreListaEntidad>';
+
+	<PorCadaCampo>
+	FCampos.Agregar(TCampo.Create('<AliasEntidad>','<NombreCampo>', '','<AliasCampo>','',TIndice<NombreListaEntidad>.<AliasCampo>, <LongitudCampo>,  false, false,false,false,<tdTipoCampo>, faNinguna,''));
+	</PorCadaCampo>
+end;
+
+destructor TFila<NombreListaEntidad>.Destroy;
+begin
+	inherited;
+end;
+function TFila<NombreListaEntidad>.CrearNuevaConexionEntidad: TEntidadConexion; 
+begin
+	Result := nil;
+end;
+<PorCadaCampo>
+function TFila<NombreListaEntidad>.Get<AliasCampo>: <TipoCampo>;
+begin
+	Result := FCampos.Campo[TIndice<NombreListaEntidad>.<AliasCampo>].<AsKeyWord>; 
+end;
+
+procedure TFila<NombreListaEntidad>.Set<AliasCampo>(const Value: <TipoCampo>);
+begin
+	FCampos.Campo[TIndice<NombreListaEntidad>.<AliasCampo>].<AsKeyWord>:= Value;
+end;	
+</PorCadaCampo>
+</PorCadaListaEntidad>
+</PorCadaLista>
+<PorCadaLista>
+<PorCadaListaEntidad>
+{T<NombreListaEntidad>}
+constructor T<NombreListaEntidad>.Create;
+var
+	unaEntidad: TFila<NombreListaEntidad>;
+begin
+	inherited Create( TFila<NombreListaEntidad> );
+
+	unaEntidad := TFila<NombreListaEntidad>.Create;
+	FCampos := unaEntidad.Campos.Clonar;
+	unaEntidad.Free;
+end;
+destructor T<NombreListaEntidad>.Destroy;
+begin
+	inherited;
+end;
+function T<NombreListaEntidad>.CrearNuevaConexionEntidad: TEntidadConexion;
+begin
+	Result := TFabrica<NombreUnidad>.CrearNuevaEntidadConexion;
+	if assigned(On<NombreUnidad>Exception) then
+	   Result.SQLManager.OnExceptionEvent := On<NombreUnidad>Exception; 
+end;
+function T<NombreListaEntidad>.GetEnumerator: T<NombreListaEntidad>Enumerador;
+begin
+	Result := T<NombreListaEntidad>Enumerador.Create(self);
+end;
+function T<NombreListaEntidad>.ObtenerTodos: integer;
+var
+	Relacion: TExpresionRelacion;
+	nRel : integer;
+	bLiberarRelaciones: boolean;
+begin
+	Relacion := nil;
+	bLiberarRelaciones := false;
+	nRel := <TotalEntidades>; 
+	if nRel > 1 then
+	begin
+		Relacion := TExpresionRelacion.Create;
+		<PorCadaRelacion>
+		Relacion.Agregar(TRelacion<NombreEntidad>.<NombreEntidadRelacionada>);
+		</PorCadaRelacion>
+		bLiberarRelaciones := true;
+	end;
+	Result := ObtenerMuchos(nil, nil, nil, Relacion);
+	if (bLiberarRelaciones) then
+		FreeAndNil(Relacion);
+end;
+
+function T<NombreListaEntidad>.ObtenerMuchos( Filtro: TExpresionCondicion;
+                            Orden: TExpresionOrdenamiento;
+                            Agrupamiento: TExpresionAgrupamiento;
+                            Relaciones: TExpresionRelacion;
+                            FiltroHaving: TExpresionCondicion;
+                            const CantFilas: integer; const TamPagina: integer;
+                            const NroPagina: integer; const SinDuplicados: boolean): integer;
+var
+	nRel : integer;
+	bLiberarRelaciones: boolean;
+begin
+	bLiberarRelaciones := false;
+	if not assigned(Relaciones) then 
+	begin
+		nRel := <TotalEntidades>; 
+		if nRel > 1 then
+		begin
+			Relaciones := TExpresionRelacion.Create;
+			<PorCadaRelacion>
+			Relaciones.Agregar(TRelacion<NombreEntidad>.<NombreEntidadRelacionada>);
+			</PorCadaRelacion>
+			bLiberarRelaciones := true;
+		end;
+	end;
+	Result := inherited ObtenerMuchos(	Filtro, Orden, Agrupamiento, Relaciones, FiltroHaving,
+		   	  						   	CantFilas, TamPagina, NroPagina, SinDuplicados);
+	if (bLiberarRelaciones) then
+		FreeAndNil(Relaciones);
+end;
+
+function T<NombreListaEntidad>.GetFila(index: integer): TFila<NombreListaEntidad>;
+begin
+	Result := Items[index] as TFila<NombreListaEntidad>;
+end;
+
+procedure T<NombreListaEntidad>.ProcesarDataSet;
+var
+	unaEntidad: TFila<NombreListaEntidad>;
+	<BlobType>stream: TStream;</BlobType>
+begin
+	with FSelectStatement do
+	begin
+		if not Datos.Active then
+			Datos.Active := true;
+		Datos.First;
+		while not Datos.Eof  do
+		begin
+			unaEntidad := TFila<NombreListaEntidad>.Create(self);
+			<PorCadaCampo>
+			<IfBlobBinary>
+			stream := Datos.CreateBlobStream(Datos.Fields[TIndice<NombreListaEntidad>.<AliasCampo>],bmRead);
+			unaEntidad.<AliasCampo>.LoadFromStream(stream);
+			FreeAndNil(stream);
+			<ElseBlobBinary>
+			if (Datos.Fields[TIndice<NombreListaEntidad>.<AliasCampo>].IsNull) then
+			    unaEntidad.Campos[TIndice<NombreListaEntidad>.<AliasCampo>].EsNulo := true
+			else
+				unaEntidad.<AliasCampo> := Datos.Fields[TIndice<NombreListaEntidad>.<AliasCampo>].<AsKeyWord>;
+			</IfBlobBinary>
+			</PorCadaCampo>
+			unaEntidad.Campos.FueronCambiados := false;
+			Datos.Next;
+		end;
+	end;
+end;
+
+{TColeccion<NombreListaEntidad>Enumerador}
+constructor T<NombreListaEntidad>.T<NombreListaEntidad>Enumerador.Create(Coleccion: T<NombreListaEntidad>);
+begin
+	nEntidad := -1;
+	FColeccion := Coleccion;
+end;
+
+function T<NombreListaEntidad>.T<NombreListaEntidad>Enumerador.GetCurrent: TFila<NombreListaEntidad>;
+begin
+	Result := FColeccion[nEntidad];
+end;
+
+function T<NombreListaEntidad>.T<NombreListaEntidad>Enumerador.MoveNext: boolean;
+begin
+	Result := nEntidad < (FColeccion.Count - 1);
+	if Result then
+		Inc(nEntidad);
+end;
+</PorCadaListaEntidad>
+</PorCadaLista>
+
+<PorCadaEntidad>
+<PorCadaCampo>
+class function TFabricaCampo<NombreEntidad>.<NombreCampo>: TCampo;
+begin
+	Result := TCampo.Create('<NombreEntidad>','<NombreCampo>', '<TieneGenerador>','','',TIndice<NombreEntidad>.<NombreCampo>, <LongitudCampo>,  <bTieneGenerador>, <bEsClavePrimaria>,<bEsClaveForanea>, <bAceptaNull>, <tdTipoCampo>, faNinguna,<TipoORM>); 
+end;
+</PorCadaCampo>
+</PorCadaEntidad>
+
+
+initialization
+	SQLConnectionGenerator := TSQLConnectionGenerator.Create;
+	SingleConnection := nil;
+finalization
+	FreeAndNil(SQLConnectionGenerator);
+	if assigned(SingleConnection) then FreeAndNil(SingleConnection);
+
+End.

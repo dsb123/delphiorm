@@ -31,6 +31,7 @@ type
     function Connect: Boolean;
     function Disconnect: Boolean;
     function GetTablesInfo: TColeccionTabla;
+    function GetGeneratorsInfo: TColeccionGenerador;
   end;
 
 var

@@ -55,6 +55,7 @@ type
   private
     { Private declarations }
     unFormActivo: TFormGenerico;
+    Generadores: TColeccionGenerador;
     Tablas: TColeccionTabla;
     Listas: TColeccionListaTabla;
     sNombreArchivo: string;
@@ -118,6 +119,7 @@ var
   XMLDoc       : TXMLDocument;
 
   nTabla       : integer;
+  nGenerador   : integer;
   nLista       : integer;
   nCampo       : integer;
   nCampoFK     : integer;
@@ -148,8 +150,20 @@ begin
     try
       ConvertirTipo := GetProcAddress(phm,'ConvertirTipo');
       if Assigned(ConvertirTipo) then begin
+        Generadores.Clear;
         Tablas.Clear;
         Listas.Clear;
+
+        with ORMEntidades.Generadores do
+        begin
+          for nGenerador := 0 to Count - 1 do
+          begin
+            with TGenerador.Create(Generadores) do
+            begin
+              Nombre := Generador[nGenerador].Nombre;
+            end;
+          end;
+        end;
 
         with ORMEntidades.Entidades do
         begin
@@ -157,9 +171,10 @@ begin
           begin
             with TTabla.Create(Tablas) do
             begin
-              Nombre        := Entidad[nTabla].Nombre;
-              Alias         := Entidad[nTabla].Alias;
-              TieneGenerador:= Entidad[nTabla].TieneGenerador;
+              Nombre          := Entidad[nTabla].Nombre;
+              Alias           := Entidad[nTabla].Alias;
+              NombreGenerador := Entidad[nTabla].NombreGenerador;
+              TieneGenerador  := Entidad[nTabla].TieneGenerador;
               for nCampo := 0 to Entidad[nTabla].Campos.Count - 1 do
               begin
                 unCampo := TCampo.Create(Campos);
@@ -293,9 +308,10 @@ begin
   if Assigned(unFormActivo) then
   begin
     sStringConexion := unFormActivo.StringConexion;
-    sDriver := unFormActivo.Driver;
-    Tablas := unFormActivo.ColeccionTablas;
-    Listas := unFormActivo.ColeccionListas;    
+    sDriver         := unFormActivo.Driver;
+    Tablas          := unFormActivo.ColeccionTablas;
+    Generadores     := unFormActivo.ColeccionGeneradores;
+    Listas          := unFormActivo.ColeccionListas;
   end;
 end;
 
@@ -311,8 +327,10 @@ begin
     ParentWindow := jvxpcntnrContainer.Handle;
     Align := alClient;
     SetTopColor(clBtnShadow,clBtnFace);
-    ColeccionTablas   := Tablas;
-    ColeccionListas   := Listas;
+    ColeccionTablas       := Tablas;
+    ColeccionListas       := Listas;
+    ColeccionGeneradores  := Generadores;
+
     StringConexion    := sStringConexion;
     Driver            := sDriver;
     CambioDatosMapeo  := Self.CambioDatosMapeo;
@@ -331,6 +349,7 @@ end;
 
 procedure TFrmMain.Cerrar1Click(Sender: TObject);
 begin
+  Generadores.Clear;
   Tablas.Clear;
   Listas.Clear;
   sDriver := '';
@@ -347,8 +366,9 @@ procedure TFrmMain.FormCreate(Sender: TObject);
 begin
   ReportMemoryLeaksOnShutdown := DebugHook <> 0;
 
-  Tablas := TColeccionTabla.Create;
-  Listas := TColeccionListaTabla.Create;
+  Tablas      := TColeccionTabla.Create;
+  Listas      := TColeccionListaTabla.Create;
+  Generadores := TColeccionGenerador.Create;
 
   if ParamCount > 0 then
     AbrirArchivo(ParamStr(1));
@@ -358,6 +378,7 @@ end;
 
 procedure TFrmMain.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(Generadores);
   FreeAndNil(Tablas);
   FreeAndNil(Listas);
 end;
@@ -388,6 +409,7 @@ var
 
   nLista        : integer;
   nTabla        : integer;
+  nGenerador    : integer;
   nRelacion     : integer;
   nCampo        : integer;
   nCampoRelacion: integer;
@@ -395,8 +417,15 @@ var
 begin
   XMLDoc       := TXMLDocument.Create(nil);
   ORMEntidades := GetORMEntidades(xmldoc);
-  ORMEntidades.Driver := sDriver;
-  ORMEntidades.StringConexion := sStringConexion;
+  ORMEntidades.Driver               := sDriver;
+  ORMEntidades.StringConexion       := sStringConexion;
+
+  for nGenerador := 0 to Generadores.Count - 1 do
+  begin
+    ORMEntidades.Generadores.Add;
+    ORMEntidades.Generadores.Generador[nGenerador].Nombre := Generadores.Generador[nGenerador].Nombre
+  end;
+
   for nTabla := 0 to Tablas.Count - 1 do
   begin
     ORMEntidades.Entidades.Add;
@@ -406,6 +435,8 @@ begin
     begin
       Nombre          := unaTabla.Nombre;
       TieneGenerador  := unaTabla.TieneGenerador;
+      NombreGenerador := unaTabla.NombreGenerador;
+
       for nCampo := 0 to unaTabla.Campos.Count - 1 do
       begin
         Campos.Add;

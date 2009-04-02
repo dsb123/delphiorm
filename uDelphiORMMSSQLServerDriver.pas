@@ -48,6 +48,7 @@ type
     function Connect: Boolean;
     function Disconnect: Boolean;
     function GetTablesInfo: TColeccionTabla;
+    function GetGeneratorsInfo: TColeccionGenerador;
   end;
 
   TDatosTabla=class
@@ -161,6 +162,11 @@ begin
     Result := Result + 'True'
   else
     Result := Result + 'False';
+end;
+
+function TORMDriverManager.GetGeneratorsInfo: TColeccionGenerador;
+begin
+  Result := TColeccionGenerador.Create;
 end;
 
 function TORMDriverManager.GetModule: THandle;

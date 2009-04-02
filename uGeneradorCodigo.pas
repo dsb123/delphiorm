@@ -310,7 +310,7 @@ begin
 
     if  (EntidadActiva.TieneGenerador) and
         (EntidadActiva.Campos.Campo[i].EsClavePrimaria) then begin
-      sVarAux := StringReplace(sVarAux, '<TieneGenerador>',   EntidadActiva.Nombre, [rfReplaceAll]);
+      sVarAux := StringReplace(sVarAux, '<TieneGenerador>',   EntidadActiva.NombreGenerador, [rfReplaceAll]);
       sVarAux := StringReplace(sVarAux, '<bTieneGenerador>',  'True', [rfReplaceAll]);
     end
     else
@@ -695,6 +695,7 @@ begin
 
     sVarAux := StringReplace(sVarAux, '<IndiceEntidad>', IntToStr(nTabla), [rfReplaceAll]);
     sVarAux := StringReplace(sVarAux, '<NombreEntidad>', Tablas.Tabla[nTabla].Nombre, [rfReplaceAll]);
+    sVarAux := StringReplace(sVarAux, '<NombreGenerador>', Tablas.Tabla[nTabla].NombreGenerador, [rfReplaceAll]);
     if nTabla < (Tablas.Count - 1) then
     begin
       sVarAux := StringReplace(sVarAux, '</ComaParaEnum>', ',', [rfReplaceAll]);
