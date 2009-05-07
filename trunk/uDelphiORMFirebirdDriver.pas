@@ -117,7 +117,17 @@ begin
     unCampo.TipoORM := 'tdfloat';
     unCampo.AsKeyWord := 'AsFloat';
   end
-  else if ((sTipo = 'TIMESTAMP') or (sTipo = 'DATE') or (sTipo = 'TIME')) then begin
+  else if (sTipo = 'TIMESTAMP') then begin
+    unCampo.TipoVariable := 'TDateTime';
+    unCampo.TipoORM := 'tdTimeStamp';
+    unCampo.AsKeyWord := 'AsDateTime';
+  end
+  else if (sTipo = 'DATE') then begin
+    unCampo.TipoVariable := 'TDateTime';
+    unCampo.TipoORM := 'tdDate';
+    unCampo.AsKeyWord := 'AsDateTime';
+  end
+  else if (sTipo = 'TIME') then begin
     unCampo.TipoVariable := 'TDateTime';
     unCampo.TipoORM := 'tdTime';
     unCampo.AsKeyWord := 'AsDateTime';
