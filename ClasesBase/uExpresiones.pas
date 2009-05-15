@@ -23,7 +23,7 @@ uses Contnrs, Classes, uCampos;
 
 type
   { TCamposRelacion }
-  TCamposRelacion = class
+  TORMCamposRelacion = class
   private
     FTabla: string;
     FCampos: TStringList;
@@ -32,87 +32,87 @@ type
   public
     constructor Create(const Tabla: string; Campos: TStringList);
     destructor Destroy; override;
-    function Clonar: TCamposRelacion;
+    function Clonar: TORMCamposRelacion;
     property Tabla: string read FTabla;
     property CantCampos: integer read GetCantCampos;
     property Campo[index: integer]: string read GetCampo;
   end;
 
   { Clases para el manejo de relaciones }
-  TTipoRelacion=(trAmbas, trIzquierda, tdDerecha);
+  TORMTipoRelacion=(trAmbas, trIzquierda, tdDerecha);
   TCampoDef = record
     Tabla : string;
     Campo : string;
   end;
 
-  TRelacionDefSimple = record
+  TORMRelacionDefSimple = record
     CampoPrimario: TCampoDef;
     CampoForaneo: TCampoDef;
-    TipoRelacion: TTipoRelacion;
+    TipoRelacion: TORMTipoRelacion;
   end;
 
-  TRelacion = class
+  TORMRelacion = class
   private
-    FCamposPrimario  : TCamposRelacion;
-    FCamposForaneo   : TCamposRelacion;
-    FTipoRelacion   : TTipoRelacion;
+    FCamposPrimario  : TORMCamposRelacion;
+    FCamposForaneo   : TORMCamposRelacion;
+    FTipoRelacion    : TORMTipoRelacion;
   public
     constructor Create( const TablaPrimaria, CampoPrimario, TablaForanea,CampoForaneo: string;
-                        const TipoRelacion: TTipoRelacion); overload;
-    constructor Create( const Relacion: TRelacionDefSimple); overload;
-    constructor Create( CampoPrimario, CampoForaneo: TCampo;
-                        const TipoRelacion: TTipoRelacion); overload;
-    constructor Create( CamposPrimarios: TCamposRelacion; CamposForaneos: TCamposRelacion;
-                        const TipoRelacion: TTipoRelacion); overload;
+                        const TipoRelacion: TORMTipoRelacion); overload;
+    constructor Create( const Relacion: TORMRelacionDefSimple); overload;
+    constructor Create( CampoPrimario, CampoForaneo: TORMCampo;
+                        const TipoRelacion: TORMTipoRelacion); overload;
+    constructor Create( CamposPrimarios: TORMCamposRelacion; CamposForaneos: TORMCamposRelacion;
+                        const TipoRelacion: TORMTipoRelacion); overload;
     destructor Destroy; override;
-    function Clonar: TRelacion;
-    function ObtenerDefinicion: TRelacionDefSimple;
-    property CamposPrimario: TCamposRelacion read FCamposPrimario;
-    property CamposForaneo: TCamposRelacion read FCamposForaneo;
-    property TipoRelacion: TTipoRelacion read FTipoRelacion;
+    function Clonar: TORMRelacion;
+    function ObtenerDefinicion: TORMRelacionDefSimple;
+    property CamposPrimario: TORMCamposRelacion read FCamposPrimario;
+    property CamposForaneo: TORMCamposRelacion read FCamposForaneo;
+    property TipoRelacion: TORMTipoRelacion read FTipoRelacion;
   end;
 
   TExpresionRelacion = class(TObjectList)
   private
-    function GetRelacion(index: integer): TRelacion;
-    procedure SetRelacion(index: integer; const Value: TRelacion);
+    function GetRelacion(index: integer): TORMRelacion;
+    procedure SetRelacion(index: integer; const Value: TORMRelacion);
   public
     Tag: integer;
     constructor Create(const TablaPrimaria, CampoPrimario, TablaForanea,CampoForaneo: string;
-                        const TipoRelacion: TTipoRelacion); overload;
-    constructor Create(const Relacion: TRelacionDefSimple); overload;
+                        const TipoRelacion: TORMTipoRelacion); overload;
+    constructor Create(const Relacion: TORMRelacionDefSimple); overload;
     destructor Destroy; override;
-    property Relacion[index: integer]: TRelacion read GetRelacion write SetRelacion;
+    property Relacion[index: integer]: TORMRelacion read GetRelacion write SetRelacion;
     function Agregar( const TablaPrimaria, CampoPrimario, TablaForanea,CampoForaneo: string;
-                      const TipoRelacion: TTipoRelacion): integer; overload;
-    function Agregar(Relacion: TRelacion): integer; overload;
+                      const TipoRelacion: TORMTipoRelacion): integer; overload;
+    function Agregar(Relacion: TORMRelacion): integer; overload;
     function Clonar: TExpresionRelacion;
   end;
 
   { Clase para el manejo de agrupamientos }
   TExpresionAgrupamiento = class(TObjectList)
   private
-    function GetAgrupamiento(index: integer): TCampo;
-    procedure SetAgrupamiento(index: integer; const Value: TCampo);
+    function GetAgrupamiento(index: integer): TORMCampo;
+    procedure SetAgrupamiento(index: integer; const Value: TORMCampo);
   public
     Tag: integer;
     constructor Create; overload;
     destructor Destroy; override;
-    property Agrupamiento[index: integer]: TCampo read GetAgrupamiento write SetAgrupamiento;
-    function Agregar(Campo: TCampo): integer;
+    property Agrupamiento[index: integer]: TORMCampo read GetAgrupamiento write SetAgrupamiento;
+    function Agregar(Campo: TORMCampo): integer;
   end;
 
   { Clases para el manejo de ordenamientos }
-  TTipoOrden = (toAscendente, toDescendente);
+  TORMTipoOrden = (toAscendente, toDescendente);
   TOrdenamiento = class
   private
-    FCampo : TCampo;
-    FTipoOrden : TTipoOrden;
+    FCampo : TORMCampo;
+    FTipoOrden : TORMTipoOrden;
   public
-    constructor Create(Campo: TCampo; const TipoOrden: TTipoOrden);
+    constructor Create(Campo: TORMCampo; const TipoOrden: TORMTipoOrden);
     destructor Destroy; override;
-    property Campo: TCampo read FCampo;
-    property TipoOrden: TTipoOrden read FTipoOrden;
+    property Campo: TORMCampo read FCampo;
+    property TipoOrden: TORMTipoOrden read FTipoOrden;
   end;
 
   TExpresionOrdenamiento = Class(TObjectList)
@@ -123,7 +123,7 @@ type
     constructor Create;
     destructor Destroy; override;
     property Ordenamiento[index: integer]: TOrdenamiento read GetOrdenamiento write SetOrdenamiento;
-    function Agregar(Campo: TCampo; const TipoOrden: TTipoOrden): integer;
+    function Agregar(Campo: TORMCampo; const TipoOrden: TORMTipoOrden): integer;
   End;
 
   { Clases para el manejo de condiciones }
@@ -161,21 +161,21 @@ type
     property Count: integer read GetCount;
   end;
 
-  TTipoComparacion = (tcIgual, tcDistinto, tcMenor, tcMenorIgual, tcMayor, tcMayorIgual);
+  TORMTipoComparacion = (tcIgual, tcDistinto, tcMenor, tcMenorIgual, tcMayor, tcMayorIgual);
   TCondicionComparacion = class(TCondicion)
   private
-    FCampo : TCampo;
-    FTipoComparacion : TTipoComparacion;
+    FCampo : TORMCampo;
+    FTipoComparacion : TORMTipoComparacion;
     FValor : variant;
   public
-    constructor Create(Campo: TCampo; const TipoComparacion: TTipoComparacion; const Valor: variant);
+    constructor Create(Campo: TORMCampo; const TipoComparacion: TORMTipoComparacion; const Valor: variant);
     destructor Destroy; override;
-    property Campo: TCampo read FCampo;
-    property TipoComparacion: TTipoComparacion read FTipoComparacion;
+    property Campo: TORMCampo read FCampo;
+    property TipoComparacion: TORMTipoComparacion read FTipoComparacion;
     property Valor: variant read FValor;
   end;
 
-  TItemInclusion=class(TObject)
+  TORMItemInclusion=class(TObject)
   private
     FValor : variant;
   public
@@ -192,52 +192,52 @@ type
 
   TCondicionInclusion = class(TCondicion)
   private
-    FCampo: TCampo;
+    FCampo: TORMCampo;
     FLista: TColeccionInclusion;
   public
-    constructor Create(Campo: TCampo; Lista: TColeccionInclusion);
+    constructor Create(Campo: TORMCampo; Lista: TColeccionInclusion);
     destructor Destroy; override;
-    property Campo: TCampo read FCampo;
+    property Campo: TORMCampo read FCampo;
     property Lista: TColeccionInclusion read FLista ;
   end;
 
   TCondicionLike = class(TCondicion)
   private
-    FCampo: TCampo;
+    FCampo: TORMCampo;
     FCadenaABuscar: string;
   public
-    constructor Create(unCampo: TCampo; CadenaABuscar: string);
+    constructor Create(unCampo: TORMCampo; CadenaABuscar: string);
     destructor Destroy; override;
-    property Campo: TCampo read FCampo;
+    property Campo: TORMCampo read FCampo;
     property CadenaABuscar: string read FCadenaABuscar;
   end;
 
   TCondicionNull = class(TCondicion)
   private
-    FCampo : TCampo;
+    FCampo : TORMCampo;
   public
-    constructor Create( Campo: TCampo);
+    constructor Create( Campo: TORMCampo);
     destructor Destroy; override;
-    property Campo: TCampo read FCampo;
+    property Campo: TORMCampo read FCampo;
   end;
 
   TCondicionSeleccion = class(TCondicion)
   private
-    FCampoSeleccion     : TCampo;
-    FCampoInclusion     : TCampo;
+    FCampoSeleccion     : TORMCampo;
+    FCampoInclusion     : TORMCampo;
     FCondicion          : TExpresionCondicion;
     FRelaciones         : TExpresionRelacion;
     FAgrupamiento       : TExpresionAgrupamiento;
     FFiltroHaving       : TExpresionCondicion;
     FSinDuplicados      : boolean;
   public
-    constructor Create( CampoSeleccion, CampoInclusion: TCampo;
+    constructor Create( CampoSeleccion, CampoInclusion: TORMCampo;
                         Condicion: TExpresionCondicion; Relaciones: TExpresionRelacion;
                         Agrupamiento: TExpresionAgrupamiento; FiltroHaving: TExpresionCondicion;
                         const SinDuplicados: boolean);
     destructor Destroy; override;
-    property CampoSeleccion: TCampo read FCampoSeleccion;
-    property CampoInclusion: TCampo read FCampoInclusion;
+    property CampoSeleccion: TORMCampo read FCampoSeleccion;
+    property CampoInclusion: TORMCampo read FCampoInclusion;
     property Condicion: TExpresionCondicion read FCondicion;
     property Relaciones: TExpresionRelacion read FRelaciones;
     property Agrupamiento: TExpresionAgrupamiento read FAgrupamiento;
@@ -245,7 +245,7 @@ type
     property SinDuplicados: boolean read FSinDuplicados;
   end;
 
-  TGenerador = class
+  TORMGenerador = class
   public
     IndiceParametro: integer;
     Generador: string;
@@ -253,12 +253,12 @@ type
     constructor Create(const nParametro: integer; nCampo: integer; const SQLGenerador: string);
   end;
 
-  TColeccionGenerador = Class(TObjectList)
-    function GetGenerador(index: integer): TGenerador;
-    procedure SetGenerador(index: integer; const Value: TGenerador);
+  TORMColeccionGenerador = Class(TObjectList)
+    function GetGenerador(index: integer): TORMGenerador;
+    procedure SetGenerador(index: integer; const Value: TORMGenerador);
   public
-    property Generador[index: integer]: TGenerador read GetGenerador write SetGenerador;
-    function Agregar(Valor: TGenerador): integer;
+    property Generador[index: integer]: TORMGenerador read GetGenerador write SetGenerador;
+    function Agregar(Valor: TORMGenerador): integer;
   End;
 
 implementation
@@ -267,7 +267,7 @@ uses SysUtils;
 
 { TOrdenamiento }
 
-constructor TOrdenamiento.Create(Campo: TCampo; const TipoOrden: TTipoOrden);
+constructor TOrdenamiento.Create(Campo: TORMCampo; const TipoOrden: TORMTipoOrden);
 begin
   FCampo := Campo;
   FTipoOrden := TipoOrden;
@@ -282,7 +282,7 @@ end;
 
 { TExpresionOrdenamiento }
 
-function TExpresionOrdenamiento.Agregar(Campo: TCampo; const TipoOrden: TTipoOrden): integer;
+function TExpresionOrdenamiento.Agregar(Campo: TORMCampo; const TipoOrden: TORMTipoOrden): integer;
 begin
   Result := Add(TOrdenamiento.Create(Campo, TipoOrden));
 end;
@@ -310,7 +310,7 @@ end;
 
 { TExpresionAgrupamiento }
 
-function TExpresionAgrupamiento.Agregar(Campo: TCampo): integer;
+function TExpresionAgrupamiento.Agregar(Campo: TORMCampo): integer;
 begin
   Result := Add(Campo);
 end;
@@ -330,69 +330,69 @@ begin
   inherited;
 end;
 
-function TExpresionAgrupamiento.GetAgrupamiento(index: integer): TCampo;
+function TExpresionAgrupamiento.GetAgrupamiento(index: integer): TORMCampo;
 begin
-  result := Items[index] as TCampo;
+  result := Items[index] as TORMCampo;
 end;
 
 procedure TExpresionAgrupamiento.SetAgrupamiento(index: integer;
-  const Value: TCampo);
+  const Value: TORMCampo);
 begin
   Items[index] := Value;
 end;
 
-constructor TRelacion.Create(const TablaPrimaria, CampoPrimario,
-  TablaForanea, CampoForaneo: string; const TipoRelacion: TTipoRelacion);
+constructor TORMRelacion.Create(const TablaPrimaria, CampoPrimario,
+  TablaForanea, CampoForaneo: string; const TipoRelacion: TORMTipoRelacion);
 var
   sCampos : TStringList;
 begin
   sCampos := TStringList.Create;
 
   sCampos.Add(CampoPrimario);
-  FCamposPrimario := TCamposRelacion.Create(TablaPrimaria, sCampos);
+  FCamposPrimario := TORMCamposRelacion.Create(TablaPrimaria, sCampos);
   sCampos.Clear;
 
   sCampos.Add(CampoForaneo);
-  FCamposForaneo := TCamposRelacion.Create(TablaForanea, sCampos);
+  FCamposForaneo := TORMCamposRelacion.Create(TablaForanea, sCampos);
   sCampos.Free;
 
   FTipoRelacion := TipoRelacion;
 end;
 
-constructor TRelacion.Create( CamposPrimarios, CamposForaneos: TCamposRelacion;
-                              const TipoRelacion: TTipoRelacion);
+constructor TORMRelacion.Create( CamposPrimarios, CamposForaneos: TORMCamposRelacion;
+                              const TipoRelacion: TORMTipoRelacion);
 begin
   FCamposPrimario := CamposPrimarios.Clonar;
   FCamposForaneo := CamposForaneos.Clonar;
 end;
 
-function TRelacion.Clonar: TRelacion;
+function TORMRelacion.Clonar: TORMRelacion;
 begin
-  Result := TRelacion.Create( FCamposPrimario, FCamposForaneo, FTipoRelacion);
+  Result := TORMRelacion.Create( FCamposPrimario, FCamposForaneo, FTipoRelacion);
 end;
 
-constructor TRelacion.Create(CampoPrimario, CampoForaneo: TCampo;
-  const TipoRelacion: TTipoRelacion);
+constructor TORMRelacion.Create(CampoPrimario, CampoForaneo: TORMCampo;
+  const TipoRelacion: TORMTipoRelacion);
 begin
   Create( CampoPrimario.Tabla, CampoPrimario.Nombre,
           CampoForaneo.Tabla, CampoForaneo.Nombre, TipoRelacion);
 end;
 
-constructor TRelacion.Create(const Relacion: TRelacionDefSimple);
+constructor TORMRelacion.Create(const Relacion: TORMRelacionDefSimple);
 begin
   Create( Relacion.CampoPrimario.Tabla, Relacion.CampoPrimario.Campo,
           Relacion.CampoForaneo.Tabla, Relacion.CampoForaneo.Campo,
           Relacion.TipoRelacion);
 end;
 
-destructor TRelacion.Destroy;
+destructor TORMRelacion.Destroy;
 begin
   FCamposPrimario.Free;
   FCamposForaneo.Free;
   inherited;
 end;
 
-function TRelacion.ObtenerDefinicion: TRelacionDefSimple;
+function TORMRelacion.ObtenerDefinicion: TORMRelacionDefSimple;
 begin
   Result.CampoPrimario.Tabla := FCamposPrimario.Tabla;
   Result.CampoPrimario.Campo := FCamposPrimario.Campo[0];
@@ -404,12 +404,12 @@ end;
 { TExpresionRelacion }
 
 function TExpresionRelacion.Agregar(const TablaPrimaria, CampoPrimario, TablaForanea,
-  CampoForaneo: string; const TipoRelacion: TTipoRelacion): integer;
+  CampoForaneo: string; const TipoRelacion: TORMTipoRelacion): integer;
 begin
-  Result := Add(TRelacion.Create(TablaPrimaria, CampoPrimario, TablaForanea, CampoForaneo, TipoRelacion));
+  Result := Add(TORMRelacion.Create(TablaPrimaria, CampoPrimario, TablaForanea, CampoForaneo, TipoRelacion));
 end;
 
-function TExpresionRelacion.Agregar(Relacion: TRelacion): integer;
+function TExpresionRelacion.Agregar(Relacion: TORMRelacion): integer;
 begin
   Result := Add(Relacion);
 end;
@@ -424,7 +424,7 @@ begin
 
 end;
 
-constructor TExpresionRelacion.Create(const Relacion: TRelacionDefSimple);
+constructor TExpresionRelacion.Create(const Relacion: TORMRelacionDefSimple);
 begin
   Create( Relacion.CampoPrimario.Tabla, Relacion.CampoPrimario.Campo,
           Relacion.CampoForaneo.Tabla, Relacion.CampoForaneo.Campo,
@@ -442,19 +442,19 @@ begin
 end;
 
 constructor TExpresionRelacion.Create(const TablaPrimaria, CampoPrimario,
-  TablaForanea, CampoForaneo: string; const TipoRelacion: TTipoRelacion);
+  TablaForanea, CampoForaneo: string; const TipoRelacion: TORMTipoRelacion);
 begin
   inherited Create(true);
   Agregar(TablaPrimaria, CampoPrimario, TablaForanea, CampoForaneo, TipoRelacion);
 end;
 
-function TExpresionRelacion.GetRelacion(index: integer): TRelacion;
+function TExpresionRelacion.GetRelacion(index: integer): TORMRelacion;
 begin
-  result := Items[index] as TRelacion;
+  result := Items[index] as TORMRelacion;
 end;
 
 procedure TExpresionRelacion.SetRelacion(index: integer;
-  const Value: TRelacion);
+  const Value: TORMRelacion);
 begin
   Items[index] := Value;
 end;
@@ -530,8 +530,8 @@ end;
 
 { TCondicionComparacion }
 
-constructor TCondicionComparacion.Create(Campo: TCampo;
-  const TipoComparacion: TTipoComparacion; const Valor: variant);
+constructor TCondicionComparacion.Create(Campo: TORMCampo;
+  const TipoComparacion: TORMTipoComparacion; const Valor: variant);
 begin
   FCampo := Campo;
 
@@ -549,7 +549,7 @@ end;
 
 { TItemInclusion }
 
-constructor TItemInclusion.Create(const Valor: variant);
+constructor TORMItemInclusion.Create(const Valor: variant);
 begin
   FValor := Valor;
 end;
@@ -558,23 +558,23 @@ end;
 
 function TColeccionInclusion.Agregar(const Valor: variant): integer;
 begin
-  Result := Add(TItemInclusion.Create(Valor));
+  Result := Add(TORMItemInclusion.Create(Valor));
 end;
 
 function TColeccionInclusion.GetItemInclusion(index: integer): variant;
 begin
-  Result := (Items[index] as TItemInclusion).FValor;
+  Result := (Items[index] as TORMItemInclusion).FValor;
 end;
 
 procedure TColeccionInclusion.SetItemInclusion(index: integer;
   const Value: variant);
 begin
-  (Items[index] as TItemInclusion).FValor := value;
+  (Items[index] as TORMItemInclusion).FValor := value;
 end;
 
 { TCondicionInclusion }
 
-constructor TCondicionInclusion.Create(Campo: TCampo; Lista: TColeccionInclusion);
+constructor TCondicionInclusion.Create(Campo: TORMCampo; Lista: TColeccionInclusion);
 begin
   FCampo := Campo;
   FLista  := Lista;
@@ -590,7 +590,7 @@ end;
 
 { TCondicionLike }
 
-constructor TCondicionLike.Create(unCampo: TCampo; CadenaABuscar: string);
+constructor TCondicionLike.Create(unCampo: TORMCampo; CadenaABuscar: string);
 begin
   FCampo := unCampo;
   FCadenaABuscar := CadenaABuscar;
@@ -606,7 +606,7 @@ end;
 
 { TCondicionNull }
 
-constructor TCondicionNull.Create(Campo: TCampo);
+constructor TCondicionNull.Create(Campo: TORMCampo);
 begin
   FCampo := Campo;
 end;
@@ -621,7 +621,7 @@ end;
 { TCondicionSeleccion }
 
 constructor TCondicionSeleccion.Create(CampoSeleccion,
-  CampoInclusion: TCampo; Condicion: TExpresionCondicion;
+  CampoInclusion: TORMCampo; Condicion: TExpresionCondicion;
   Relaciones: TExpresionRelacion; Agrupamiento: TExpresionAgrupamiento;
   FiltroHaving: TExpresionCondicion; const SinDuplicados: boolean);
 begin
@@ -650,25 +650,25 @@ end;
 
 { TColeccionGenerador }
 
-function TColeccionGenerador.Agregar(Valor: TGenerador): integer;
+function TORMColeccionGenerador.Agregar(Valor: TORMGenerador): integer;
 begin
   Result := Add(Valor);
 end;
 
-function TColeccionGenerador.GetGenerador(index: integer): TGenerador;
+function TORMColeccionGenerador.GetGenerador(index: integer): TORMGenerador;
 begin
-  Result := Items[index] as TGenerador;
+  Result := Items[index] as TORMGenerador;
 end;
 
-procedure TColeccionGenerador.SetGenerador(index: integer;
-  const Value: TGenerador);
+procedure TORMColeccionGenerador.SetGenerador(index: integer;
+  const Value: TORMGenerador);
 begin
   Items[index] := Value;
 end;
 
 { TGenerador }
 
-constructor TGenerador.Create(const nParametro: Integer; nCampo: Integer; const SQLGenerador: string);
+constructor TORMGenerador.Create(const nParametro: Integer; nCampo: Integer; const SQLGenerador: string);
 begin
   IndiceParametro := nParametro;
   Generador := SQLGenerador;
@@ -677,25 +677,25 @@ end;
 
 { TCamposRelacion }
 
-function TCamposRelacion.Clonar: TCamposRelacion;
+function TORMCamposRelacion.Clonar: TORMCamposRelacion;
 begin
-  Result := TCamposRelacion.Create(FTabla, FCampos);
+  Result := TORMCamposRelacion.Create(FTabla, FCampos);
 end;
 
-constructor TCamposRelacion.Create(const Tabla: string; Campos: TStringList);
+constructor TORMCamposRelacion.Create(const Tabla: string; Campos: TStringList);
 begin
   FCampos := TStringList.Create;
   FCampos.AddStrings(Campos);
   FTabla := Tabla;
 end;
 
-destructor TCamposRelacion.Destroy;
+destructor TORMCamposRelacion.Destroy;
 begin
   FCampos.Free;
   inherited;
 end;
 
-function TCamposRelacion.GetCampo(index: integer): string;
+function TORMCamposRelacion.GetCampo(index: integer): string;
 begin
   if index < FCampos.Count then
     Result := FCampos[index]
@@ -703,7 +703,7 @@ begin
     Result := '';
 end;
 
-function TCamposRelacion.GetCantCampos: integer;
+function TORMCamposRelacion.GetCantCampos: integer;
 begin
   Result := FCampos.Count;
 end;

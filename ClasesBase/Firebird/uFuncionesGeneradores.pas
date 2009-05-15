@@ -23,7 +23,7 @@ uses uCampos;
 
 function NombreCampo(const Tabla, Campo: string): string;
 function NombreTabla(const Tabla: string): string;
-function FuncionAgregacion(funcionAgregacion: TFuncionAgregacion; const Tabla, Campo: string): string;
+function FuncionAgregacion(funcionAgregacion: TORMFuncionAgregacion; const Tabla, Campo: string): string;
 
 
 implementation
@@ -41,7 +41,7 @@ begin
   Result := '"' + Tabla + '"';
 end;
 
-function FuncionAgregacion(funcionAgregacion: TFuncionAgregacion; const Tabla, Campo: string): string;
+function FuncionAgregacion(funcionAgregacion: TORMFuncionAgregacion; const Tabla, Campo: string): string;
 begin
   case funcionAgregacion of
     faCantidad: Result := 'COUNT (' + NombreCampo(Tabla, Campo) + ')';

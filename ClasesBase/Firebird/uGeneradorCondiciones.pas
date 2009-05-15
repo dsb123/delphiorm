@@ -33,7 +33,7 @@ type
     function CondicionLikeString(Condicion: TCondicionLike): string;
     function CondicionNullString(Condicion: TCondicionNull): string;
     function CondicionSeleccionString(Condicion: TCondicionSeleccion): string;
-    function AgregarParametro(TipoParametro: TTipoDato; valor: variant): string;
+    function AgregarParametro(TipoParametro: TORMTipoDato; valor: variant): string;
   public
     Constructor Create(unaCondicion: TExpresionCondicion; Parametros: TParams; EsClausulaHaving: boolean=false);
     function ObtenerStringCondicion: string;
@@ -101,7 +101,7 @@ begin
   end;
 end;
 
-function TGenCondicionSQL.AgregarParametro(TipoParametro: TTipoDato;
+function TGenCondicionSQL.AgregarParametro(TipoParametro: TORMTipoDato;
   valor: variant): string;
 var
   Parametro : TParam;
@@ -194,10 +194,10 @@ end;
 function TGenCondicionSQL.CondicionSeleccionString(
   Condicion: TCondicionSeleccion): string;
 var
-  ColeccionCampos : TColeccionCampos;
+  ColeccionCampos : TORMColeccionCampos;
   Select : TSelectStatement;
 begin
-  ColeccionCampos := TColeccionCampos.Create;
+  ColeccionCampos := TORMColeccionCampos.Create;
 
   with Condicion do
   begin

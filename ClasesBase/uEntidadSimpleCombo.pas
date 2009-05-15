@@ -23,7 +23,7 @@ uses  uEntidades, uEntidadSimple, uColeccionEntidades,
       uSQLBuilder, uCampos, Classes, uExpresiones;
 
 type
-  TEntidadSimpleComboDef = record
+  TORMEntidadSimpleComboDef = record
     Tabla: string;
     CampoClave: string;
     CampoDescripcion: string;
@@ -31,18 +31,18 @@ type
     CampoObservaciones: string;
     ClaveEsIdentidad: boolean;
 
-    Relacion: TRelacionDefSimple;
-    EntidadSimpleAsociada: TEntidadSimpleDef;
+    Relacion: TORMRelacionDefSimple;
+    EntidadSimpleAsociada: TORMEntidadSimpleDef;
 
     NombreEntidad : string;
     NombrePlural: string;
   end;
 
-  TEntidadSimpleCombo = class(TEntidadBase)
+  TORMEntidadSimpleCombo = class(TORMEntidadBase)
   private
-    FEntidadAsociada: TEntidadSimple;
+    FEntidadAsociada: TORMEntidadSimple;
 
-    function GetCampo(index: integer): TCampo;
+    function GetORMCampo(index: integer): TORMCampo;
     function GetDescripcion: string;
     function GetDescripcionForanea: string;
     function GetDescripcionReducida: string;
@@ -54,24 +54,24 @@ type
     procedure SetID(const Value: integer);
     procedure SetIDForaneo(const Value: integer);
     procedure SetObservaciones(const Value: string);
-    function GetEntidadAsociada: TEntidadSimple;
+    function GetEntidadAsociada: TORMEntidadSimple;
     procedure SetDescripcionForanea(const Value: string);
   public
-    DES : TEntidadSimpleDef;
-    Relacion: TRelacionDefSimple;
+    DES : TORMEntidadSimpleDef;
+    Relacion: TORMRelacionDefSimple;
     constructor Create; overload;
     procedure AsignarDatosEntidad(  Tabla: string; NombreCampoClave: string;
-                                    ES: TEntidadSimpleDef;
-                                    unaRelacion: TRelacionDefSimple;
+                                    ES: TORMEntidadSimpleDef;
+                                    unaRelacion: TORMRelacionDefSimple;
                                     NombreCampoDescripcion: string = 'Descripcion';
                                     NombreCampoDescrReducida: string = 'DescripcionReducida';
                                     NombreCampoObservaciones: string = 'Observaciones';
                                     ClaveEsIdentidad: boolean = true); overload;
-    procedure AsignarDatosEntidad( ESC: TEntidadSimpleComboDef); overload;
+    procedure AsignarDatosEntidad( ESC: TORMEntidadSimpleComboDef); overload;
     destructor Destroy; override;
     function ObtenerEntidad(EntidadID: integer): boolean; virtual;
-    property EntidadAsociada: TEntidadSimple read GetEntidadAsociada;
-    property Campo[index: integer]: TCampo read GetCampo;
+    property EntidadAsociada: TORMEntidadSimple read GetEntidadAsociada;
+    property ORMCampo[index: integer]: TORMCampo read GetORMCampo;
   published
     property ID: integer read GetID write SetID;
     property IDForeaneo: integer read GetIDForaneao write SetIDForaneo;
@@ -81,12 +81,12 @@ type
     property DescripcionForanea: string read GetDescripcionForanea write SetDescripcionForanea;
   end;
 
-  TColeccionEntidadSimpleCombo = class(TColeccionEntidades)
+  TORMColeccionEntidadSimpleCombo = class(TORMColeccionEntidades)
   private
-    FDES : TEntidadSimpleDef;
-    FRelacion: TRelacionDefSimple;
+    FDES : TORMEntidadSimpleDef;
+    FRelacion: TORMRelacionDefSimple;
 
-    function GetEntidadSimpleCombo(index: integer): TEntidadSimpleCombo;
+    function GetEntidadSimpleCombo(index: integer): TORMEntidadSimpleCombo;
   protected
     procedure ProcesarDataSet; override;
   published
@@ -94,15 +94,15 @@ type
     function ObtenerTodos: integer; override;
     procedure AsignarDatosEntidad(  Tabla: string; NombreCampoClave: string;
                                     NombreEntidad: string; NombrePlural: string;
-                                    ES: TEntidadSimpleDef;
-                                    Relacion: TRelacionDefSimple;
+                                    ES: TORMEntidadSimpleDef;
+                                    Relacion: TORMRelacionDefSimple;
                                     NombreCampoDescripcion: string = 'Descripcion';
                                     NombreCampoDescrReducida: string = 'DescripcionReducida';
                                     NombreCampoObservaciones: string = 'Observaciones';
                                     ClaveEsIdentidad: boolean = true); overload;
-    procedure AsignarDatosEntidad(ESC: TEntidadSimpleComboDef); overload;
-    procedure AsignarDatosEntidad(EntidadSimpleCombo: TEntidadSimpleCombo); overload;
-    property EntidadSimpleCombo[index: integer]: TEntidadSimpleCombo read GetEntidadSimpleCombo;
+    procedure AsignarDatosEntidad(ESC: TORMEntidadSimpleComboDef); overload;
+    procedure AsignarDatosEntidad(EntidadSimpleCombo: TORMEntidadSimpleCombo); overload;
+    property ORMEntidadSimpleCombo[index: integer]: TORMEntidadSimpleCombo read GetEntidadSimpleCombo;
   end;
 
   function EntidadSimpleComboDefault( Tabla, CampoClave, CampoClaveForanea,
@@ -110,13 +110,13 @@ type
                                       NombreEntidad,
                                       NombreEntidadPlural,
                                       NombreEntidadAsoc,
-                                      NombreEntidadAsocPlural: string): TEntidadSimpleComboDef; overload;
+                                      NombreEntidadAsocPlural: string): TORMEntidadSimpleComboDef; overload;
   function EntidadSimpleComboDefault( CampoClave, CampoClaveForanea,
-                                      CampoClaveEntidadAsociada: TCampo;
+                                      CampoClaveEntidadAsociada: TORMCampo;
                                       NombreEntidad,
                                       NombreEntidadPlural,
                                       NombreEntidadAsoc,
-                                      NombreEntidadAsocPlural: string): TEntidadSimpleComboDef; overload;
+                                      NombreEntidadAsocPlural: string): TORMEntidadSimpleComboDef; overload;
 
 
 const
@@ -136,7 +136,7 @@ function EntidadSimpleComboDefault( Tabla, CampoClave, CampoClaveForanea,
                                     NombreEntidad,
                                     NombreEntidadPlural,
                                     NombreEntidadAsoc,
-                                    NombreEntidadAsocPlural: string): TEntidadSimpleComboDef;
+                                    NombreEntidadAsocPlural: string): TORMEntidadSimpleComboDef;
 begin
   Result.Tabla := Tabla;
   Result.CampoClave := CampoClave;
@@ -158,11 +158,11 @@ begin
 end;
 
 function EntidadSimpleComboDefault( CampoClave, CampoClaveForanea,
-                                    CampoClaveEntidadAsociada: TCampo;
+                                    CampoClaveEntidadAsociada: TORMCampo;
                                     NombreEntidad,
                                     NombreEntidadPlural,
                                     NombreEntidadAsoc,
-                                    NombreEntidadAsocPlural: string): TEntidadSimpleComboDef; overload;
+                                    NombreEntidadAsocPlural: string): TORMEntidadSimpleComboDef; overload;
 begin
   Result.Tabla := CampoClave.Tabla;
   Result.CampoClave := CampoClave.Nombre;
@@ -190,9 +190,9 @@ end;
 
 { TEntidadSimpleCombo }
 
-procedure TEntidadSimpleCombo.AsignarDatosEntidad(Tabla, NombreCampoClave: string;
-  ES: TEntidadSimpleDef;
-  unaRelacion: TRelacionDefSimple;
+procedure TORMEntidadSimpleCombo.AsignarDatosEntidad(Tabla, NombreCampoClave: string;
+  ES: TORMEntidadSimpleDef;
+  unaRelacion: TORMRelacionDefSimple;
   NombreCampoDescripcion, NombreCampoDescrReducida,
   NombreCampoObservaciones: string;
   ClaveEsIdentidad: boolean);
@@ -204,24 +204,24 @@ begin
   Relacion := unaRelacion;
 
   if ClaveEsIdentidad then
-     FCampos.Agregar(TCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
+     FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
                                     60, true, true, false, false, tdInteger, faNinguna, 0))
   else
-     FCampos.Agregar(TCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
+     FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
                                     60, false, true, false, false, tdInteger, faNinguna, 0));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
                                 icDescripcion, 60, false, false, false, false, tdString,
                                 faNinguna, ''));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
                                 icDescripcionReducida, 60, false, false, true, false, tdString,
                                 faNinguna, ''));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
                                 icObservaciones, 60, false, false, true, false, tdString,
                                 faNinguna, ''));
-  FCampos.Agregar(TCampo.Create(Tabla, unaRelacion.CampoPrimario.Campo, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, unaRelacion.CampoPrimario.Campo, '', '', '',
                                 icClaveForanea, 10, false, false, true, true, tdInteger,
                                 faNinguna, 0));
-  FCampos.Agregar(TCampo.Create(ES.Tabla, ES.CampoDescripcion, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(ES.Tabla, ES.CampoDescripcion, '', '', '',
                                 icDescripcionForanea, 60, false, false, true, false, tdString,
                                 faNinguna, 0));
   FEntidadAsociada := nil;
@@ -229,7 +229,7 @@ begin
   EsNueva := true;
 end;
 
-procedure TEntidadSimpleCombo.AsignarDatosEntidad(ESC: TEntidadSimpleComboDef);
+procedure TORMEntidadSimpleCombo.AsignarDatosEntidad(ESC: TORMEntidadSimpleComboDef);
 begin
   AsignarDatosEntidad(  ESC.Tabla, ESC.CampoClave,
                         ESC.EntidadSimpleAsociada, ESC.Relacion, ESC.CampoDescripcion,
@@ -237,12 +237,12 @@ begin
                         ESC.ClaveEsIdentidad);
 end;
 
-constructor TEntidadSimpleCombo.Create;
+constructor TORMEntidadSimpleCombo.Create;
 begin
   Create(nil);
 end;
 
-destructor TEntidadSimpleCombo.Destroy;
+destructor TORMEntidadSimpleCombo.Destroy;
 begin
   if assigned(FEntidadAsociada) then
     FEntidadAsociada.Free;
@@ -250,65 +250,65 @@ begin
   inherited;
 end;
 
-function TEntidadSimpleCombo.GetCampo(index: integer): TCampo;
+function TORMEntidadSimpleCombo.GetORMCampo(index: integer): TORMCampo;
 begin
-  Result := FCampos.Campo[index];
+  Result := FCampos.ORMCampo[index];
 end;
 
-function TEntidadSimpleCombo.GetDescripcion: string;
+function TORMEntidadSimpleCombo.GetDescripcion: string;
 begin
-  Result := FCampos.Campo[icDescripcion].AsString;
+  Result := FCampos.ORMCampo[icDescripcion].AsString;
 end;
 
-function TEntidadSimpleCombo.GetDescripcionForanea: string;
-begin
-  Result := '';
-  if not FCampos.Campo[icDescripcionForanea].EsNulo then
-    Result := FCampos.Campo[icDescripcionForanea].AsString;
-end;
-
-function TEntidadSimpleCombo.GetDescripcionReducida: string;
+function TORMEntidadSimpleCombo.GetDescripcionForanea: string;
 begin
   Result := '';
-  if not FCampos.Campo[icDescripcionReducida].EsNulo then
-    Result := FCampos.Campo[icDescripcionReducida].AsString;
+  if not FCampos.ORMCampo[icDescripcionForanea].EsNulo then
+    Result := FCampos.ORMCampo[icDescripcionForanea].AsString;
 end;
 
-function TEntidadSimpleCombo.GetEntidadAsociada: TEntidadSimple;
+function TORMEntidadSimpleCombo.GetDescripcionReducida: string;
+begin
+  Result := '';
+  if not FCampos.ORMCampo[icDescripcionReducida].EsNulo then
+    Result := FCampos.ORMCampo[icDescripcionReducida].AsString;
+end;
+
+function TORMEntidadSimpleCombo.GetEntidadAsociada: TORMEntidadSimple;
 begin
   if not assigned(EntidadAsociada) then begin
-    FEntidadAsociada :=TEntidadSimple.Create;
+    FEntidadAsociada :=TORMEntidadSimple.Create;
     FEntidadAsociada.AsignarDatosEntidad(DES);
-    FEntidadAsociada.ObtenerEntidad(FCampos.Campo[icClaveForanea].AsInteger);
+    FEntidadAsociada.ObtenerEntidad(FCampos.ORMCampo[icClaveForanea].AsInteger);
   end;
   Result := FEntidadAsociada;
 end;
 
-function TEntidadSimpleCombo.GetID: integer;
+function TORMEntidadSimpleCombo.GetID: integer;
 begin
-  Result := FCampos.Campo[icClave].AsInteger;
+  Result := FCampos.ORMCampo[icClave].AsInteger;
 end;
 
-function TEntidadSimpleCombo.GetIDForaneao: integer;
+function TORMEntidadSimpleCombo.GetIDForaneao: integer;
 begin
   Result := -1;
-  if not FCampos.Campo[icClaveForanea].EsNulo then
-    Result := FCampos.Campo[icClaveForanea].AsInteger;;
+  if not FCampos.ORMCampo[icClaveForanea].EsNulo then
+    Result := FCampos.ORMCampo[icClaveForanea].AsInteger;;
 end;
 
-function TEntidadSimpleCombo.GetObservaciones: string;
+function TORMEntidadSimpleCombo.GetObservaciones: string;
 begin
   Result := '';
-  if not  FCampos.Campo[icObservaciones].EsNulo then
-    Result := FCampos.Campo[icObservaciones].AsString;
+  if not  FCampos.ORMCampo[icObservaciones].EsNulo then
+    Result := FCampos.ORMCampo[icObservaciones].AsString;
 end;
 
-function TEntidadSimpleCombo.ObtenerEntidad(EntidadID: integer): boolean;
+function TORMEntidadSimpleCombo.ObtenerEntidad(EntidadID: integer): boolean;
 var
   select : TSelectStatement;
 begin
   select := TSelectStatement.Create(FCampos);
-  select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.Campo[icClave],
+  select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[icClave],
                                                         tcIgual, EntidadID));
 
   select.Relaciones.Agregar(Relacion.CampoPrimario.Tabla,
@@ -321,75 +321,75 @@ begin
   select.Free;
 end;
 
-procedure TEntidadSimpleCombo.SetDescripcion(const Value: string);
+procedure TORMEntidadSimpleCombo.SetDescripcion(const Value: string);
 begin
-  FCampos.Campo[icDescripcion].AsString := Value;
+  FCampos.ORMCampo[icDescripcion].AsString := Value;
 end;
 
-procedure TEntidadSimpleCombo.SetDescripcionForanea(const Value: string);
+procedure TORMEntidadSimpleCombo.SetDescripcionForanea(const Value: string);
 begin
-  FCampos.Campo[icDescripcionForanea].AsString := Value;
-  FCampos.Campo[icDescripcionForanea].FueCambiado := false;
+  FCampos.ORMCampo[icDescripcionForanea].AsString := Value;
+  FCampos.ORMCampo[icDescripcionForanea].FueCambiado := false;
 end;
 
-procedure TEntidadSimpleCombo.SetDescripcionReducida(const Value: string);
+procedure TORMEntidadSimpleCombo.SetDescripcionReducida(const Value: string);
 begin
-  FCampos.Campo[icDescripcionReducida].AsString := Value;
+  FCampos.ORMCampo[icDescripcionReducida].AsString := Value;
 end;
 
-procedure TEntidadSimpleCombo.SetID(const Value: integer);
+procedure TORMEntidadSimpleCombo.SetID(const Value: integer);
 begin
-  FCampos.Campo[icClave].AsInteger := Value;
+  FCampos.ORMCampo[icClave].AsInteger := Value;
 end;
 
-procedure TEntidadSimpleCombo.SetIDForaneo(const Value: integer);
+procedure TORMEntidadSimpleCombo.SetIDForaneo(const Value: integer);
 begin
-  FCampos.Campo[icClaveForanea].AsInteger := Value;
+  FCampos.ORMCampo[icClaveForanea].AsInteger := Value;
 end;
 
-procedure TEntidadSimpleCombo.SetObservaciones(const Value: string);
+procedure TORMEntidadSimpleCombo.SetObservaciones(const Value: string);
 begin
-  FCampos.Campo[icObservaciones].AsString := Value;
+  FCampos.ORMCampo[icObservaciones].AsString := Value;
 end;
 
 { TColeccionEntidadSimpleCombo }
 
-procedure TColeccionEntidadSimpleCombo.AsignarDatosEntidad(Tabla, NombreCampoClave,
-  NombreEntidad, NombrePlural: string; ES: TEntidadSimpleDef;
-  Relacion: TRelacionDefSimple; NombreCampoDescripcion,
+procedure TORMColeccionEntidadSimpleCombo.AsignarDatosEntidad(Tabla, NombreCampoClave,
+  NombreEntidad, NombrePlural: string; ES: TORMEntidadSimpleDef;
+  Relacion: TORMRelacionDefSimple; NombreCampoDescripcion,
   NombreCampoDescrReducida, NombreCampoObservaciones: string;
   ClaveEsIdentidad: boolean);
 begin
-  FCampos := TColeccionCampos.Create;
+  FCampos := TORMColeccionCampos.Create;
 
   FDES := ES;
   FRelacion := Relacion;
 
   if ClaveEsIdentidad then
-     FCampos.Agregar(TCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
+     FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
                                     60, true, true, false, false, tdInteger, faNinguna, 0))
   else
-     FCampos.Agregar(TCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
+     FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
                                     60, false, true, false, false, tdInteger, faNinguna, 0));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
                                 icDescripcion, 60, false, false, false, false, tdString,
                                 faNinguna, ''));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
                                 icDescripcionReducida, 60, false, false, true, false, tdString,
                                 faNinguna, ''));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
                                 icObservaciones, 60, false, false, true, false, tdString,
                                 faNinguna, ''));
-  FCampos.Agregar(TCampo.Create(Tabla, Relacion.CampoPrimario.Campo, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, Relacion.CampoPrimario.Campo, '', '', '',
                                 icClaveForanea, 10, false, false, true, true, tdInteger,
                                 faNinguna, 0));
-  FCampos.Agregar(TCampo.Create(ES.Tabla, ES.CampoDescripcion, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(ES.Tabla, ES.CampoDescripcion, '', '', '',
                                 icDescripcionForanea, 60, false, false, true, false, tdString,
                                 faNinguna, 0));
 end;
 
-procedure TColeccionEntidadSimpleCombo.AsignarDatosEntidad(
-  ESC: TEntidadSimpleComboDef);
+procedure TORMColeccionEntidadSimpleCombo.AsignarDatosEntidad(
+  ESC: TORMEntidadSimpleComboDef);
 begin
   AsignarDatosEntidad(  ESC.Tabla, ESC.CampoClave, ESC.NombreEntidad,
                         ESC.NombrePlural, ESC.EntidadSimpleAsociada,
@@ -398,46 +398,46 @@ begin
                         ESC.ClaveEsIdentidad);
 end;
 
-procedure TColeccionEntidadSimpleCombo.AsignarDatosEntidad(
-  EntidadSimpleCombo: TEntidadSimpleCombo);
+procedure TORMColeccionEntidadSimpleCombo.AsignarDatosEntidad(
+  EntidadSimpleCombo: TORMEntidadSimpleCombo);
 var
   nCampo : integer;
 begin
-  FCampos := TColeccionCampos.Create;
+  FCampos := TORMColeccionCampos.Create;
 
-  for nCampo := 0 to EntidadSimpleCombo.Campos.Count - 1 do
+  for nCampo := 0 to EntidadSimpleCombo.ORMCampos.Count - 1 do
   begin
-    with EntidadSimpleCombo.Campo[nCampo] do
-      FCampos.Agregar(TCampo.Create(Tabla, Nombre, Secuencia, AliasCampo,
+    with EntidadSimpleCombo.ORMCampo[nCampo] do
+      FCampos.Agregar(TORMCampo.Create(Tabla, Nombre, Secuencia, AliasCampo,
                                     AliasTabla, Indice, Longitud, EsIdentidad,
                                     EsClavePrimaria, EsClaveForanea, AceptaNull, TipoDato,
                                     FuncionAgregacion, ValorPorDefecto));
   end;
 end;
 
-function TColeccionEntidadSimpleCombo.GetEntidadSimpleCombo(
-  index: integer): TEntidadSimpleCombo;
+function TORMColeccionEntidadSimpleCombo.GetEntidadSimpleCombo(
+  index: integer): TORMEntidadSimpleCombo;
 begin
-  Result := Items[index] as TEntidadSimpleCombo;
+  Result := Items[index] as TORMEntidadSimpleCombo;
 end;
 
-function TColeccionEntidadSimpleCombo.ObtenerTodos: integer;
+function TORMColeccionEntidadSimpleCombo.ObtenerTodos: integer;
 var
   orden : TExpresionOrdenamiento;
   Relacion: TExpresionRelacion;
 begin
   orden := TExpresionOrdenamiento.Create;
   Relacion := TExpresionRElacion.Create(FRelacion);
-  orden.Agregar(FCampos.Campo[icDescripcionForanea], toAscendente);
-  orden.Agregar(FCampos.Campo[icDescripcion], toAscendente);
+  orden.Agregar(FCampos.ORMCampo[icDescripcionForanea], toAscendente);
+  orden.Agregar(FCampos.ORMCampo[icDescripcion], toAscendente);
   Result := ObtenerMuchos(nil, orden, nil, Relacion);
   Relacion.Free;
   orden.Free;
 end;
 
-procedure TColeccionEntidadSimpleCombo.ProcesarDataSet;
+procedure TORMColeccionEntidadSimpleCombo.ProcesarDataSet;
 var
-  unaEntidad : TEntidadSimpleCombo;
+  unaEntidad : TORMEntidadSimpleCombo;
 begin
   with FSelectStatement do
   begin
@@ -448,35 +448,35 @@ begin
     while not Datos.Eof  do
     begin
       //unaEntidad := Add as TEntidadSimpleCombo;
-      unaEntidad := TEntidadSimpleCombo.Create(Self);
-      unaEntidad.AsignarDatosEntidad( FCampos.Campo[icClave].Tabla,
-                                      FCampos.Campo[icClave].Nombre,
+      unaEntidad := TORMEntidadSimpleCombo.Create(Self);
+      unaEntidad.AsignarDatosEntidad( FCampos.ORMCampo[icClave].Tabla,
+                                      FCampos.ORMCampo[icClave].Nombre,
                                       FDES,
                                       Relaciones.Relacion[0].ObtenerDefinicion,
-                                      FCampos.Campo[icDescripcion].Nombre,
-                                      FCampos.Campo[icDescripcionReducida].Nombre,
-                                      FCampos.Campo[icObservaciones].Nombre,
-                                      FCampos.Campo[icClave].EsIdentidad);
+                                      FCampos.ORMCampo[icDescripcion].Nombre,
+                                      FCampos.ORMCampo[icDescripcionReducida].Nombre,
+                                      FCampos.ORMCampo[icObservaciones].Nombre,
+                                      FCampos.ORMCampo[icClave].EsIdentidad);
       unaEntidad.ID := Datos.Fields[icClave].AsInteger;
       unaEntidad.Descripcion := Datos.Fields[icDescripcion].AsString;
 
-      unaEntidad.Campo[icDescripcionReducida].EsNulo := Datos.Fields[icDescripcionReducida].IsNull;
-      if not unaEntidad.Campo[icDescripcionReducida].EsNulo then
+      unaEntidad.ORMCampo[icDescripcionReducida].EsNulo := Datos.Fields[icDescripcionReducida].IsNull;
+      if not unaEntidad.ORMCampo[icDescripcionReducida].EsNulo then
         unaEntidad.DescripcionReducida := Datos.Fields[icDescripcionReducida].AsString;
 
-      unaEntidad.Campo[icObservaciones].EsNulo := Datos.Fields[icObservaciones].IsNull;
-      if not unaEntidad.Campo[icObservaciones].EsNulo then
+      unaEntidad.ORMCampo[icObservaciones].EsNulo := Datos.Fields[icObservaciones].IsNull;
+      if not unaEntidad.ORMCampo[icObservaciones].EsNulo then
         unaEntidad.Observaciones := Datos.Fields[icObservaciones].AsString;
 
-      unaEntidad.Campo[icClaveForanea].EsNulo := Datos.Fields[icClaveForanea].IsNull;
-      if not unaEntidad.Campo[icClaveForanea].EsNulo then
+      unaEntidad.ORMCampo[icClaveForanea].EsNulo := Datos.Fields[icClaveForanea].IsNull;
+      if not unaEntidad.ORMCampo[icClaveForanea].EsNulo then
         unaEntidad.IDForeaneo := Datos.Fields[icClaveForanea].AsInteger;
 
-      unaEntidad.Campo[icDescripcionForanea].EsNulo := Datos.Fields[icDescripcionForanea].IsNull;
-      if not unaEntidad.Campo[icDescripcionForanea].EsNulo then
+      unaEntidad.ORMCampo[icDescripcionForanea].EsNulo := Datos.Fields[icDescripcionForanea].IsNull;
+      if not unaEntidad.ORMCampo[icDescripcionForanea].EsNulo then
         unaEntidad.DescripcionForanea := Datos.Fields[icDescripcionForanea].AsString;
 
-      unaEntidad.Campos.FueronCambiados := false;
+      unaEntidad.ORMCampos.FueronCambiados := false;
       Datos.Next;
     end;
   end;

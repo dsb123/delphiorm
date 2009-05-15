@@ -22,7 +22,7 @@ uses Classes, uEntidades, uColeccionEntidades, uSQLBuilder, uCampos;
 
 type
 
-  TEntidadSimpleDef = record
+  TORMEntidadSimpleDef = record
     Tabla: string;
     CampoClave: string;
     CampoDescripcion: string;
@@ -33,7 +33,7 @@ type
     NombrePlural: string;
   end;
 
-  TEntidadSimple = class(TEntidadBase)
+  TORMEntidadSimple = class(TORMEntidadBase)
   private
     function GetDescripcion: string;
     function GetDescrReducida: string;
@@ -43,7 +43,7 @@ type
     procedure SetDescrReducida(const Value: string);
     procedure SetID(const Value: integer);
     procedure SetObservaciones(const Value: string);
-    function GetCampo(index: integer): TCampo;
+    function GetORMCampo(index: integer): TORMCampo;
   public
     constructor Create; overload;
     {
@@ -59,11 +59,11 @@ type
                                     const NombreCampoDescrReducida: string = 'DescripcionReducida';
                                     const NombreCampoObservaciones: string = 'Observaciones';
                                     const ClaveEsIdentidad: boolean = true); overload;
-    procedure AsignarDatosEntidad(const DatosEntidadSimple: TEntidadSimpleDef); overload;
+    procedure AsignarDatosEntidad(const DatosEntidadSimple: TORMEntidadSimpleDef); overload;
 
     function ObtenerEntidad(const EntidadID: integer): boolean; virtual;
     procedure CargarCombo(Items: TStringList);
-    property Campo[index: integer]: TCampo read GetCampo;
+    property ORMCampo[index: integer]: TORMCampo read GetORMCampo;
   published
     property ID: integer read GetID write SetID;
     property Descripcion: string read GetDescripcion write SetDescripcion;
@@ -71,9 +71,9 @@ type
     property Observaciones: string read GetObservaciones write SetObservaciones;
   end;
 
-  TColeccionEntidadSimple = class(TColeccionEntidades)
+  TORMColeccionEntidadSimple = class(TORMColeccionEntidades)
   private
-    function GetEntidadSimple(index: integer): TEntidadSimple;
+    function GetEntidadSimple(index: integer): TORMEntidadSimple;
   protected
     procedure ProcesarDataSet; override;
   published
@@ -83,16 +83,16 @@ type
                         const NombreCampoDescrReducida: string = 'DescripcionReducida';
                         const NombreCampoObservaciones: string = 'Observaciones';
                         const ClaveEsIdentidad: boolean = false); overload;
-    constructor Create( EntidadSimple: TEntidadSimple); overload;
-    constructor Create(const DatosEntidadSimple: TEntidadSimpleDef); overload;
-    property EntidadSimple[index: integer]: TEntidadSimple read GetEntidadSimple;
+    constructor Create( EntidadSimple: TORMEntidadSimple); overload;
+    constructor Create(const DatosEntidadSimple: TORMEntidadSimpleDef); overload;
+    property ORMEntidadSimple[index: integer]: TORMEntidadSimple read GetEntidadSimple;
   end;
 
   function EntidadSimpleDefault(const Tabla, CampoClave, NombreEntidad,
-                                NombreEntidadPlural: string): TEntidadSimpleDef; overload;
-  function EntidadSimpleDefault(CampoClave: TCampo;
+                                NombreEntidadPlural: string): TORMEntidadSimpleDef; overload;
+  function EntidadSimpleDefault(CampoClave: TORMCampo;
                                 NombreEntidad,
-                                NombreEntidadPlural: string): TEntidadSimpleDef; overload;
+                                NombreEntidadPlural: string): TORMEntidadSimpleDef; overload;
 
 const
   icClave = 0;
@@ -105,7 +105,7 @@ implementation
 uses uExpresiones, Contnrs;
 
 function EntidadSimpleDefault(  const Tabla, CampoClave, NombreEntidad,
-                                NombreEntidadPlural: string): TEntidadSimpleDef;
+                                NombreEntidadPlural: string): TORMEntidadSimpleDef;
 begin
   Result.Tabla := Tabla;
   Result.CampoClave := CampoClave;
@@ -117,9 +117,9 @@ begin
   Result.ClaveEsIdentidad := true;
 end;
 
-function EntidadSimpleDefault(  CampoClave: TCampo;
+function EntidadSimpleDefault(  CampoClave: TORMCampo;
                                 NombreEntidad,
-                                NombreEntidadPlural: string): TEntidadSimpleDef; overload;
+                                NombreEntidadPlural: string): TORMEntidadSimpleDef; overload;
 begin
   Result.Tabla := CampoClave.Tabla;
   Result.CampoClave := CampoClave.Nombre;
@@ -134,7 +134,7 @@ end;
 
 { TEntidadSimple }
 
-procedure TEntidadSimple.AsignarDatosEntidad(const Tabla, NombreCampoClave,
+procedure TORMEntidadSimple.AsignarDatosEntidad(const Tabla, NombreCampoClave,
   NombreCampoDescripcion, NombreCampoDescrReducida,
   NombreCampoObservaciones: string;
   const ClaveEsIdentidad: boolean);
@@ -147,35 +147,35 @@ begin
    que el generador se llame igual que la tabla
   }
   if ClaveEsIdentidad then
-     FCampos.Agregar(TCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
+     FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
                                     60, true, true, false, false, tdInteger, faNinguna, 0))
   else
-     FCampos.Agregar(TCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
+     FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
                                     60, false, true, false, false, tdInteger, faNinguna, 0));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
                                 icDescripcion, 60, false, false, false, false, tdString,
                                 faNinguna, ''));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
                                 icDescripcionReducida, 60, false, false, true, false, tdString,
                                 faNinguna, ''));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
                                 icObservaciones, 60, false, false, true, false, tdString,
                                 faNinguna, ''));
   EsNueva := true;
 end;
 
-procedure TEntidadSimple.CargarCombo(Items: TStringList);
+procedure TORMEntidadSimple.CargarCombo(Items: TStringList);
 var
   select : TSelectStatement;
-  CamposCombo: TColeccionCampos;
+  CamposCombo: TORMColeccionCampos;
   ChangeEvent : TNotifyEvent;
   Sorted : boolean;
 begin
-  CamposCombo := TColeccionCampos.Create;
-  CamposCombo.Agregar(FCampos.Campo[icClave].Clonar);
-  CamposCombo.Agregar(FCampos.Campo[icDescripcion].Clonar);
+  CamposCombo := TORMColeccionCampos.Create;
+  CamposCombo.Agregar(FCampos.ORMCampo[icClave].Clonar);
+  CamposCombo.Agregar(FCampos.ORMCampo[icDescripcion].Clonar);
   select := TSelectStatement.Create(CamposCombo);
-  select.Orden.Agregar( FCampos.Campo[icDescripcion], toAscendente);
+  select.Orden.Agregar( FCampos.ORMCampo[icDescripcion], toAscendente);
 
   Conexion.SQLManager.EjecutarSelect(select);
   ChangeEvent := Items.OnChange;
@@ -197,12 +197,12 @@ begin
   Items.OnChange(nil);
 end;
 
-constructor TEntidadSimple.Create;
+constructor TORMEntidadSimple.Create;
 begin
   Create(nil);
 end;
 
-procedure TEntidadSimple.AsignarDatosEntidad(const DatosEntidadSimple: TEntidadSimpleDef);
+procedure TORMEntidadSimple.AsignarDatosEntidad(const DatosEntidadSimple: TORMEntidadSimpleDef);
 begin
   AsignarDatosEntidad(  DatosEntidadSimple.Tabla,
                         DatosEntidadSimple.CampoClave,
@@ -213,125 +213,125 @@ begin
 end;
 
 
-function TEntidadSimple.GetCampo(index: integer): TCampo;
+function TORMEntidadSimple.GetORMCampo(index: integer): TORMCampo;
 begin
-  Result := FCampos.Campo[index];
+  Result := FCampos.ORMCampo[index];
 end;
 
-function TEntidadSimple.GetDescripcion: string;
+function TORMEntidadSimple.GetDescripcion: string;
 begin
-  Result := FCampos.Campo[icDescripcion].AsString;
+  Result := FCampos.ORMCampo[icDescripcion].AsString;
 end;
 
-function TEntidadSimple.GetDescrReducida: string;
-begin
-  Result := '';
-  if not FCampos.Campo[icDescripcionReducida].EsNulo then
-    Result := FCampos.Campo[icDescripcionReducida].AsString;
-end;
-
-function TEntidadSimple.GetID: integer;
-begin
-  Result := FCampos.Campo[icClave].AsInteger;
-end;
-
-function TEntidadSimple.GetObservaciones: string;
+function TORMEntidadSimple.GetDescrReducida: string;
 begin
   Result := '';
-  if not  FCampos.Campo[icObservaciones].EsNulo then
-    Result := FCampos.Campo[icObservaciones].AsString;
+  if not FCampos.ORMCampo[icDescripcionReducida].EsNulo then
+    Result := FCampos.ORMCampo[icDescripcionReducida].AsString;
 end;
 
-function TEntidadSimple.ObtenerEntidad(const EntidadID: integer): boolean;
+function TORMEntidadSimple.GetID: integer;
+begin
+  Result := FCampos.ORMCampo[icClave].AsInteger;
+end;
+
+function TORMEntidadSimple.GetObservaciones: string;
+begin
+  Result := '';
+  if not  FCampos.ORMCampo[icObservaciones].EsNulo then
+    Result := FCampos.ORMCampo[icObservaciones].AsString;
+end;
+
+function TORMEntidadSimple.ObtenerEntidad(const EntidadID: integer): boolean;
 var
   select : TSelectStatement;
 begin
   select := TSelectStatement.Create(FCampos);
-  select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.Campo[icClave],
+  select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[icClave],
                                                         tcIgual, EntidadID));
   Result := AsignarCamposDesdeSeleccion(select);
   select.Free;
 end;
 
-procedure TEntidadSimple.SetDescripcion(const Value: string);
+procedure TORMEntidadSimple.SetDescripcion(const Value: string);
 begin
-  FCampos.Campo[icDescripcion].AsString := Value;
+  FCampos.ORMCampo[icDescripcion].AsString := Value;
 end;
 
-procedure TEntidadSimple.SetDescrReducida(const Value: string);
+procedure TORMEntidadSimple.SetDescrReducida(const Value: string);
 begin
-  FCampos.Campo[icDescripcionReducida].AsString := Value;
+  FCampos.ORMCampo[icDescripcionReducida].AsString := Value;
 end;
 
-procedure TEntidadSimple.SetID(const Value: integer);
+procedure TORMEntidadSimple.SetID(const Value: integer);
 begin
-  FCampos.Campo[icClave].AsInteger := Value;
+  FCampos.ORMCampo[icClave].AsInteger := Value;
 end;
 
-procedure TEntidadSimple.SetObservaciones(const Value: string);
+procedure TORMEntidadSimple.SetObservaciones(const Value: string);
 begin
-  FCampos.Campo[icObservaciones].AsString := Value;
+  FCampos.ORMCampo[icObservaciones].AsString := Value;
 end;
 
 { TColeccionEntidadSimple }
 
-constructor TColeccionEntidadSimple.Create(const Tabla, NombreCampoClave,
+constructor TORMColeccionEntidadSimple.Create(const Tabla, NombreCampoClave,
   NombreCampoDescripcion, NombreCampoDescrReducida,
   NombreCampoObservaciones: string; const ClaveEsIdentidad: boolean);
 begin
-  inherited Create(TEntidadSimple);
+  inherited Create(TORMEntidadSimple);
 
-  FCampos := TColeccionCampos.Create;
+  FCampos := TORMColeccionCampos.Create;
   {
    Para el caso que la clave tenga una secuencia (generador), seria obligatorio
    que el generador se llame igual que la tabla
   }
   if ClaveEsIdentidad then
-     FCampos.Agregar(TCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
+     FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
                                     60, true, true, false, false, tdInteger, faNinguna, 0))
   else
-     FCampos.Agregar(TCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
+     FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
                                     60, true, true, false, false, tdInteger, faNinguna, 0));
 
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
                                 icDescripcion, 60, false, false, false, false, tdString,
                                 faNinguna, ''));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
                                 icDescripcionReducida, 60, false, false, true, false, tdString,
                                 faNinguna, ''));
-  FCampos.Agregar(TCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
+  FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
                                 icObservaciones, 60, false, false, true, false, tdString,
                                 faNinguna, ''));
 
 end;
 
-constructor TColeccionEntidadSimple.Create(EntidadSimple: TEntidadSimple);
+constructor TORMColeccionEntidadSimple.Create(EntidadSimple: TORMEntidadSimple);
 var
   nCampo : integer;
 begin
-  inherited Create(TEntidadSimple);
+  inherited Create(TORMEntidadSimple);
 
-  FCampos := TColeccionCampos.Create;
+  FCampos := TORMColeccionCampos.Create;
 
-  for nCampo := 0 to EntidadSimple.Campos.Count - 1 do
+  for nCampo := 0 to EntidadSimple.ORMCampos.Count - 1 do
   begin
-    with EntidadSimple.Campo[nCampo] do
-      FCampos.Agregar(TCampo.Create(Tabla, Nombre, Secuencia, AliasCampo,
+    with EntidadSimple.ORMCampo[nCampo] do
+      FCampos.Agregar(TORMCampo.Create(Tabla, Nombre, Secuencia, AliasCampo,
                                     AliasTabla, Indice, Longitud, EsIdentidad,
                                     EsClavePrimaria, EsClaveForanea, AceptaNull,
                                     TipoDato,FuncionAgregacion, ValorPorDefecto));
   end;
 end;
 
-function TColeccionEntidadSimple.GetEntidadSimple(
-  index: integer): TEntidadSimple;
+function TORMColeccionEntidadSimple.GetEntidadSimple(
+  index: integer): TORMEntidadSimple;
 begin
-  Result := Items[index] as TEntidadSimple;
+  Result := Items[index] as TORMEntidadSimple;
 end;
 
-procedure TColeccionEntidadSimple.ProcesarDataSet;
+procedure TORMColeccionEntidadSimple.ProcesarDataSet;
 var
-  unaEntidad : TEntidadSimple;
+  unaEntidad : TORMEntidadSimple;
 begin
   with FSelectStatement do
   begin
@@ -342,32 +342,32 @@ begin
     while not Datos.Eof  do
     begin
       //unaEntidad := Add as TEntidadSimple;
-      unaEntidad := TEntidadSimple.Create(self);
-      unaEntidad.AsignarDatosEntidad( FCampos.Campo[icClave].Tabla,
-                                      FCampos.Campo[icClave].Nombre,
-                                      FCampos.Campo[icDescripcion].Nombre,
-                                      FCampos.Campo[icDescripcionReducida].Nombre,
-                                      FCampos.Campo[icObservaciones].Nombre,
-                                      FCampos.Campo[icClave].EsIdentidad);
+      unaEntidad := TORMEntidadSimple.Create(self);
+      unaEntidad.AsignarDatosEntidad( FCampos.ORMCampo[icClave].Tabla,
+                                      FCampos.ORMCampo[icClave].Nombre,
+                                      FCampos.ORMCampo[icDescripcion].Nombre,
+                                      FCampos.ORMCampo[icDescripcionReducida].Nombre,
+                                      FCampos.ORMCampo[icObservaciones].Nombre,
+                                      FCampos.ORMCampo[icClave].EsIdentidad);
       unaEntidad.ID := Datos.Fields[icClave].AsInteger;
       unaEntidad.Descripcion := Datos.Fields[icDescripcion].AsString;
 
-      unaEntidad.Campo[icDescripcionReducida].EsNulo := Datos.Fields[icDescripcionReducida].IsNull;
-      if not unaEntidad.Campo[icDescripcionReducida].EsNulo then
+      unaEntidad.ORMCampo[icDescripcionReducida].EsNulo := Datos.Fields[icDescripcionReducida].IsNull;
+      if not unaEntidad.ORMCampo[icDescripcionReducida].EsNulo then
         unaEntidad.DescripcionReducida := Datos.Fields[icDescripcionReducida].AsString;
 
-      unaEntidad.Campo[icObservaciones].EsNulo := Datos.Fields[icObservaciones].IsNull;
-      if not unaEntidad.Campo[icObservaciones].EsNulo then
+      unaEntidad.ORMCampo[icObservaciones].EsNulo := Datos.Fields[icObservaciones].IsNull;
+      if not unaEntidad.ORMCampo[icObservaciones].EsNulo then
         unaEntidad.Observaciones := Datos.Fields[icObservaciones].AsString;
 
-      unaEntidad.Campos.FueronCambiados := false;
+      unaEntidad.ORMCampos.FueronCambiados := false;
       Datos.Next;
     end;
   end;
 end;
 
-constructor TColeccionEntidadSimple.Create(
-  const DatosEntidadSimple: TEntidadSimpleDef);
+constructor TORMColeccionEntidadSimple.Create(
+  const DatosEntidadSimple: TORMEntidadSimpleDef);
 begin
   Create( DatosEntidadSimple.Tabla, DatosEntidadSimple.CampoClave,
           DatosEntidadSimple.CampoDescripcion,

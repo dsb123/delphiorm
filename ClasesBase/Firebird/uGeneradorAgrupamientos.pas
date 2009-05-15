@@ -44,7 +44,7 @@ end;
 function TGenAgrupamientoSQL.ObtenerStringAgrupamiento: string;
 var
   nAgrupamiento : integer;
-  Campo : TCampo;
+  Campo : TORMCampo;
 begin
   Result := 'GROUP BY ';
   for nAgrupamiento := 0 to Agrupamiento.Count - 1 do

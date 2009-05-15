@@ -31,7 +31,7 @@ type
     function GenerarSQL: string;
     function  CrearSelectSQL(SinDuplicados: boolean;
               NroPagina: integer; TamPagina: integer; CantidadFilas: integer;
-              ColeccionCampos: TColeccionCampos; Relaciones: TExpresionRelacion;
+              ColeccionCampos: TORMColeccionCampos; Relaciones: TExpresionRelacion;
               Condicion: TExpresionCondicion; Ordenamiento: TExpresionOrdenamiento;
               Agrupamiento: TExpresionAgrupamiento; FiltroHaving: TExpresionCondicion): String;
   end;
@@ -43,14 +43,14 @@ uses  DB, SysUtils, StrUtils, uFuncionesGeneradores, uGeneradorCondiciones,
       uGeneradorRelaciones, uGeneradorAgrupamientos, uGeneradorOrdenamiento;
 
 function TGenSelectStatement.CrearSelectSQL(SinDuplicados: boolean;
-  NroPagina, TamPagina, CantidadFilas: integer; ColeccionCampos: TColeccionCampos;
+  NroPagina, TamPagina, CantidadFilas: integer; ColeccionCampos: TORMColeccionCampos;
   Relaciones: TExpresionRelacion; Condicion: TExpresionCondicion;
   Ordenamiento: TExpresionOrdenamiento; Agrupamiento: TExpresionAgrupamiento;
   FiltroHaving: TExpresionCondicion): String;
 var
   nRegistroASaltear, nCampo : integer;
   sFrom : string;
-  Campo : TCampo;
+  Campo : TORMCampo;
   GenCondiciones: TGenCondicionSQL;
   GenRelaciones : TGenRelacionSQL;
   GenAgrupamientos: TGenAgrupamientoSQL;
@@ -81,7 +81,7 @@ begin
     if nCampo > 0 then
       Result := Result + ', ';
 
-    Campo := ColeccionCampos.Campo[nCampo];
+    Campo := ColeccionCampos.ORMCampo[nCampo];
 
     if sFrom = '' then begin
       sFrom := IfThen(Campo.AliasTabla <> '',

@@ -65,7 +65,7 @@ begin
       SQLDataSet.SQLConnection := FSQLConnection;
       for nGenerador := 0 to insert.Generadores.Count - 1 do
       begin
-        if not insert.Campos.Campo[insert.Generadores.Generador[nGenerador].IndiceCampo].EsClaveForanea then
+        if not insert.Campos.ORMCampo[insert.Generadores.Generador[nGenerador].IndiceCampo].EsClaveForanea then
         begin
           {$ifdef DELPHI2006UP}
           SQLDataSet.CommandText := insert.Generadores.Generador[nGenerador].Generador;
@@ -76,7 +76,7 @@ begin
           if not (SQLDataSet.Eof and SQLDataSet.Bof) then begin
             nIndiceParametro := insert.Generadores.Generador[nGenerador].IndiceParametro;
             insert.SQLParams.Items[nIndiceParametro].AsInteger := SQLDataSet.Fields[0].AsInteger;
-            insert.Campos.Campo[insert.Generadores.Generador[nGenerador].IndiceCampo].AsInteger := SQLDataSet.Fields[0].AsInteger;
+            insert.Campos.ORMCampo[insert.Generadores.Generador[nGenerador].IndiceCampo].AsInteger := SQLDataSet.Fields[0].AsInteger;
           end;
           SQLDataset.Close;
         end;
