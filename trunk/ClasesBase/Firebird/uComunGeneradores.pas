@@ -22,7 +22,7 @@ interface
 uses uCampos;
 
 function NombreCampo(Tabla, Campo: string): string;
-function FuncionAgregacion(funcionAgregacion: TFuncionAgregacion; Tabla, Campo: string): string;
+function FuncionAgregacion(funcionAgregacion: TORMFuncionAgregacion; Tabla, Campo: string): string;
 
 
 implementation
@@ -32,7 +32,7 @@ begin
   Result := '"' + Tabla + '"."' +  Campo + '"';
 end;
 
-function FuncionAgregacion(funcionAgregacion: TFuncionAgregacion; Tabla, Campo: string): string;
+function FuncionAgregacion(funcionAgregacion: TORMFuncionAgregacion; Tabla, Campo: string): string;
 begin
   case funcionAgregacion of
     faCantidad: Result := 'COUNT (' + NombreCampo(Tabla, Campo) + ')';

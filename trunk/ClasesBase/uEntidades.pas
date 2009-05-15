@@ -23,7 +23,7 @@ uses  Classes, SysUtils, Contnrs, uCampos, uSQLBuilder, uColeccionEntidades,
       uConexion, uExpresiones;
 
 type
-  TEntidadBase = class;
+  TORMEntidadBase = class;
   TDatoCombo = class
   private
     FDato: variant;
@@ -37,7 +37,7 @@ type
     property AsVariant: Variant read GetAsVariant;
   end;
 
-  TCamposRelacionados=class
+  TORMCamposRelacionados=class
   private
     FCampoOrigen: integer;
     FCampoDestino: integer;
@@ -48,36 +48,36 @@ type
     property CampoDestino: integer read FCampoDestino;
   end;
 
-  TEntidadAsociada = class
+  TORMEntidadAsociada = class
   private
-    function GetCamposRelacionados(index: integer): TCamposRelacionados;
+    function GetCamposRelacionados(index: integer): TORMCamposRelacionados;
     function GetCantidadRelaciones: integer;
-    function GetEntidad: TEntidadBase;
-    function GetColeccionEntidades: TColeccionEntidades;
+    function GetEntidad: TORMEntidadBase;
+    function GetColeccionEntidades: TORMColeccionEntidades;
   protected
     FCamposRelacionados : TObjectList;
     FObjetoAsociado     : TObject;
   public
-    constructor Create(unaEntidad: TEntidadBase); overload;
-    constructor Create(unaColeccion: TColeccionEntidades); overload;
+    constructor Create(unaEntidad: TORMEntidadBase); overload;
+    constructor Create(unaColeccion: TORMColeccionEntidades); overload;
     destructor Destroy; override;
     procedure AgregarCamposRelacionados(nCampoOrigen, nCampoDestino: integer);
 
-    property Entidad: TEntidadBase read GetEntidad;
-    property ColeccionEntidades: TColeccionEntidades read GetColeccionEntidades;
+    property Entidad: TORMEntidadBase read GetEntidad;
+    property ColeccionEntidades: TORMColeccionEntidades read GetColeccionEntidades;
     property CantidadRelaciones: integer read GetCantidadRelaciones;
-    property CamposRelacionados[index: integer]: TCamposRelacionados read GetCamposRelacionados;
+    property CamposRelacionados[index: integer]: TORMCamposRelacionados read GetCamposRelacionados;
   end;
 
-  TEntidadBase = class(TCollectionItem)
+  TORMEntidadBase = class(TCollectionItem)
   protected
     FTabla              : string;
     FEsNueva            : boolean;
-    FCampos             : TColeccionCampos;
+    FCampos             : TORMColeccionCampos;
     FEnEdicion          : boolean;
     FEntidadesAsociadas : TObjectList;
     FColeccionesAsociadas: TObjectList;
-    FEntidadConexion    : TEntidadConexion;
+    FEntidadConexion    : TORMEntidadConexion;
     FOwnsEntidadConexion: boolean;
     FEntidadAsociadaID  : integer;
 
@@ -87,25 +87,25 @@ type
   private
     function GetEntidadesAsociadas: TObjectList;
     function GetColeccionesAsociadas: TObjectList;
-    function GetEntidadConexion: TEntidadConexion;
+    function GetEntidadConexion: TORMEntidadConexion;
     property EntidadesAsociadas: TObjectList read GetEntidadesAsociadas;
     property ColeccionesAsociadas: TObjectList read GetColeccionesAsociadas;
   public
     constructor Create(Coleccion: TCollection; ComoEntidadNueva: boolean = true);
     destructor Destroy; override;
 
-    function CrearNuevaConexionEntidad: TEntidadConexion; virtual;
-    function Clonar(Coleccion: TCollection = nil): TEntidadBase;
+    function CrearNuevaConexionEntidad: TORMEntidadConexion; virtual;
+    function Clonar(Coleccion: TCollection = nil): TORMEntidadBase;
 
-    function AgregarEntidadAsociada(Entidad: TEntidadBase): integer;
-    procedure EliminarEntidadAsociada(Entidad: TEntidadBase);
+    function AgregarEntidadAsociada(Entidad: TORMEntidadBase): integer;
+    procedure EliminarEntidadAsociada(Entidad: TORMEntidadBase);
     
     procedure AgregarCamposAsociadosEntidad(nEntidadAsociada, nCampoOrigen, nCampoDestino: integer);
 
-    function AgregarColeccionAsociada(ColeccionEntidades: TColeccionEntidades): integer;
+    function AgregarColeccionAsociada(ColeccionEntidades: TORMColeccionEntidades): integer;
     procedure AgregarCamposAsociadosColeccion(nColeccionAsociada, nCampoOrigen, nCampoDestino: integer);
 
-    procedure AsignarConexion( ConexionEntidad: TEntidadConexion);
+    procedure AsignarConexion(ConexionEntidad: TORMEntidadConexion);
 
     function Guardar: boolean; virtual;
     function Eliminar: boolean; virtual;
@@ -128,15 +128,15 @@ type
     procedure CargarCombo(IndiceCampoDato: integer;
                           IndiceCampoDescripcion: integer;
                           aIndiceCampoCondicion: array of Integer;
-                          aTipoCondicion: array of TTipoComparacion;
+                          aTipoCondicion: array of TORMTipoComparacion;
                           aValorCondicion: array of Variant;
                           Items: TStringList; SinDuplicados: boolean = false); overload;
 
     property Tabla: string read FTabla write FTabla;
     property EsNueva: boolean read FEsNueva write FEsNueva;
-    property Campos: TColeccionCampos read FCampos write FCampos;
+    property ORMCampos: TORMColeccionCampos read FCampos write FCampos;
     property EnEdicion: boolean read FEnEdicion write FEnEdicion;
-    property Conexion: TEntidadConexion read GetEntidadConexion;
+    property Conexion: TORMEntidadConexion read GetEntidadConexion;
     property EntidadAsociadaID: integer read FEntidadAsociadaID write FEntidadAsociadaID;
   end;
 
@@ -179,7 +179,7 @@ end;
 
 { TEntidadBase }
 
-function TEntidadBase.ActualizarEntidad: boolean;
+function TORMEntidadBase.ActualizarEntidad: boolean;
 var
   update : TUpdateStatement;
   nCampo : integer;
@@ -191,11 +191,11 @@ begin
 
     for nCampo := 0 to FCampos.Count - 1 do
     begin
-      if FCampos.Campo[nCampo].EsClavePrimaria then
+      if FCampos.ORMCampo[nCampo].EsClavePrimaria then
       begin
-        update.Condicion.Agregar(TCondicionComparacion.Create(FCampos.Campo[nCampo],
+        update.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[nCampo],
                                                               tcIgual,
-                                                              FCampos.Campo[nCampo].ValorActual))
+                                                              FCampos.ORMCampo[nCampo].ValorActual))
       end;
     end;
     if Conexion.SQLManager.EjecutarUpdate(update) then
@@ -206,31 +206,31 @@ begin
   end;
 end;
 
-procedure TEntidadBase.AgregarCamposAsociadosEntidad(nEntidadAsociada, nCampoOrigen,
+procedure TORMEntidadBase.AgregarCamposAsociadosEntidad(nEntidadAsociada, nCampoOrigen,
   nCampoDestino: integer);
 begin
-  (EntidadesAsociadas.Items[nEntidadAsociada] as TEntidadAsociada).AgregarCamposRelacionados(nCampoOrigen, nCampoDestino);
+  (EntidadesAsociadas.Items[nEntidadAsociada] as TORMEntidadAsociada).AgregarCamposRelacionados(nCampoOrigen, nCampoDestino);
 end;
 
-procedure TEntidadBase.AgregarCamposAsociadosColeccion(nColeccionAsociada,
+procedure TORMEntidadBase.AgregarCamposAsociadosColeccion(nColeccionAsociada,
   nCampoOrigen, nCampoDestino: integer);
 begin
-  (ColeccionesAsociadas.Items[nColeccionAsociada] as TEntidadAsociada).AgregarCamposRelacionados(nCampoOrigen, nCampoDestino);
+  (ColeccionesAsociadas.Items[nColeccionAsociada] as TORMEntidadAsociada).AgregarCamposRelacionados(nCampoOrigen, nCampoDestino);
 end;
 
-function TEntidadBase.AgregarColeccionAsociada(
-  ColeccionEntidades: TColeccionEntidades): integer;
+function TORMEntidadBase.AgregarColeccionAsociada(
+  ColeccionEntidades: TORMColeccionEntidades): integer;
 begin
-  Result := ColeccionesAsociadas.Add(TEntidadAsociada.Create(ColeccionEntidades));
+  Result := ColeccionesAsociadas.Add(TORMEntidadAsociada.Create(ColeccionEntidades));
 end;
 
-function TEntidadBase.AgregarEntidadAsociada(Entidad: TEntidadBase): integer;
+function TORMEntidadBase.AgregarEntidadAsociada(Entidad: TORMEntidadBase): integer;
 begin
-  Result := EntidadesAsociadas.Add(TEntidadAsociada.Create(Entidad));
+  Result := EntidadesAsociadas.Add(TORMEntidadAsociada.Create(Entidad));
   Entidad.EntidadAsociadaID := Result;
 end;
 
-function TEntidadBase.AsignarCamposDesdeSeleccion(select: TSelectStatement): boolean;
+function TORMEntidadBase.AsignarCamposDesdeSeleccion(select: TSelectStatement): boolean;
 var
   nCampo : integer;
   stream : TStream;
@@ -240,15 +240,15 @@ begin
   if not select.Datos.Eof then begin
     for nCampo := 0 to FCampos.Count - 1 do
     begin
-      FCampos.Campo[nCampo].EsNulo := select.Datos.Fields[nCampo].IsNull;
-      if not FCampos.Campo[nCampo].EsNulo then begin
-        if FCampos.Campo[nCampo].TipoDato = tdBlobBinary then begin
+      FCampos.ORMCampo[nCampo].EsNulo := select.Datos.Fields[nCampo].IsNull;
+      if not FCampos.ORMCampo[nCampo].EsNulo then begin
+        if FCampos.ORMCampo[nCampo].TipoDato = tdBlobBinary then begin
           stream := select.Datos.CreateBlobStream(select.Datos.Fields[nCampo], bmRead);
-          FCampos.Campo[nCampo].AsStream.LoadFromStream(stream);
+          FCampos.ORMCampo[nCampo].AsStream.LoadFromStream(stream);
           stream.Free;
         end
         else
-          FCampos.Campo[nCampo].ValorActual := select.Datos.Fields[nCampo].Value;
+          FCampos.ORMCampo[nCampo].ValorActual := select.Datos.Fields[nCampo].Value;
       end;
     end;
     FCampos.FueronCambiados := false;
@@ -256,33 +256,33 @@ begin
   end
   else begin
     for nCampo := 0 to FCampos.Count - 1 do
-      FCampos.Campo[nCampo].ValorActual := FCampos.Campo[nCampo].ValorPorDefecto;
+      FCampos.ORMCampo[nCampo].ValorActual := FCampos.ORMCampo[nCampo].ValorPorDefecto;
     FCampos.FueronCambiados := false;
     EsNueva := true;
     Result := false;
   end;
 end;
 
-procedure TEntidadBase.AsignarConexion(ConexionEntidad: TEntidadConexion);
+procedure TORMEntidadBase.AsignarConexion(ConexionEntidad: TORMEntidadConexion);
 begin
   FEntidadConexion := ConexionEntidad;
   FOwnsEntidadConexion := false;
 end;
 
-procedure TEntidadBase.CargarCombo(IndiceCampoDato,
+procedure TORMEntidadBase.CargarCombo(IndiceCampoDato,
   IndiceCampoDescripcion: integer; Items: TStringList; SinDuplicados: boolean);
 begin
   CargarCombo(IndiceCampoDato, IndiceCampoDescripcion, -1, '', -1, '', Items, SinDuplicados);
 end;
 
-procedure TEntidadBase.CargarCombo(IndiceCampoDato, IndiceCampoDescripcion,
+procedure TORMEntidadBase.CargarCombo(IndiceCampoDato, IndiceCampoDescripcion,
   IndiceCampoCondicion: integer; ValorCondicion: Variant; Items: TStringList; SinDuplicados: boolean);
 begin
   CargarCombo(IndiceCampoDato, IndiceCampoDescripcion, IndiceCampoCondicion,
               ValorCondicion, -1, '', Items, SinDuplicados);
 end;
 
-procedure TEntidadBase.CargarCombo(IndiceCampoDato, IndiceCampoDescripcion,
+procedure TORMEntidadBase.CargarCombo(IndiceCampoDato, IndiceCampoDescripcion,
   IndiceCampoCondicion1: integer; ValorCondicion1: Variant;
   IndiceCampoCondicion2: integer; ValorCondicion2: Variant; Items: TStringList; SinDuplicados: boolean);
 begin
@@ -292,38 +292,38 @@ begin
               Items, SinDuplicados);
 end;
 
-function TEntidadBase.Clonar(Coleccion: TCollection): TEntidadBase;
+function TORMEntidadBase.Clonar(Coleccion: TCollection): TORMEntidadBase;
 begin
   if Assigned(Coleccion) then
-    Result := TEntidadBase(Coleccion.ItemClass.Create(Coleccion))
+    Result := TORMEntidadBase(Coleccion.ItemClass.Create(Coleccion))
   else
-    Result := TEntidadBase.Create(Coleccion);
-  Result.Campos.Free;
-  Result.Campos   := Campos.Clonar;
+    Result := TORMEntidadBase.Create(Coleccion);
+  Result.ORMCampos.Free;
+  Result.ORMCampos:= ORMCampos.Clonar;
   Result.Tabla    := FTabla;
   Result.EsNueva  := FEsNueva;
   Result.EnEdicion:= FEnEdicion;
 end;
 
-function TEntidadBase.CrearNuevaConexionEntidad: TEntidadConexion;
+function TORMEntidadBase.CrearNuevaConexionEntidad: TORMEntidadConexion;
 begin
   Result := nil;
 end;
 
-constructor TEntidadBase.Create(Coleccion: TCollection; ComoEntidadNueva: boolean);
+constructor TORMEntidadBase.Create(Coleccion: TCollection; ComoEntidadNueva: boolean);
 begin
   inherited Create(Coleccion);
-  FCampos := TColeccionCampos.Create;
+  FCampos := TORMColeccionCampos.Create;
   EsNueva := ComoEntidadNueva;
   FEntidadesAsociadas   := nil;
   FColeccionesAsociadas := nil;
   FEntidadConexion      := nil;
   FOwnsEntidadConexion  := false;
   if assigned(Coleccion) then
-    AsignarConexion((Coleccion as TColeccionEntidades).Conexion);
+    AsignarConexion((Coleccion as TORMColeccionEntidades).Conexion);
 end;
 
-destructor TEntidadBase.Destroy;
+destructor TORMEntidadBase.Destroy;
 begin
   FreeAndNil(FCampos);
   FreeAndNil(FEntidadesAsociadas);
@@ -335,7 +335,7 @@ begin
   inherited;
 end;
 
-function TEntidadBase.Eliminar: boolean;
+function TORMEntidadBase.Eliminar: boolean;
 var
   delete : TDeleteStatement;
   nCampo : integer;
@@ -344,11 +344,11 @@ begin
 
   for nCampo := 0 to FCampos.Count - 1 do
   begin
-    if FCampos.Campo[nCampo].EsClavePrimaria then
+    if FCampos.ORMCampo[nCampo].EsClavePrimaria then
     begin
-      delete.Condicion.Agregar(TCondicionComparacion.Create(FCampos.Campo[nCampo],
+      delete.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[nCampo],
                                                             tcIgual,
-                                                            FCampos.Campo[nCampo].ValorActual))
+                                                            FCampos.ORMCampo[nCampo].ValorActual))
     end;
   end;
   if Conexion.SQLManager.EjecutarDelete(delete) then
@@ -359,7 +359,7 @@ begin
   delete.Free;
 end;
 
-procedure TEntidadBase.EliminarEntidadAsociada(Entidad: TEntidadBase);
+procedure TORMEntidadBase.EliminarEntidadAsociada(Entidad: TORMEntidadBase);
 var
   nPos: integer;
 begin
@@ -367,7 +367,7 @@ begin
   begin
     for nPos := 0 to EntidadesAsociadas.Count - 1 do
     begin
-      if TEntidadAsociada(EntidadesAsociadas.Items[nPos]).Entidad = Entidad then
+      if TORMEntidadAsociada(EntidadesAsociadas.Items[nPos]).Entidad = Entidad then
       begin
         EntidadesAsociadas.Delete(nPos);
         FreeAndNil(Entidad);
@@ -377,7 +377,7 @@ begin
   end;
 end;
 
-function TEntidadBase.GetColeccionesAsociadas: TObjectList;
+function TORMEntidadBase.GetColeccionesAsociadas: TObjectList;
 begin
   if not assigned(FColeccionesAsociadas) then
     FColeccionesAsociadas := TObjectList.Create(true);
@@ -385,7 +385,7 @@ begin
   Result := FColeccionesAsociadas;
 end;
 
-function TEntidadBase.GetEntidadConexion: TEntidadConexion;
+function TORMEntidadBase.GetEntidadConexion: TORMEntidadConexion;
 begin
   if not assigned(FEntidadConexion)  then
   begin
@@ -395,7 +395,7 @@ begin
   Result := FEntidadConexion;
 end;
 
-function TEntidadBase.GetEntidadesAsociadas: TObjectList;
+function TORMEntidadBase.GetEntidadesAsociadas: TObjectList;
 begin
   if not assigned(FEntidadesAsociadas) then
     FEntidadesAsociadas := TObjectList.Create(true);
@@ -403,13 +403,13 @@ begin
   Result := FEntidadesAsociadas;
 end;
 
-function TEntidadBase.Guardar: boolean;
+function TORMEntidadBase.Guardar: boolean;
 var
   bComienzoTransaccion : boolean;
   nEntidad, nEntidadColeccion, nCampo : integer;
-  unaEntidadAsociada: TEntidadAsociada;
-  unaEntidad: TEntidadBase;
-  unCR : TCamposRelacionados;
+  unaEntidadAsociada: TORMEntidadAsociada;
+  unaEntidad: TORMEntidadBase;
+  unCR : TORMCamposRelacionados;
 begin
   bComienzoTransaccion := false;
   Result := true;
@@ -421,14 +421,14 @@ begin
 
   if assigned(FEntidadesAsociadas) then begin
     for nEntidad := 0 to FEntidadesAsociadas.Count - 1 do begin
-      unaEntidadAsociada := (FEntidadesAsociadas.Items[nEntidad] as TEntidadAsociada);
+      unaEntidadAsociada := (FEntidadesAsociadas.Items[nEntidad] as TORMEntidadAsociada);
       //Se asigna al crearse
       unaEntidadAsociada.Entidad.AsignarConexion(FEntidadConexion);
       Result := unaEntidadAsociada.Entidad.Guardar;
       if Result then begin
         for nCampo := 0 to unaEntidadAsociada.CantidadRelaciones - 1 do begin
           unCR := unaEntidadAsociada.CamposRelacionados[nCampo];
-          FCampos.Campo[unCR.CampoOrigen].ValorActual := unaEntidadAsociada.Entidad.Campos.Campo[unCR.CampoDestino].ValorActual;
+          FCampos.ORMCampo[unCR.CampoOrigen].ValorActual := unaEntidadAsociada.Entidad.ORMCampos.ORMCampo[unCR.CampoDestino].ValorActual;
         end;
       end
       else
@@ -448,15 +448,15 @@ begin
 
   if assigned(FColeccionesAsociadas) then begin
     for nEntidad := 0 to FColeccionesAsociadas.Count - 1 do begin
-      unaEntidadAsociada := (FColeccionesAsociadas.Items[nEntidad] as TEntidadAsociada);
+      unaEntidadAsociada := (FColeccionesAsociadas.Items[nEntidad] as TORMEntidadAsociada);
       //Asigno valores
       for nEntidadColeccion := 0 to unaEntidadAsociada.ColeccionEntidades.Count - 1 do begin
-        unaEntidad := (unaEntidadAsociada.ColeccionEntidades.Items[nEntidadColeccion] as TEntidadBase);
-        if (unaEntidad.EsNueva) or (unaEntidad.Campos.FueronCambiados) then
+        unaEntidad := (unaEntidadAsociada.ColeccionEntidades.Items[nEntidadColeccion] as TORMEntidadBase);
+        if (unaEntidad.EsNueva) or (unaEntidad.ORMCampos.FueronCambiados) then
         begin
           for nCampo := 0 to unaEntidadAsociada.CantidadRelaciones - 1 do begin
             unCR := unaEntidadAsociada.CamposRelacionados[nCampo];
-            unaEntidad.Campos.Campo[unCR.CampoDestino].ValorActual := FCampos.Campo[unCR.CampoOrigen].ValorActual;
+            unaEntidad.ORMCampos.ORMCampo[unCR.CampoDestino].ValorActual := FCampos.ORMCampo[unCR.CampoOrigen].ValorActual;
           end;
         end;
       end;
@@ -472,7 +472,7 @@ begin
   end;
 end;
 
-function TEntidadBase.InsertarEntidad: boolean;
+function TORMEntidadBase.InsertarEntidad: boolean;
 var
   insert : TInsertStatement;
 begin
@@ -486,28 +486,28 @@ begin
   insert.Free;
 end;
 
-procedure TEntidadBase.CargarCombo(IndiceCampoDato,
+procedure TORMEntidadBase.CargarCombo(IndiceCampoDato,
   IndiceCampoDescripcion: integer; aIndiceCampoCondicion: array of Integer;
-  aTipoCondicion: array of TTipoComparacion; aValorCondicion: array of Variant; 
+  aTipoCondicion: array of TORMTipoComparacion; aValorCondicion: array of Variant; 
   Items: TStringList; SinDuplicados: boolean);
 var
   select : TSelectStatement;
-  CamposCombo: TColeccionCampos;
+  CamposCombo: TORMColeccionCampos;
   ChangeEvent : TNotifyEvent;
   Sorted : boolean;
   nCondicion: Integer;
 begin
-  CamposCombo := TColeccionCampos.Create;
-  CamposCombo.Agregar(FCampos.Campo[IndiceCampoDato].Clonar);
-  CamposCombo.Agregar(FCampos.Campo[IndiceCampoDescripcion].Clonar);
+  CamposCombo := TORMColeccionCampos.Create;
+  CamposCombo.Agregar(FCampos.ORMCampo[IndiceCampoDato].Clonar);
+  CamposCombo.Agregar(FCampos.ORMCampo[IndiceCampoDescripcion].Clonar);
   select := TSelectStatement.Create(CamposCombo);
   select.SinDuplicados := SinDuplicados;
-  select.Orden.Agregar( FCampos.Campo[IndiceCampoDescripcion], toAscendente);
+  select.Orden.Agregar( FCampos.ORMCampo[IndiceCampoDescripcion], toAscendente);
 
   for nCondicion := 0 to Length(aIndiceCampoCondicion) - 1 do
   begin
     if (aIndiceCampoCondicion[nCondicion] > -1) then
-      select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.Campo[aIndiceCampoCondicion[nCondicion]],
+      select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[aIndiceCampoCondicion[nCondicion]],
                                 aTipoCondicion[nCondicion], aValorCondicion[nCondicion]));
   end;
 
@@ -560,7 +560,7 @@ end;
 
 { TParCampos }
 
-constructor TCamposRelacionados.Create(nCampoOrigen, nCampoDestino: integer);
+constructor TORMCamposRelacionados.Create(nCampoOrigen, nCampoDestino: integer);
 begin
   FCampoOrigen  := nCampoOrigen;
   FCampoDestino := nCampoDestino;
@@ -568,49 +568,49 @@ end;
 
 { TEntidadAsociada }
 
-procedure TEntidadAsociada.AgregarCamposRelacionados(nCampoOrigen,
+procedure TORMEntidadAsociada.AgregarCamposRelacionados(nCampoOrigen,
   nCampoDestino: integer);
 begin
-  FCamposRelacionados.Add(TCamposRelacionados.Create(nCampoOrigen, nCampoDestino));
+  FCamposRelacionados.Add(TORMCamposRelacionados.Create(nCampoOrigen, nCampoDestino));
 end;
 
-constructor TEntidadAsociada.Create(unaEntidad: TEntidadBase);
+constructor TORMEntidadAsociada.Create(unaEntidad: TORMEntidadBase);
 begin
   FObjetoAsociado := unaEntidad;
   FCamposRelacionados:= TObjectList.Create(true);
 end;
 
-constructor TEntidadAsociada.Create(unaColeccion: TColeccionEntidades);
+constructor TORMEntidadAsociada.Create(unaColeccion: TORMColeccionEntidades);
 begin
   FObjetoAsociado := unaColeccion;
   FCamposRelacionados:= TObjectList.Create(true);
 end;
 
-destructor TEntidadAsociada.Destroy;
+destructor TORMEntidadAsociada.Destroy;
 begin
   FCamposRelacionados.Free;
   inherited;
 end;
 
-function TEntidadAsociada.GetCamposRelacionados(
-  index: integer): TCamposRelacionados;
+function TORMEntidadAsociada.GetCamposRelacionados(
+  index: integer): TORMCamposRelacionados;
 begin
-  Result := FCamposRelacionados.Items[index] as TCamposRelacionados;
+  Result := FCamposRelacionados.Items[index] as TORMCamposRelacionados;
 end;
 
-function TEntidadAsociada.GetCantidadRelaciones: integer;
+function TORMEntidadAsociada.GetCantidadRelaciones: integer;
 begin
   Result := FCamposRelacionados.Count;
 end;
 
-function TEntidadAsociada.GetColeccionEntidades: TColeccionEntidades;
+function TORMEntidadAsociada.GetColeccionEntidades: TORMColeccionEntidades;
 begin
-  Result := FObjetoAsociado as TColeccionEntidades;
+  Result := FObjetoAsociado as TORMColeccionEntidades;
 end;
 
-function TEntidadAsociada.GetEntidad: TEntidadBase;
+function TORMEntidadAsociada.GetEntidad: TORMEntidadBase;
 begin
-  Result := FObjetoAsociado as TEntidadBase;
+  Result := FObjetoAsociado as TORMEntidadBase;
 end;
 
 end.

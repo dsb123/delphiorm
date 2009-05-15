@@ -51,12 +51,12 @@ var
 begin
   with UpdateStatement do
   begin
-    sTabla := Campos.Campo[0].Tabla;
-    Result := 'UPDATE ' + NombreTabla(Campos.Campo[0].Tabla) + ' SET ';
+    sTabla := Campos.ORMCampo[0].Tabla;
+    Result := 'UPDATE ' + NombreTabla(Campos.ORMCampo[0].Tabla) + ' SET ';
     EsPrimero := true;
     for nCampo := 0 to Campos.Count - 1 do
     begin
-      with Campos.Campo[nCampo] do
+      with Campos.ORMCampo[nCampo] do
       begin
         if FueCambiado and (Tabla = sTabla) then begin
           if not EsPrimero then Result := Result + ', ';

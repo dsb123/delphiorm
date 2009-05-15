@@ -53,7 +53,7 @@ var
 begin
   with InsertStatement do
   begin
-    sTabla := Campos.Campo[0].Tabla;
+    sTabla := Campos.ORMCampo[0].Tabla;
     Result := 'INSERT INTO ' + NombreTabla(sTabla)+ ' (';
 
     sValores := '(';
@@ -62,7 +62,7 @@ begin
     EsPrimero := true;
     for nCampo := 0 to Campos.Count - 1 do
     begin
-      with Campos.Campo[nCampo] do
+      with Campos.ORMCampo[nCampo] do
       begin
         if sTabla = Tabla then
         begin
@@ -83,7 +83,7 @@ begin
             IndiceParametro := SQLParams.Count-1;
             if EsIdentidad  then begin
               sCodigoGenerador := 'SELECT GEN_ID("' + Secuencia + '", 1) FROM RDB$DATABASE';
-              Generadores.Agregar(TGenerador.Create(IndiceParametro, nCampo, sCodigoGenerador));
+              Generadores.Agregar(TORMGenerador.Create(IndiceParametro, nCampo, sCodigoGenerador));
             end;
 
             sValores := sValores + ':' + ParametroAsociado;

@@ -22,20 +22,20 @@ interface
 uses Classes, Contnrs, DB, uSQLBuilder, uExpresiones, uCampos, uConexion;
 
 type
-  TColeccionEntidades = Class(TCollection)
+  TORMColeccionEntidades = Class(TCollection)
   private
     FEntidadesEliminadas: TObjectList;
     FDataSet: TDataSet;
-    FEntidadConexion    : TEntidadConexion;
+    FEntidadConexion    : TORMEntidadConexion;
     FOwnsEntidadConexion: boolean;
 
     function GetDataSet: TDataSet;
     procedure SetDataSet(const Value: TDataSet);
-    function GetEntidadConexion: TEntidadConexion;
+    function GetEntidadConexion: TORMEntidadConexion;
   protected
-    FCampos : TColeccionCampos;
+    FCampos : TORMColeccionCampos;
     FSelectStatement : TSelectStatement;
-    function ObtenerCampo(index: integer): TCampo;
+    function ObtenerCampo(index: integer): TORMCampo;
     procedure ProcesarDataSet; virtual;
   public
     constructor Create(ItemClass: TCollectionItemClass);
@@ -47,8 +47,8 @@ type
     procedure Eliminar(Item: TCollectionItem); overload;
     procedure EliminarTodos;
 
-    function CrearNuevaConexionEntidad: TEntidadConexion; virtual;
-    procedure AsignarConexion( ConexionEntidad: TEntidadConexion);
+    function CrearNuevaConexionEntidad: TORMEntidadConexion; virtual;
+    procedure AsignarConexion( ConexionEntidad: TORMEntidadConexion);
 
     function ObtenerTodos: integer; virtual;
     function ObtenerMuchos( Filtro: TExpresionCondicion;
@@ -59,7 +59,7 @@ type
                             const CantFilas: integer = 0; const TamPagina: integer = 0;
                             const NroPagina: integer = 0; const SinDuplicados: boolean = false): integer; virtual;
     property AsDataSet: TDataSet read GetDataSet write SetDataSet;
-    property Conexion: TEntidadConexion read GetEntidadConexion;
+    property Conexion: TORMEntidadConexion read GetEntidadConexion;
   end;
 
 implementation
@@ -68,19 +68,19 @@ uses SnapObjectDataset, SysUtils, uEntidades;
 
 { TColeccionEntidades }
 
-procedure TColeccionEntidades.AsignarConexion(
-  ConexionEntidad: TEntidadConexion);
+procedure TORMColeccionEntidades.AsignarConexion(
+  ConexionEntidad: TORMEntidadConexion);
 begin
   FEntidadConexion := ConexionEntidad;
   FOwnsEntidadConexion := false;
 end;
 
-function TColeccionEntidades.CrearNuevaConexionEntidad: TEntidadConexion;
+function TORMColeccionEntidades.CrearNuevaConexionEntidad: TORMEntidadConexion;
 begin
   Result := nil;
 end;
 
-constructor TColeccionEntidades.Create(ItemClass: TCollectionItemClass);
+constructor TORMColeccionEntidades.Create(ItemClass: TCollectionItemClass);
 begin
   inherited Create(ItemClass);
   FDataSet := nil;
@@ -89,7 +89,7 @@ begin
   FOwnsEntidadConexion := false;
 end;
 
-destructor TColeccionEntidades.Destroy;
+destructor TORMColeccionEntidades.Destroy;
 begin
   FCampos.Free;
   FEntidadesEliminadas.Free;
@@ -106,20 +106,20 @@ begin
   inherited;
 end;
 
-procedure TColeccionEntidades.Eliminar(nItem: integer);
+procedure TORMColeccionEntidades.Eliminar(nItem: integer);
 var
-  unaEntidadSimple: TEntidadBase;
+  unaEntidadSimple: TORMEntidadBase;
 begin
   if nItem < Count then
   begin
-    unaEntidadSimple := (Items[nItem] as TEntidadBase).Clonar;
+    unaEntidadSimple := (Items[nItem] as TORMEntidadBase).Clonar;
     unaEntidadSimple.AsignarConexion(Conexion);
     FEntidadesEliminadas.Add(unaEntidadSimple);
     Delete(nItem);
   end;
 end;
 
-procedure TColeccionEntidades.Eliminar(Item: TCollectionItem);
+procedure TORMColeccionEntidades.Eliminar(Item: TCollectionItem);
 var
   nItem : integer;
 begin
@@ -133,7 +133,7 @@ begin
   end;
 end;
 
-procedure TColeccionEntidades.EliminarTodos;
+procedure TORMColeccionEntidades.EliminarTodos;
 var
   nItem : integer;
 begin
@@ -141,7 +141,7 @@ begin
     Eliminar(nItem);
 end;
 
-function TColeccionEntidades.EliminarTodosFisico: boolean;
+function TORMColeccionEntidades.EliminarTodosFisico: boolean;
 var
   bCerrarTransaccion: boolean;
   {$ifdef DELPHI2006UP}
@@ -161,7 +161,7 @@ begin
     Result := Result and (unaEntidad as TEntidadBase).Eliminar;
   {$else}
   for nEntidad:= 0 to Count-1 do
-    Result := Result and (Items[nEntidad] as TEntidadBase).Eliminar;
+    Result := Result and (Items[nEntidad] as TORMEntidadBase).Eliminar;
   {$endif}
 
   if bCerrarTransaccion then
@@ -176,12 +176,12 @@ begin
     Clear;
 end;
 
-function TColeccionEntidades.ObtenerCampo(index: integer): TCampo;
+function TORMColeccionEntidades.ObtenerCampo(index: integer): TORMCampo;
 begin
-  Result := FCampos.Campo[index];
+  Result := FCampos.ORMCampo[index];
 end;
 
-function TColeccionEntidades.GetDataSet: TDataSet;
+function TORMColeccionEntidades.GetDataSet: TDataSet;
 begin
   if not assigned(FDataSet) then
   begin
@@ -191,7 +191,7 @@ begin
   Result := FDataSet;
 end;
 
-function TColeccionEntidades.GetEntidadConexion: TEntidadConexion;
+function TORMColeccionEntidades.GetEntidadConexion: TORMEntidadConexion;
 begin
   if not assigned(FEntidadConexion) then
   begin
@@ -201,7 +201,7 @@ begin
   Result := FEntidadconexion;
 end;
 
-function TColeccionEntidades.Guardar: boolean;
+function TORMColeccionEntidades.Guardar: boolean;
 var
   bCerrarTransaccion: boolean;
   {$ifdef DELPHI2006UP}
@@ -218,14 +218,14 @@ begin
   Result := true;
 
   for nEntidad := 0 to FEntidadesEliminadas.Count - 1 do
-    Result := Result and TEntidadBase(FEntidadesEliminadas[nEntidad]).Eliminar;
+    Result := Result and TORMEntidadBase(FEntidadesEliminadas[nEntidad]).Eliminar;
 
   {$ifdef DELPHI2006UP}
   for unaEntidad in Self do
     Result := Result and (unaEntidad as TEntidadBase).Guardar;
   {$else}
   for nEntidad := 0 to Count -1 do
-    Result := Result and (Items[nEntidad] as TEntidadBase).Guardar;
+    Result := Result and (Items[nEntidad] as TORMEntidadBase).Guardar;
   {$endif}
 
   if bCerrarTransaccion then
@@ -242,7 +242,7 @@ begin
 end;
 
 
-function TColeccionEntidades.ObtenerMuchos(Filtro: TExpresionCondicion;
+function TORMColeccionEntidades.ObtenerMuchos(Filtro: TExpresionCondicion;
   Orden: TExpresionOrdenamiento; Agrupamiento: TExpresionAgrupamiento;
   Relaciones: TExpresionRelacion; FiltroHaving: TExpresionCondicion; const CantFilas,
   TamPagina, NroPagina: integer; const SinDuplicados: boolean): integer;
@@ -271,17 +271,17 @@ begin
   Result := Count;
 end;
 
-function TColeccionEntidades.ObtenerTodos: integer;
+function TORMColeccionEntidades.ObtenerTodos: integer;
 begin
   Result := ObtenerMuchos(nil);
 end;
 
-procedure TColeccionEntidades.ProcesarDataSet;
+procedure TORMColeccionEntidades.ProcesarDataSet;
 begin
 
 end;
 
-procedure TColeccionEntidades.SetDataSet(const Value: TDataSet);
+procedure TORMColeccionEntidades.SetDataSet(const Value: TDataSet);
 begin
   if FDataSet <> Value then
     FDataSet := Value;

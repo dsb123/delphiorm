@@ -40,8 +40,8 @@ type
 
   public
     procedure PrepararSQL;
-    function AgregarParametro(const TipoParametro: TTipoDato; valor: variant; const paramInputOutput: boolean = false): string; overload;
-    function AgregarParametro(const TipoParametro: TTipoDato; Stream: TStream; const paramInputOutput: boolean = false): string; overload;
+    function AgregarParametro(const TipoParametro: TORMTipoDato; valor: variant; const paramInputOutput: boolean = false): string; overload;
+    function AgregarParametro(const TipoParametro: TORMTipoDato; Stream: TStream; const paramInputOutput: boolean = false): string; overload;
 
     property SQLStatement: string read GetSQLStatement;
     property SQLParams : TParams read GetSQLParams write SetSQLParams;
@@ -58,7 +58,7 @@ type
     FNroPagina        : integer;
     FRecordCount      : integer;
 
-    FColeccionCampos  : TColeccionCampos;
+    FColeccionCampos  : TORMColeccionCampos;
     FCondicion        : TExpresionCondicion;
     FOrden            : TExpresionOrdenamiento;
     FAgrupamiento     : TExpresionAgrupamiento;
@@ -78,14 +78,14 @@ type
   protected
     function GenerarSQLStatement: string; override;
   public
-    constructor Create( Campos: TColeccionCampos; Condicion: TExpresionCondicion;
+    constructor Create( Campos: TORMColeccionCampos; Condicion: TExpresionCondicion;
                         Orden: TExpresionOrdenamiento; Agrupamiento: TExpresionAgrupamiento;
                         FiltroHaving: TExpresionCondicion; Relaciones: TExpresionRelacion;
                         const CantFilas, TamPagina, NroPagina: integer; const SinDuplicados: boolean); overload;
-    constructor Create( Campos: TColeccionCampos;
+    constructor Create( Campos: TORMColeccionCampos;
                         const CantFilas, TamPagina, NroPagina: integer;
                         const SinDuplicados: boolean); overload;
-    constructor Create(Campos: TColeccionCampos); overload;
+    constructor Create(Campos: TORMColeccionCampos); overload;
     destructor Destroy; override;
 
     property SinDuplicados: boolean read FSinDuplicados write FSinDuplicados;
@@ -93,7 +93,7 @@ type
     property TamPagina: integer read FTamPagina write FNroPagina default 0;
     property NroPagina: integer read FNroPagina write FNroPagina default 0;
     property RecordCount: integer read GetRecordCount;
-    property ColeccionCampos: TColeccionCampos read FColeccionCampos;
+    property ColeccionCampos: TORMColeccionCampos read FColeccionCampos;
     property Condicion: TExpresionCondicion read GetCondicion;
     property Orden : TExpresionOrdenamiento read GetOrden;
     property Agrupamiento: TExpresionAgrupamiento read GetAgrupamiento;
@@ -106,25 +106,25 @@ type
 
   TInsertStatement = class(TSQLStatement)
   private
-    FCampos : TColeccionCampos;
+    FCampos : TORMColeccionCampos;
     {Campos de respuesta}
     FRegInsertados : integer;
-    FGeneradores : TColeccionGenerador;
+    FGeneradores : TORMColeccionGenerador;
   protected
     function GenerarSQLStatement: string; override;
   public
-    constructor Create(Campos: TColeccionCampos);
+    constructor Create(Campos: TORMColeccionCampos);
     destructor Destroy; override;
 
-    property Campos: TColeccionCampos read FCampos;
+    property Campos: TORMColeccionCampos read FCampos;
     property RegistrosInsertados: integer read FRegInsertados write FRegInsertados;
-    property Generadores: TColeccionGenerador read FGeneradores write FGeneradores;
+    property Generadores: TORMColeccionGenerador read FGeneradores write FGeneradores;
   end;
   TInsertStatementPointer = ^TInsertStatement;
 
   TUpdateStatement = class(TSQLStatement)
   private
-    FCampos: TColeccionCampos;
+    FCampos: TORMColeccionCampos;
     FCondicion : TExpresionCondicion;
     FFiltroHaving : TExpresionCondicion;
     FRelaciones   : TExpresionRelacion;
@@ -138,12 +138,12 @@ type
   protected
     function GenerarSQLStatement: string; override;
   public
-    constructor Create( Campos: TColeccionCampos; Condicion: TExpresionCondicion;
+    constructor Create( Campos: TORMColeccionCampos; Condicion: TExpresionCondicion;
                         FiltroHaving: TExpresionCondicion; Relaciones: TExpresionRelacion); overload;
-    constructor Create( Campos: TColeccionCampos); overload;
+    constructor Create( Campos: TORMColeccionCampos); overload;
     destructor Destroy; override;
 
-    property Campos: TColeccionCampos read FCampos;
+    property Campos: TORMColeccionCampos read FCampos;
     property Condicion: TExpresionCondicion read GetCondicion;
     property FiltroHaving: TExpresionCondicion read GetFiltroHaving;
     property Relaciones: TExpresionRelacion read GetRelaciones;
@@ -188,7 +188,7 @@ uses SysUtils, uGeneradorSelect, uGeneradorInsert, uGeneradorUpdate, uGeneradorD
 
 { TSelectStatement }
 
-constructor TSelectStatement.Create(Campos: TColeccionCampos;
+constructor TSelectStatement.Create(Campos: TORMColeccionCampos;
   Condicion: TExpresionCondicion; Orden: TExpresionOrdenamiento;
   Agrupamiento: TExpresionAgrupamiento; FiltroHaving: TExpresionCondicion;
   Relaciones: TExpresionRelacion; const CantFilas, TamPagina, NroPagina: integer;
@@ -211,7 +211,7 @@ begin
   FSQLParams := nil;
 end;
 
-constructor TSelectStatement.Create(Campos: TColeccionCampos);
+constructor TSelectStatement.Create(Campos: TORMColeccionCampos);
 begin
   FLiberarExpresiones := true;
   FColeccionCampos := Campos;
@@ -231,7 +231,7 @@ begin
   FSQLParams := nil;  
 end;
 
-constructor TSelectStatement.Create(Campos: TColeccionCampos; const CantFilas,
+constructor TSelectStatement.Create(Campos: TORMColeccionCampos; const CantFilas,
   TamPagina, NroPagina: integer; const SinDuplicados: boolean);
 begin
   FLiberarExpresiones := true;
@@ -355,10 +355,10 @@ end;
 
 { TInsertStatement }
 
-constructor TInsertStatement.Create(Campos: TColeccionCampos);
+constructor TInsertStatement.Create(Campos: TORMColeccionCampos);
 begin
   FCampos := Campos;
-  FGeneradores := TColeccionGenerador.Create;
+  FGeneradores := TORMColeccionGenerador.Create;
 end;
 
 destructor TInsertStatement.Destroy;
@@ -382,7 +382,7 @@ end;
 
 { TUpdateStatement }
 
-constructor TUpdateStatement.Create(Campos: TColeccionCampos; Condicion,
+constructor TUpdateStatement.Create(Campos: TORMColeccionCampos; Condicion,
   FiltroHaving: TExpresionCondicion; Relaciones: TExpresionRelacion);
 begin
   FCampos := Campos;
@@ -392,7 +392,7 @@ begin
   FLiberarExpresiones := false;
 end;
 
-constructor TUpdateStatement.Create(Campos: TColeccionCampos);
+constructor TUpdateStatement.Create(Campos: TORMColeccionCampos);
 begin
   FCampos := Campos;
   FCondicion := nil;
@@ -535,7 +535,7 @@ end;
 
 { TSQLStatement }
 
-function TSQLStatement.AgregarParametro(const TipoParametro: TTipoDato;
+function TSQLStatement.AgregarParametro(const TipoParametro: TORMTipoDato;
   valor: variant; const paramInputOutput: boolean): string;
 var
   Parametro : TParam;
@@ -566,7 +566,7 @@ begin
   Result := Parametro.Name;
 end;
 
-function TSQLStatement.AgregarParametro(const TipoParametro: TTipoDato;
+function TSQLStatement.AgregarParametro(const TipoParametro: TORMTipoDato;
   Stream: TStream; const paramInputOutput: boolean): string;
 var
   Parametro : TParam;

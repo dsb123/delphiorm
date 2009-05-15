@@ -21,13 +21,13 @@ interface
 uses SysUtils, DB, Classes, Contnrs;
 
 type
-  TTipoDato=( tdDesconocido, tdInteger, tdFloat, tdString, tdDate, tdTime,
+  TORMTipoDato=( tdDesconocido, tdInteger, tdFloat, tdString, tdDate, tdTime,
               tdDateTime, tdBlobText, tdBlobBinary, tdBoolean, tdTimeStamp);
-  TFuncionAgregacion = (faNinguna, faCantidad, faCantidadFilas,
+  TORMFuncionAgregacion = (faNinguna, faCantidad, faCantidadFilas,
                         faCantidadSinDuplicados, faMaximo, faMinimo,
                         faSuma, faSumaSinDuplicados, faPromedio,
                         faPromedioSinDuplicados);
-  TCampo = class(TObject)
+  TORMCampo = class(TObject)
   private
     FPadre            : TObject; //Si pertenece a alguien
     FNombre           : string;
@@ -45,11 +45,11 @@ type
     FAceptaNull       : boolean;
     FEsNulo           : boolean;
     FFueCambiado      : boolean;
-    FTipoDato         : TTipoDato;
+    FTipoDato         : TORMTipoDato;
     FValorPorDefecto  : variant;
     FValorActual      : variant;
     FBlobField        : TMemoryStream;
-    FFuncionAgregacion: TFuncionAgregacion;
+    FFuncionAgregacion: TORMFuncionAgregacion;
 
     procedure SetValorActual(const Value: variant);
     function GetAsBoolean: boolean;
@@ -79,12 +79,12 @@ type
                         const EsClavePrimaria: boolean;
                         const EsClaveForanea: boolean;
                         const AceptaNull: boolean;
-                        const TipoDato: TTipoDato;
-                        const FuncionAgregacion: TFuncionAgregacion;
+                        const TipoDato: TORMTipoDato;
+                        const FuncionAgregacion: TORMFuncionAgregacion;
                         const ValorPorDefecto: variant); overload;
     constructor Create( const Tabla: string; const NombreCampo: string); overload;
     destructor Destroy; override;
-    function Clonar: TCampo;
+    function Clonar: TORMCampo;
     property Nombre: string read FNombre;
     property Tabla: string read FTabla;
     property Secuencia: string read FSecuencia;
@@ -100,8 +100,8 @@ type
     property AceptaNull: boolean read FAceptaNull;
     property EsNulo: boolean read FEsNulo write SetEsNulo;
     property FueCambiado: boolean read FFueCambiado write FFueCambiado;
-    property TipoDato: TTipoDato read FTipoDato;
-    property FuncionAgregacion: TFuncionAgregacion read FFuncionAgregacion;
+    property TipoDato: TORMTipoDato read FTipoDato;
+    property FuncionAgregacion: TORMFuncionAgregacion read FFuncionAgregacion;
     property ValorPorDefecto: variant read FValorPorDefecto;
     property ValorActual: variant read FValorActual write SetValorActual;
     property AsBoolean: boolean read GetAsBoolean write SetAsBoolean;
@@ -114,41 +114,41 @@ type
     property Padre: TObject read GetPadre write SetPadre;
   end;
 
-  TCamposEnumerator = class;
-  TColeccionCampos = class(TObjectList)
+  TORMCamposEnumerator = class;
+  TORMColeccionCampos = class(TObjectList)
   private
-    function GetCampo(index: integer): TCampo;
-    procedure SetCampo(index: integer; const Value: TCampo);
+    function GetORMCampo(index: integer): TORMCampo;
+    procedure SetDOrmCampo(index: integer; const Value: TORMCampo);
     procedure SetFueronCambiados(const Value: boolean);
     function GetFueronCambiados: boolean;
   public
-    property Campo[index: integer]: TCampo read GetCampo write SetCampo; default;
+    property ORMCampo[index: integer]: TORMCampo read GetORMCampo write SetDOrmCampo; default;
     property FueronCambiados:boolean read GetFueronCambiados write SetFueronCambiados;
-    function Agregar(Campo: TCampo): integer;
-    function Clonar: TColeccionCampos;
-    function GetEnumerator: TCamposEnumerator;
-    function CampoPorNombre(sCampo: string): TCampo;
+    function Agregar(Campo: TORMCampo): integer;
+    function Clonar: TORMColeccionCampos;
+    function GetEnumerator: TORMCamposEnumerator;
+    function CampoPorNombre(sCampo: string): TORMCampo;
   end;
 
-  TCamposEnumerator = class
+  TORMCamposEnumerator = class
   private
     nCampoIndex: integer;
-    FColeccion : TColeccionCampos;
+    FColeccion : TORMColeccionCampos;
   public
-    constructor Create(ColeccionCampos: TColeccionCampos);
-    function  GetCurrent: TCampo;
+    constructor Create(ColeccionCampos: TORMColeccionCampos);
+    function  GetCurrent: TORMCampo;
     function  MoveNext: boolean;
-    property Current: TCampo read GetCurrent;
+    property Current: TORMCampo read GetCurrent;
   end;
 
 implementation
 
 uses Variants;
-{ TCampo }
+{ TDOrmCampo }
 
-constructor TCampo.Create(const Tabla, NombreCampo, Secuencia, AliasCampo, AliasTabla : string;
+constructor TORMCampo.Create(const Tabla, NombreCampo, Secuencia, AliasCampo, AliasTabla : string;
   const Indice, Longitud: integer; const EsIdentidad, EsClavePrimaria, EsClaveForanea, AceptaNull: boolean;
-  const TipoDato: TTipoDato; const FuncionAgregacion: TFuncionAgregacion; const ValorPorDefecto: variant);
+  const TipoDato: TORMTipoDato; const FuncionAgregacion: TORMFuncionAgregacion; const ValorPorDefecto: variant);
 begin
   FNombre := NombreCampo;
   FTabla := Tabla;
@@ -174,9 +174,9 @@ begin
   FPadre := nil;
 end;
 
-function TCampo.Clonar: TCampo;
+function TORMCampo.Clonar: TORMCampo;
 begin
-  Result := TCampo.Create(FTabla, FNombre, FSecuencia, FAliasCampo, FAliasTabla,
+  Result := TORMCampo.Create(FTabla, FNombre, FSecuencia, FAliasCampo, FAliasTabla,
   FIndice, FLongitud, FEsIdentidad, FEsClavePrimaria, FEsClaveForanea, FAceptaNull, FTipoDato,
   FFuncionAgregacion,  FValorPorDefecto);
 
@@ -186,7 +186,7 @@ begin
     Result.AsStream.LoadFromStream(FBlobField);
 end;
 
-constructor TCampo.Create(const Tabla, NombreCampo: string);
+constructor TORMCampo.Create(const Tabla, NombreCampo: string);
 begin
   FNombre := NombreCampo;
   FTabla := Tabla;
@@ -209,7 +209,7 @@ begin
   FPadre := nil;
 end;
 
-destructor TCampo.Destroy;
+destructor TORMCampo.Destroy;
 begin
   if assigned(FBlobField) then
     FreeAndNil(FBlobField);
@@ -217,7 +217,7 @@ begin
   inherited;
 end;
 
-function TCampo.GetAsStream: TMemoryStream;
+function TORMCampo.GetAsStream: TMemoryStream;
 begin
   if not assigned(FBlobField) then
     FBlobField := TMemoryStream.Create;
@@ -226,37 +226,37 @@ begin
   Result := FBlobField;
 end;
 
-function TCampo.GetAsBoolean: boolean;
+function TORMCampo.GetAsBoolean: boolean;
 begin
   Result := ValorActual;
 end;
 
-function TCampo.GetAsDateTime: TDateTime;
+function TORMCampo.GetAsDateTime: TDateTime;
 begin
   Result := ValorActual;
 end;
 
-function TCampo.GetAsFloat: double;
+function TORMCampo.GetAsFloat: double;
 begin
   Result := ValorActual;
 end;
 
-function TCampo.GetAsInteger: integer;
+function TORMCampo.GetAsInteger: integer;
 begin
   Result := ValorActual;
 end;
 
-function TCampo.GetAsString: string;
+function TORMCampo.GetAsString: string;
 begin
   Result := ValorActual;
 end;
 
-function TCampo.GetPadre: TObject;
+function TORMCampo.GetPadre: TObject;
 begin
   Result := FPadre;
 end;
 
-procedure TCampo.SetAsStream(const Value: TMemoryStream);
+procedure TORMCampo.SetAsStream(const Value: TMemoryStream);
 begin
   if assigned(FBlobField) then
     FreeAndNil(FBlobField);
@@ -264,32 +264,32 @@ begin
   EsNulo := not Assigned(Value);
 end;
 
-procedure TCampo.SetAsBoolean(const Value: boolean);
+procedure TORMCampo.SetAsBoolean(const Value: boolean);
 begin
   SetValorActual(Value);
 end;
 
-procedure TCampo.SetAsDateTime(const Value: TDateTime);
+procedure TORMCampo.SetAsDateTime(const Value: TDateTime);
 begin
   SetValorActual(Value);
 end;
 
-procedure TCampo.SetAsFloat(const Value: double);
+procedure TORMCampo.SetAsFloat(const Value: double);
 begin
   SetValorActual(Value);
 end;
 
-procedure TCampo.SetAsInteger(const Value: integer);
+procedure TORMCampo.SetAsInteger(const Value: integer);
 begin
   SetValorActual(Value);
 end;
 
-procedure TCampo.SetAsString(const Value: string);
+procedure TORMCampo.SetAsString(const Value: string);
 begin
   SetValorActual(Value);
 end;
 
-procedure TCampo.SetEsNulo(const Value: boolean);
+procedure TORMCampo.SetEsNulo(const Value: boolean);
 begin
   if FEsNulo <> Value then
   begin
@@ -298,12 +298,12 @@ begin
   end;
 end;
 
-procedure TCampo.SetPadre(const Value: TObject);
+procedure TORMCampo.SetPadre(const Value: TObject);
 begin
   FPadre := Value;
 end;
 
-procedure TCampo.SetValorActual(const Value: variant);
+procedure TORMCampo.SetValorActual(const Value: variant);
 begin
   if (VarType(ValorActual) <> VarType(Value)) then
   begin
@@ -322,17 +322,17 @@ begin
 end;
 
 
-{ TColeccionCampos }
+{ TColeccionDOrmCampos }
 
-function TColeccionCampos.Agregar(Campo: TCampo): integer;
+function TORMColeccionCampos.Agregar(Campo: TORMCampo): integer;
 begin
   Campo.Padre := self;
   Result := Add(Campo);
 end;
 
-function TColeccionCampos.CampoPorNombre(sCampo: string): TCampo;
+function TORMColeccionCampos.CampoPorNombre(sCampo: string): TORMCampo;
 var
-  unCampo: TCampo;
+  unCampo: TORMCampo;
 begin
   Result := nil;
   for unCampo in Self do
@@ -345,30 +345,30 @@ begin
   end;
 end;
 
-function TColeccionCampos.Clonar: TColeccionCampos;
+function TORMColeccionCampos.Clonar: TORMColeccionCampos;
 var
   nCampo : integer;
 begin
-  Result := TColeccionCampos.Create;
+  Result := TORMColeccionCampos.Create;
 
   for nCampo := 0 to Count - 1 do
-    Result.Agregar(Self.GetCampo(nCampo).Clonar);
+    Result.Agregar(Self.GetORMCampo(nCampo).Clonar);
 
 end;
 
-function TColeccionCampos.GetCampo(index: integer): TCampo;
+function TORMColeccionCampos.GetORMCampo(index: integer): TORMCampo;
 begin
-  result := (inherited Items[index] as TCampo);
+  result := (inherited Items[index] as TORMCampo);
 end;
 
-function TColeccionCampos.GetEnumerator: TCamposEnumerator;
+function TORMColeccionCampos.GetEnumerator: TORMCamposEnumerator;
 begin
-  REsult := TCamposEnumerator.Create(self);
+  REsult := TORMCamposEnumerator.Create(self);
 end;
 
-function TColeccionCampos.GetFueronCambiados: boolean;
+function TORMColeccionCampos.GetFueronCambiados: boolean;
 var
-  unCampo : TCampo;
+  unCampo : TORMCampo;
 begin
   Result := false;
   for unCampo in self do
@@ -379,23 +379,23 @@ begin
   end;
 end;
 
-procedure TColeccionCampos.SetCampo(index: integer; const Value: TCampo);
+procedure TORMColeccionCampos.SetDOrmCampo(index: integer; const Value: TORMCampo);
 begin
   inherited Items[index] := Value;
 end;
 
-procedure TColeccionCampos.SetFueronCambiados(const Value: boolean);
+procedure TORMColeccionCampos.SetFueronCambiados(const Value: boolean);
 var
-  unCampo : TCampo;
+  unCampo : TORMCampo;
 begin
   for unCampo in self do
     unCampo.FueCambiado := Value;
     
 end;
 
-{ TCamposEnumerator }
+{ TDOrmCamposEnumerator }
 
-constructor TCamposEnumerator.Create(ColeccionCampos: TColeccionCampos);
+constructor TORMCamposEnumerator.Create(ColeccionCampos: TORMColeccionCampos);
 begin
   inherited Create;
 
@@ -403,12 +403,12 @@ begin
   FColeccion := ColeccionCampos;
 end;
 
-function TCamposEnumerator.GetCurrent: TCampo;
+function TORMCamposEnumerator.GetCurrent: TORMCampo;
 begin
   Result := FColeccion[nCampoIndex];
 end;
 
-function TCamposEnumerator.MoveNext: boolean;
+function TORMCamposEnumerator.MoveNext: boolean;
 begin
   Result := nCampoIndex < (FColeccion.Count - 1);
   if Result then

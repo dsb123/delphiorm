@@ -22,15 +22,15 @@ interface
 uses SysUtils, {$ifdef DELPHI2007}DBXCommon, {$else}dbxpress, {$endif}SqlExpr, uSQLBuilder;
 
 type
-  TOnExceptionEvent = procedure(e: exception) of object;
+  TORMOnExceptionEvent = procedure(e: exception) of object;
   TSQLStatementManager=class
   private
-    procedure SetOnExceptionEvent(const Value: TOnExceptionEvent);
+    procedure SetOnExceptionEvent(const Value: TORMOnExceptionEvent);
   protected
     FSQLConnection: TSQLConnection;
 
     FLastException: Exception;
-    FOnExceptionEvent: TOnExceptionEvent;
+    FOnExceptionEvent: TORMOnExceptionEvent;
     procedure SetLastException(const Value: Exception);
   public
     constructor Create;
@@ -42,10 +42,10 @@ type
     function EjecutarDelete(delete: TDeleteStatement): boolean; virtual; abstract;
 
     property LastException: Exception read FLastException write SetLastException;
-    property OnExceptionEvent: TOnExceptionEvent read FOnExceptionEvent write SetOnExceptionEvent;
+    property OnExceptionEvent: TORMOnExceptionEvent read FOnExceptionEvent write SetOnExceptionEvent;
   end;
 
-  TEntidadConexion=class
+  TORMEntidadConexion=class
   private
     {$ifdef DELPHI2006UP}
     FTransaccion: TDBXTransaction;
@@ -81,7 +81,7 @@ implementation
 
 { TEntidadConexion }
 
-procedure TEntidadConexion.BeginTransaction;
+procedure TORMEntidadConexion.BeginTransaction;
 begin
   {$ifdef DELPHI2006UP}
   FTransaccion := FSQLConnection.BeginTransaction(TDBXIsolations.ReadCommitted);
@@ -95,7 +95,7 @@ begin
   {$endif}
 end;
 
-function TEntidadConexion.Close: boolean;
+function TORMEntidadConexion.Close: boolean;
 begin
   if FSQLConnection.Connected then
     FSQLConnection.Close;
@@ -103,7 +103,7 @@ begin
   Result := not FSQLConnection.Connected;
 end;
 
-procedure TEntidadConexion.Commit;
+procedure TORMEntidadConexion.Commit;
 begin
   {$ifdef DELPHI2006UP}
   FSQLConnection.CommitFreeAndNil(FTransaccion);
@@ -113,7 +113,7 @@ begin
   {$endif}
 end;
 
-constructor TEntidadConexion.Create(Conexion: TSQLConnection; SQLStatementManager: TSQLStatementManager);
+constructor TORMEntidadConexion.Create(Conexion: TSQLConnection; SQLStatementManager: TSQLStatementManager);
 begin
   {$ifdef DELPHI2006UP}
   FTransaccion := nil;
@@ -127,14 +127,14 @@ begin
   FSQLStatementManager.SetSQLConnection(FSQLConnection);
 end;
 
-destructor TEntidadConexion.Destroy;
+destructor TORMEntidadConexion.Destroy;
 begin
   FreeAndNil(FSQLConnection);
   FreeAndNil(FSQLStatementManager);
   inherited;
 end;
 
-function TEntidadConexion.GetEnTransaccion: boolean;
+function TORMEntidadConexion.GetEnTransaccion: boolean;
 begin
   {$ifdef DELPHI2006UP}
   Result := assigned(FTransaccion);
@@ -143,12 +143,12 @@ begin
   {$endif}
 end;
 
-function TEntidadConexion.GetLastException: Exception;
+function TORMEntidadConexion.GetLastException: Exception;
 begin
   Result := FSQLStatementManager.LastException;
 end;
 
-function TEntidadConexion.Open: boolean;
+function TORMEntidadConexion.Open: boolean;
 begin
   if not FSQLConnection.Connected then
     FSQLConnection.Open;
@@ -156,7 +156,7 @@ begin
   Result := FSQLConnection.Connected;
 end;
 
-procedure TEntidadConexion.RollBack;
+procedure TORMEntidadConexion.RollBack;
 begin
   {$ifdef DELPHI2006UP}
   FSQLConnection.RollbackFreeAndNil(FTransaccion);
@@ -183,7 +183,7 @@ begin
 end;
 
 procedure TSQLStatementManager.SetOnExceptionEvent(
-  const Value: TOnExceptionEvent);
+  const Value: TORMOnExceptionEvent);
 begin
   FOnExceptionEvent := Value;
 end;

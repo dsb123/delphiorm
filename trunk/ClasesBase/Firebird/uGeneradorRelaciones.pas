@@ -43,7 +43,7 @@ end;
 
 function TGenRelacionSQL.ObtenerStringRelacion: string;
 var
-  Relacion : TRelacion;
+  Relacion : TORMRelacion;
   nRelacion : integer;
   nCampo: Integer;
 begin

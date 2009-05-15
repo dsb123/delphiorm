@@ -15,14 +15,6 @@ const
 	</PorCadaCampo>
 end;
 </PorCadaEntidad>
-<PorCadaEntidad>
-TCampo<NombreEntidad>=class
-const
-	<PorCadaCampo>
-	<NombreCampo>='<NombreCampo>';
-	</PorCadaCampo>
-end;
-</PorCadaEntidad>
 <PorCadaLista>
 <PorCadaListaEntidad>
 TIndice<NombreListaEntidad>=class
@@ -37,26 +29,26 @@ end;
 TFabricaCampo<NombreEntidad>=class
 public
 	<PorCadaCampo>
-	class function <NombreCampo>: TCampo;
+	class function <NombreCampo>: TORMCampo;
 	</PorCadaCampo>
 end;
 </PorCadaEntidad>
 TFabrica<NombreUnidad>=class
 public
-	class function CrearNuevaEntidadConexion(ConexionPublica: boolean = false): TEntidadConexion;
+	class function CrearNuevaEntidadConexion(ConexionPublica: boolean = false): TORMEntidadConexion;
 end;
 <PorCadaEntidad>
 <IfTieneRelacion>
-TRelacion<NombreEntidad>=class
+TRelaciones<NombreEntidad>=class
 public
 	{Relaciones 1 a 1}
 <PorCadaEntidadAsociada>
-	class function <NombreRelacion>(TipoRelacion: TTipoRelacion=TrAmbas): TRelacion;
+	class function <NombreRelacion>(TipoRelacion: TORMTipoRelacion=TrAmbas): TORMRelacion;
 </PorCadaEntidadAsociada>
 <IfTieneRelacionAMuchos>
 	{Relaciones 1 a n}
 <PorCadaColeccionAsociada>
-	class function <NombreRelacionAMuchos>(TipoRelacion: TTipoRelacion = TrAmbas): TRelacion;
+	class function <NombreRelacionAMuchos>(TipoRelacion: TORMTipoRelacion = TrAmbas): TORMRelacion;
 </PorCadaColeccionAsociada>
 </IfTieneRelacionAMuchos>
 end;
@@ -70,7 +62,7 @@ TColeccion<NombreEntidad>=class;
 </PorCadaEntidad>
 
 <PorCadaEntidad>
-T<NombreEntidad>=class(TEntidadBase)
+T<NombreEntidad>=class(TORMEntidadBase)
 private
 	<PorCadaEntidadAsociada>
 	F<NombreRelacion>: T<NombreEntidadAsociada>;
@@ -98,15 +90,14 @@ public
 	function ObtenerEntidad(<PorCadaCampoClave>const <NombreCampoClave>: <TipoCampoClave></PComaParaEnum></PorCadaCampoClave>): boolean;
 	destructor Destroy; override;
 
-	function CrearNuevaConexionEntidad: TEntidadConexion; override;
-	function GetCampo(IndiceCampo: integer): TCampo; overload;
+	function CrearNuevaConexionEntidad: TORMEntidadConexion; override;
+	function GetORMCampo(IndiceCampo: integer): TORMCampo;
 	<PorCadaEntidadAsociada>
 	procedure Liberar<NombreRelacion>;
 	</PorCadaEntidadAsociada>
 	<PorCadaCampo>
 	function EsNulo<NombreCampo>: boolean;
 	</PorCadaCampo>
-
 	<PorCadaEntidadAsociada>
 	property <NombreRelacion>: T<NombreEntidadAsociada> read Get<NombreRelacion>;
 	</PorCadaEntidadAsociada>
@@ -120,7 +111,7 @@ published
 end;
 </PorCadaEntidad>
 <PorCadaColeccion>
-TColeccion<NombreEntidad>=class(TColeccionEntidades)
+TColeccion<NombreEntidad>=class(TORMColeccionEntidades)
 private
 	type
 		TColeccion<NombreEntidad>Enumerador = record
@@ -135,23 +126,23 @@ private
 		end;
 private
 	function Get<NombreEntidad>(index: integer): T<NombreEntidad>;
-	function GetCampo(indiceCampo: integer): TCampo;
+	function GetORMCampo(indiceCampo: integer): TORMCampo;
 protected
 	procedure ProcesarDataSet; override;
 published
 public
 	constructor Create; overload;
 
-	function CrearNuevaConexionEntidad: TEntidadConexion; override;
+	function CrearNuevaConexionEntidad: TORMEntidadConexion; override;
 
 	function GetEnumerator: TColeccion<NombreEntidad>Enumerador;
 	property <NombreEntidad>[index: integer]: T<NombreEntidad> read Get<NombreEntidad>; default;
-	property Campo[indiceCampo: integer]: TCampo read GetCampo;
+	property ORMCampo[indiceCampo: integer]: TORMCampo read GetORMCampo;
 end;
 </PorCadaColeccion>
 <PorCadaLista>
 <PorCadaListaEntidad>
-TFila<NombreListaEntidad>=class(TEntidadBase)
+TFila<NombreListaEntidad>=class(TORMEntidadBase)
 private
 	<PorCadaCampo>
 	function Get<AliasCampo>: <TipoCampo>;
@@ -160,7 +151,7 @@ private
 public
 	constructor Create(Coleccion: TCollection = nil); overload;
 	destructor Destroy; override;
-	function CrearNuevaConexionEntidad: TEntidadConexion; override;
+	function CrearNuevaConexionEntidad: TORMEntidadConexion; override;
 published
 	<PorCadaCampo>
 	property <AliasCampo>: <TipoCampo> read Get<AliasCampo> write Set<AliasCampo>;
@@ -170,7 +161,7 @@ end;
 </PorCadaLista>
 <PorCadaLista>
 <PorCadaListaEntidad>
-T<NombreListaEntidad>=class(TColeccionEntidades)
+T<NombreListaEntidad>=class(TORMColeccionEntidades)
 private
 	type
 		T<NombreListaEntidad>Enumerador = record
@@ -191,7 +182,7 @@ public
 	constructor Create; overload;
 	destructor Destroy; override;
 
-	function CrearNuevaConexionEntidad: TEntidadConexion; override;
+	function CrearNuevaConexionEntidad: TORMEntidadConexion; override;
 
 	function GetEnumerator: T<NombreListaEntidad>Enumerador;
 	function ObtenerTodos: integer; override;
@@ -209,8 +200,8 @@ end;
 
 var
 	SQLConnectionGenerator: TSQLConnectionGenerator;
-	SingleConnection : TEntidadConexion;
-	On<NombreUnidad>Exception: TOnExceptionEvent;
+	SingleConnection : TORMEntidadConexion;
+	On<NombreUnidad>Exception: TORMOnExceptionEvent;
 
 implementation
 
@@ -218,11 +209,11 @@ uses DB, uSQLBuilder;
 
 {TFabrica<NombreUnidad>}
 
-class function TFabrica<NombreUnidad>.CrearNuevaEntidadConexion(ConexionPublica: boolean): TEntidadConexion;
+class function TFabrica<NombreUnidad>.CrearNuevaEntidadConexion(ConexionPublica: boolean): TORMEntidadConexion;
 begin
 	if not assigned(SingleConnection) then
 	begin
-		Result := TEntidadConexion.Create(SQLConnectionGenerator.GetConnection, TFBSQLStatementManager.Create); 
+		Result := TORMEntidadConexion.Create(SQLConnectionGenerator.GetConnection, TFBSQLStatementManager.Create); 
 		Result.ConexionPublica := ConexionPublica;
 	end
 	else
@@ -237,7 +228,7 @@ begin
 	inherited Create(Coleccion, ComoEntidadNueva);
 	FTabla:='<NombreEntidad>';
 	<PorCadaCampo>
-	FCampos.Agregar(TCampo.Create(Tabla,'<NombreCampo>', '<TieneGenerador>','','',TIndice<NombreEntidad>.<NombreCampo>, <LongitudCampo>,  <bTieneGenerador>, <bEsClavePrimaria>,<bEsClaveForanea>, <bAceptaNull>, <tdTipoCampo>, faNinguna,<TipoORM>));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'<NombreCampo>', '<TieneGenerador>','','',TIndice<NombreEntidad>.<NombreCampo>, <LongitudCampo>,  <bTieneGenerador>, <bEsClavePrimaria>,<bEsClaveForanea>, <bAceptaNull>, <tdTipoCampo>, faNinguna,<TipoORM>));
 	</PorCadaCampo>
 	<PorCadaEntidadAsociada>
 	F<NombreRelacion>:=nil;
@@ -259,16 +250,16 @@ begin
 	inherited;
 end;
 
-function T<NombreEntidad>.CrearNuevaConexionEntidad: TEntidadConexion;
+function T<NombreEntidad>.CrearNuevaConexionEntidad: TORMEntidadConexion;
 begin
 	Result := TFabrica<NombreUnidad>.CrearNuevaEntidadConexion; 
 	if assigned(On<NombreUnidad>Exception) then
 	   Result.SQLManager.OnExceptionEvent := On<NombreUnidad>Exception; 
 end;
 
-function T<NombreEntidad>.GetCampo(IndiceCampo: integer): TCampo;
+function T<NombreEntidad>.GetORMCampo(IndiceCampo: integer): TORMCampo;
 begin
-	Result := FCampos.Campo[IndiceCampo];
+	Result := FCampos.ORMCampo[IndiceCampo];
 end;	
 	
 constructor T<NombreEntidad>.Create(<PorCadaCampoClave>const <NombreCampoClave>: <TipoCampoClave></PComaParaEnum></PorCadaCampoClave>);
@@ -278,22 +269,20 @@ begin
 end;	
 
 <PorCadaCampo>
-function T<NombreEntidad>.EsNulo<NombreCampo>: boolean;
-begin
-	Result := FCampos.Campo[TIndice<NombreEntidad>.<NombreCampo>].EsNulo;
-end;
-</PorCadaCampo>
-
-<PorCadaCampo>
 function T<NombreEntidad>.Get<NombreCampo>: <TipoCampo>;
 begin
-	Result := FCampos.Campo[TIndice<NombreEntidad>.<NombreCampo>].<AsKeyWord>;
+	Result := FCampos.ORMCampo[TIndice<NombreEntidad>.<NombreCampo>].<AsKeyWord>;
+end;
+
+function T<NombreEntidad>.EsNulo<NombreCampo>: boolean;
+begin
+	Result := FCampos.ORMCampo[TIndice<NombreEntidad>.<NombreCampo>].EsNulo;
 end;
 </PorCadaCampo>
 <PorCadaCampo>
 procedure T<NombreEntidad>.Set<NombreCampo>(const Value: <TipoCampo>);
 begin
-	FCampos.Campo[TIndice<NombreEntidad>.<NombreCampo>].<AsKeyWord>:= Value;
+	FCampos.ORMCampo[TIndice<NombreEntidad>.<NombreCampo>].<AsKeyWord>:= Value;
 end;	
 </PorCadaCampo>
 function T<NombreEntidad>.ObtenerEntidad(<PorCadaCampoClave>const <NombreCampoClave>: <TipoCampoClave></PComaParaEnum></PorCadaCampoClave>): boolean;
@@ -302,7 +291,7 @@ var
 begin
 	select := TSelectStatement.Create(FCampos);
 	<PorCadaCampoClave>
-	select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.Campo[TIndice<NombreEntidad>.<NombreCampoClave>], tcIgual, <NombreCampoClave>));
+	select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[TIndice<NombreEntidad>.<NombreCampoClave>], tcIgual, <NombreCampoClave>));
 	</PorCadaCampoClave>
 	Result := AsignarCamposDesdeSeleccion(select);
 	select.Free;
@@ -342,7 +331,7 @@ begin
 		nColeccionAsociada:= AgregarColeccionAsociada(FColeccion<NombreRelacionAMuchos>);
 		unFiltro := TExpresionCondicion.Create;
 		<PorCadaCampoFK>
-		unFiltro.Agregar(TCondicionComparacion.Create(FColeccion<NombreRelacionAMuchos>.FCampos.Campo[TIndice<NombreEntidadAsociada>.<NombreCampoFKDestino>], tcIgual, <NombreCampoFKOrigen>));
+		unFiltro.Agregar(TCondicionComparacion.Create(FColeccion<NombreRelacionAMuchos>.FCampos.ORMCampo[TIndice<NombreEntidadAsociada>.<NombreCampoFKDestino>], tcIgual, <NombreCampoFKOrigen>));
 		AgregarCamposAsociadosColeccion(nColeccionAsociada, TIndice<NombreEntidad>.<NombreCampoFKOrigen>,TIndice<NombreEntidadAsociada>.<NombreCampoFKDestino>);
 		</PorCadaCampoFK>
 		FColeccion<NombreRelacionAMuchos>.ObtenerMuchos(unFiltro);
@@ -361,10 +350,10 @@ begin
 	inherited Create( T<NombreEntidad> );
 
 	unaEntidad := T<NombreEntidad>.Create;
-	FCampos := unaEntidad.Campos.Clonar;
+	FCampos := unaEntidad.ORMCampos.Clonar;
 	unaEntidad.Free;
 end;
-function TColeccion<NombreEntidad>.CrearNuevaConexionEntidad: TEntidadConexion;
+function TColeccion<NombreEntidad>.CrearNuevaConexionEntidad: TORMEntidadConexion;
 begin
 	Result := TFabrica<NombreUnidad>.CrearNuevaEntidadConexion;
 	if assigned(On<NombreUnidad>Exception) then
@@ -379,7 +368,7 @@ begin
 	Result := Items[index] as T<NombreEntidad>
 end;
 
-function TColeccion<NombreEntidad>.GetCampo(indiceCampo: integer):TCampo;
+function TColeccion<NombreEntidad>.GetORMCampo(indiceCampo: integer):TORMCampo;
 begin
 	Result := ObtenerCampo(indiceCampo);
 end;
@@ -404,12 +393,12 @@ begin
 			FreeAndNil(stream);
 			<ElseBlobBinary>
 			if (Datos.Fields[TIndice<NombreEntidad>.<NombreCampo>].IsNull) then
-			   unaEntidad.Campos[TIndice<NombreEntidad>.<NombreCampo>].EsNulo := true
+			   unaEntidad.ORMCampos[TIndice<NombreEntidad>.<NombreCampo>].EsNulo := true
 			else
 				unaEntidad.<NombreCampo> := Datos.Fields[TIndice<NombreEntidad>.<NombreCampo>].<AsKeyWord>;
 			</IfBlobBinary>
 			</PorCadaCampo>
-			unaEntidad.Campos.FueronCambiados := false;
+			unaEntidad.ORMCampos.FueronCambiados := false;
 			unaEntidad.AsignarConexion(Conexion);
 			Datos.Next;
 		end;
@@ -438,24 +427,23 @@ end;
 <PorCadaEntidad>
 <IfTieneRelacion>
 <PorCadaEntidadAsociada>
-{TRelacion<NombreEntidad>}
+{TRelaciones<NombreEntidad>}
 
-class function TRelacion<NombreEntidad>.<NombreRelacion>(TipoRelacion: TTipoRelacion): TRelacion;
+class function TRelaciones<NombreEntidad>.<NombreRelacion>(TipoRelacion: TORMTipoRelacion): TORMRelacion;
 var
 	sCamposOrigen, sCamposDestino: TStringList;
-	CamposOrigen, CamposDestino: TCamposRelacion; 
+	CamposOrigen, CamposDestino: TORMCamposRelacion; 
 begin
 	sCamposOrigen := TStringList.Create;
 	sCamposDestino:= TStringList.Create;
     
 	<PorCadaCampoFK>
-	sCamposOrigen.Add(TCampo<NombreEntidad>.<NombreCampoFKOrigen>);
-	sCamposDestino.Add(TCampo<NombreEntidadAsociada>.<NombreCampoFKDestino>);
+	sCamposOrigen.Add('<NombreCampoFKOrigen>');
+	sCamposDestino.Add('<NombreCampoFKDestino>');
 	</PorCadaCampoFK>
-	CamposOrigen := TCamposRelacion.Create('<NombreEntidad>', sCamposOrigen);
-	CamposDestino:= TCamposRelacion.Create('<NombreEntidadAsociada>', sCamposDestino);  
-	Result := TRelacion.Create(	CamposOrigen, CamposDestino,
-		   	  					TipoRelacion);
+	CamposOrigen := TORMCamposRelacion.Create('<NombreEntidad>', sCamposOrigen);
+	CamposDestino:= TORMCamposRelacion.Create('<NombreEntidadAsociada>', sCamposDestino);  
+	Result := TORMRelacion.Create(CamposOrigen, CamposDestino, TipoRelacion);
 	FreeAndNil(CamposOrigen);
 	FreeAndNil(CamposDestino);    
 	FreeAndNil(sCamposOrigen);
@@ -464,22 +452,22 @@ end;
 </PorCadaEntidadAsociada>
 <IfTieneRelacionAMuchos>
 <PorCadaColeccionAsociada>
-class function TRelacion<NombreEntidad>.<NombreRelacionAMuchos>(TipoRelacion: TTipoRelacion): TRelacion;
+class function TRelaciones<NombreEntidad>.<NombreRelacionAMuchos>(TipoRelacion: TORMTipoRelacion): TORMRelacion;
 var
 	sCamposOrigen, sCamposDestino: TStringList;
-	CamposOrigen, CamposDestino: TCamposRelacion; 
+	CamposOrigen, CamposDestino: TORMCamposRelacion; 
 begin
 	sCamposOrigen := TStringList.Create;
 	sCamposDestino:= TStringList.Create;
     
 	<PorCadaCampoFK>
-	sCamposOrigen.Add(TCampo<NombreEntidad>.<NombreCampoFKOrigen>);
-	sCamposDestino.Add(TCampo<NombreEntidadAsociada>.<NombreCampoFKDestino>);
+	sCamposOrigen.Add('<NombreCampoFKOrigen>');
+	sCamposDestino.Add('<NombreCampoFKDestino>');
 	</PorCadaCampoFK>
 
-	CamposOrigen:= TCamposRelacion.Create('<NombreEntidad>', sCamposOrigen);
-	CamposDestino:= TCamposRelacion.Create('<NombreEntidadAsociada>', sCamposDestino); 
-	Result := TRelacion.Create(CamposOrigen, CamposDestino, TipoRelacion);
+	CamposOrigen:= TORMCamposRelacion.Create('<NombreEntidad>', sCamposOrigen);
+	CamposDestino:= TORMCamposRelacion.Create('<NombreEntidadAsociada>', sCamposDestino); 
+	Result := TORMRelacion.Create(CamposOrigen, CamposDestino, TipoRelacion);
 	FreeAndNil(CamposOrigen);
 	FreeAndNil(CamposDestino);    	   	  		
 	FreeAndNil(sCamposOrigen);
@@ -489,7 +477,6 @@ end;
 </IfTieneRelacionAMuchos>
 </IfTieneRelacion>
 </PorCadaEntidad>
-
 <PorCadaLista>
 <PorCadaListaEntidad>
 {TFila<NombreListaEntidad>}
@@ -499,7 +486,7 @@ begin
 	FTabla:='<NombreListaEntidad>';
 
 	<PorCadaCampo>
-	FCampos.Agregar(TCampo.Create('<AliasEntidad>','<NombreCampo>', '','<AliasCampo>','',TIndice<NombreListaEntidad>.<AliasCampo>, <LongitudCampo>,  false, false,false,false,<tdTipoCampo>, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create('<AliasEntidad>','<NombreCampo>', '','<AliasCampo>','',TIndice<NombreListaEntidad>.<AliasCampo>, <LongitudCampo>,  false, false,false,false,<tdTipoCampo>, faNinguna,''));
 	</PorCadaCampo>
 end;
 
@@ -507,19 +494,19 @@ destructor TFila<NombreListaEntidad>.Destroy;
 begin
 	inherited;
 end;
-function TFila<NombreListaEntidad>.CrearNuevaConexionEntidad: TEntidadConexion; 
+function TFila<NombreListaEntidad>.CrearNuevaConexionEntidad: TORMEntidadConexion; 
 begin
 	Result := nil;
 end;
 <PorCadaCampo>
 function TFila<NombreListaEntidad>.Get<AliasCampo>: <TipoCampo>;
 begin
-	Result := FCampos.Campo[TIndice<NombreListaEntidad>.<AliasCampo>].<AsKeyWord>; 
+	Result := FCampos.ORMCampo[TIndice<NombreListaEntidad>.<AliasCampo>].<AsKeyWord>; 
 end;
 
 procedure TFila<NombreListaEntidad>.Set<AliasCampo>(const Value: <TipoCampo>);
 begin
-	FCampos.Campo[TIndice<NombreListaEntidad>.<AliasCampo>].<AsKeyWord>:= Value;
+	FCampos.ORMCampo[TIndice<NombreListaEntidad>.<AliasCampo>].<AsKeyWord>:= Value;
 end;	
 </PorCadaCampo>
 </PorCadaListaEntidad>
@@ -534,14 +521,14 @@ begin
 	inherited Create( TFila<NombreListaEntidad> );
 
 	unaEntidad := TFila<NombreListaEntidad>.Create;
-	FCampos := unaEntidad.Campos.Clonar;
+	FCampos := unaEntidad.ORMCampos.Clonar;
 	unaEntidad.Free;
 end;
 destructor T<NombreListaEntidad>.Destroy;
 begin
 	inherited;
 end;
-function T<NombreListaEntidad>.CrearNuevaConexionEntidad: TEntidadConexion;
+function T<NombreListaEntidad>.CrearNuevaConexionEntidad: TORMEntidadConexion;
 begin
 	Result := TFabrica<NombreUnidad>.CrearNuevaEntidadConexion;
 	if assigned(On<NombreUnidad>Exception) then
@@ -564,7 +551,7 @@ begin
 	begin
 		Relacion := TExpresionRelacion.Create;
 		<PorCadaRelacion>
-		Relacion.Agregar(TRelacion<NombreEntidad>.<NombreEntidadRelacionada>);
+		Relacion.Agregar(TRelaciones<NombreEntidad>.<NombreEntidadRelacionada>);
 		</PorCadaRelacion>
 		bLiberarRelaciones := true;
 	end;
@@ -592,7 +579,7 @@ begin
 		begin
 			Relaciones := TExpresionRelacion.Create;
 			<PorCadaRelacion>
-			Relaciones.Agregar(TRelacion<NombreEntidad>.<NombreEntidadRelacionada>);
+			Relaciones.Agregar(TRelaciones<NombreEntidad>.<NombreEntidadRelacionada>);
 			</PorCadaRelacion>
 			bLiberarRelaciones := true;
 		end;
@@ -628,29 +615,26 @@ begin
 			FreeAndNil(stream);
 			<ElseBlobBinary>
 			if (Datos.Fields[TIndice<NombreListaEntidad>.<AliasCampo>].IsNull) then
-			    unaEntidad.Campos[TIndice<NombreListaEntidad>.<AliasCampo>].EsNulo := true
+			    unaEntidad.ORMCampos[TIndice<NombreListaEntidad>.<AliasCampo>].EsNulo := true
 			else
 				unaEntidad.<AliasCampo> := Datos.Fields[TIndice<NombreListaEntidad>.<AliasCampo>].<AsKeyWord>;
 			</IfBlobBinary>
 			</PorCadaCampo>
-			unaEntidad.Campos.FueronCambiados := false;
+			unaEntidad.ORMCampos.FueronCambiados := false;
 			Datos.Next;
 		end;
 	end;
 end;
-
 {TColeccion<NombreListaEntidad>Enumerador}
 constructor T<NombreListaEntidad>.T<NombreListaEntidad>Enumerador.Create(Coleccion: T<NombreListaEntidad>);
 begin
 	nEntidad := -1;
 	FColeccion := Coleccion;
 end;
-
 function T<NombreListaEntidad>.T<NombreListaEntidad>Enumerador.GetCurrent: TFila<NombreListaEntidad>;
 begin
 	Result := FColeccion[nEntidad];
 end;
-
 function T<NombreListaEntidad>.T<NombreListaEntidad>Enumerador.MoveNext: boolean;
 begin
 	Result := nEntidad < (FColeccion.Count - 1);
@@ -659,12 +643,11 @@ begin
 end;
 </PorCadaListaEntidad>
 </PorCadaLista>
-
 <PorCadaEntidad>
 <PorCadaCampo>
-class function TFabricaCampo<NombreEntidad>.<NombreCampo>: TCampo;
+class function TFabricaCampo<NombreEntidad>.<NombreCampo>: TORMCampo;
 begin
-	Result := TCampo.Create('<NombreEntidad>','<NombreCampo>', '<TieneGenerador>','','',TIndice<NombreEntidad>.<NombreCampo>, <LongitudCampo>,  <bTieneGenerador>, <bEsClavePrimaria>,<bEsClaveForanea>, <bAceptaNull>, <tdTipoCampo>, faNinguna,<TipoORM>); 
+	Result := TORMCampo.Create('<NombreEntidad>','<NombreCampo>', '<TieneGenerador>','','',TIndice<NombreEntidad>.<NombreCampo>, <LongitudCampo>,  <bTieneGenerador>, <bEsClavePrimaria>,<bEsClaveForanea>, <bAceptaNull>, <tdTipoCampo>, faNinguna,<TipoORM>); 
 end;
 </PorCadaCampo>
 </PorCadaEntidad>

@@ -112,7 +112,7 @@ begin
   unTipoDoc:= TTipoDocumento.Create;
   unTipoDoc.Descripcion := 'Libreta Cívica';
   unTipoDoc.DescripcionReducida := 'LC';
-  unTipoDoc.Campos[TIndiceTipoDocumento.Observaciones].EsNulo := true;
+  unTipoDoc.ORMCampos[TIndiceTipoDocumento.Observaciones].EsNulo := true;
   unTipoDoc.Guardar;
   unTipoDoc.Free;
 end;
