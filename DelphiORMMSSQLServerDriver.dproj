@@ -25,6 +25,14 @@
     <Borland.ProjectType>Package</Borland.ProjectType>
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><Package_Options><Package_Options Name="ImplicitBuild">True</Package_Options><Package_Options Name="DesigntimeOnly">False</Package_Options><Package_Options Name="RuntimeOnly">False</Package_Options></Package_Options><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">3082</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
       <Excluded_Packages Name="C:\Componentes\NextComponents\Lib\Delphi 2006\NxSheetRun.bpl">File C:\Componentes\NextComponents\Lib\Delphi 2006\NxSheetRun.bpl not found</Excluded_Packages>
       <Excluded_Packages Name="C:\Documents and Settings\All Users\Documentos\RAD Studio\5.0\Bpl\dclshlctrls100.bpl">Shell Control Property and Component Editors</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
@@ -36,11 +44,11 @@
     <DelphiCompile Include="DelphiORMMSSQLServerDriver.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="dbexpress.dcp" />
-    <DCCReference Include="dbrtl.dcp" />
-    <DCCReference Include="DbxCommonDriver.dcp" />
-    <DCCReference Include="DelphiORMBaseDriver.dcp" />
-    <DCCReference Include="rtl.dcp" />
+    <DCCReference Include="C:\Documents and Settings\adearmas\dbexpress.dcp" />
+    <DCCReference Include="C:\Documents and Settings\adearmas\dbrtl.dcp" />
+    <DCCReference Include="C:\Documents and Settings\adearmas\DbxCommonDriver.dcp" />
+    <DCCReference Include="C:\Documents and Settings\adearmas\DelphiORMBaseDriver.dcp" />
+    <DCCReference Include="C:\Documents and Settings\adearmas\rtl.dcp" />
     <DCCReference Include="uDelphiORMMSSQLServerDriver.pas">
       <Form>ORMDriverManager</Form>
     </DCCReference>

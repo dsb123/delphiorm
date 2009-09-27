@@ -158,7 +158,10 @@ begin
       AddRow();
       Cell[0, LastAddedRow].ObjectReference := unaTabla.Campos.Campo[nCampo];
       Cell[1, LastAddedRow].AsString := unaTabla.Campos.Campo[nCampo].Nombre;
-      Cell[4, LastAddedRow].AsString := unaTabla.Nombre;
+      if unaTabla.Alias <> '' then
+        Cell[4, LastAddedRow].AsString := unaTabla.Alias
+      else
+        Cell[4, LastAddedRow].AsString := unaTabla.Nombre;
       Cell[5, LastAddedRow].AsInteger := nEntidad;
     end;
     EndUpdate;
@@ -702,7 +705,11 @@ begin
 
     for nTabla := 0 to unaLista.Componentes.Count - 1 do
     begin
-      unaTabla := FColeccionTablas.ObtenerTabla(unaLista.Componentes.Tabla[nTabla].Nombre);
+      if unaLista.Componentes.Tabla[nTabla].Alias <> '' then
+        unaTabla := FColeccionTablas.ObtenerTablaPorAlias(unaLista.Componentes.Tabla[nTabla].Alias)
+      else
+        unaTabla := FColeccionTablas.ObtenerTabla(unaLista.Componentes.Tabla[nTabla].Nombre);
+
       if nTabla = 0 then
         AgregarTablaListaTablas(unaTabla, nil, '')
       else

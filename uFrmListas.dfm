@@ -2,8 +2,8 @@ object FrmListas: TFrmListas
   Left = 0
   Top = 0
   Caption = 'Listas'
-  ClientHeight = 524
-  ClientWidth = 754
+  ClientHeight = 536
+  ClientWidth = 766
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,14 +12,14 @@ object FrmListas: TFrmListas
   Font.Style = []
   OldCreateOrder = False
   DesignSize = (
-    754
-    524)
+    766
+    536)
   PixelsPerInch = 96
   TextHeight = 13
   object barSuperior: TJvGradient
     Left = 0
     Top = 0
-    Width = 754
+    Width = 766
     Height = 42
     Align = alTop
     StartColor = clTeal
@@ -29,7 +29,7 @@ object FrmListas: TFrmListas
     ExplicitWidth = 530
   end
   object img1: TImage
-    Left = 714
+    Left = 726
     Top = 5
     Width = 32
     Height = 32
@@ -192,50 +192,56 @@ object FrmListas: TFrmListas
   object StaticText1: TStaticText
     Left = 0
     Top = 42
-    Width = 754
+    Width = 766
     Height = 2
     Align = alTop
     AutoSize = False
     BevelInner = bvNone
     BevelKind = bkSoft
     TabOrder = 0
+    ExplicitWidth = 754
   end
   object tvListas: TTreeView
     Left = 0
     Top = 44
     Width = 177
-    Height = 480
+    Height = 492
     Align = alLeft
     HideSelection = False
     Images = ilLista
     Indent = 19
     RightClickSelect = True
+    SortType = stText
     TabOrder = 1
     OnClick = tvListasClick
     OnContextPopup = tvListasContextPopup
     OnEdited = tvListasEdited
+    ExplicitHeight = 480
   end
   object jvxspltr1: TJvxSplitter
     Left = 177
     Top = 44
     Width = 3
-    Height = 480
+    Height = 492
     ControlFirst = tvListas
     Align = alLeft
+    ExplicitHeight = 480
   end
   object pnlContenedor: TPanel
     Left = 180
     Top = 44
-    Width = 574
-    Height = 480
+    Width = 586
+    Height = 492
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
+    ExplicitWidth = 574
+    ExplicitHeight = 480
     object nxpgcntrlListas: TNxPageControl
       Left = 0
       Top = 33
-      Width = 574
-      Height = 447
+      Width = 586
+      Height = 459
       ActivePage = nxtbshtLista
       ActivePageIndex = 0
       Align = alClient
@@ -245,6 +251,8 @@ object FrmListas: TFrmListas
       Margin = 0
       Spacing = 0
       TabHeight = 17
+      ExplicitWidth = 574
+      ExplicitHeight = 447
       object nxtbshtLista: TNxTabSheet
         Caption = 'Lista'
         PageIndex = 0
@@ -254,10 +262,11 @@ object FrmListas: TFrmListas
         TabFont.Height = -11
         TabFont.Name = 'Tahoma'
         TabFont.Style = []
-        ExplicitTop = 0
+        ExplicitWidth = 574
+        ExplicitHeight = 426
         DesignSize = (
-          574
-          426)
+          586
+          438)
         object lblEntidades: TLabel
           Left = 6
           Top = 3
@@ -275,14 +284,16 @@ object FrmListas: TFrmListas
         object nxtgrdLista: TNextGrid
           Left = 286
           Top = 22
-          Width = 280
-          Height = 307
+          Width = 292
+          Height = 319
           Anchors = [akLeft, akTop, akRight, akBottom]
           AppearanceOptions = [aoHighlightSlideCells]
           Options = [goGrid, goHeader, goSelectFullRow]
           TabOrder = 1
           TabStop = True
           OnSelectCell = nxtgrdListaSelectCell
+          ExplicitWidth = 280
+          ExplicitHeight = 307
           object nxtxtclmnEntidad: TNxTextColumn
             DefaultWidth = 120
             Font.Charset = DEFAULT_CHARSET
@@ -439,14 +450,16 @@ object FrmListas: TFrmListas
         end
         object grpRelaciones: TGroupBox
           Left = 286
-          Top = 335
-          Width = 280
+          Top = 347
+          Width = 292
           Height = 81
           Anchors = [akLeft, akRight, akBottom]
           Caption = 'Relaciones'
           TabOrder = 5
+          ExplicitTop = 335
+          ExplicitWidth = 280
           DesignSize = (
-            280
+            292
             81)
           object lblRelacion: TLabel
             Left = 16
@@ -465,7 +478,7 @@ object FrmListas: TFrmListas
           object cbRelaciones: TAdvComboBox
             Left = 87
             Top = 21
-            Width = 180
+            Width = 192
             Height = 21
             CapSelectAll = '&Select all'
             CapDeSelectAll = '&Deselect all'
@@ -482,6 +495,7 @@ object FrmListas: TFrmListas
             ItemIndex = -1
             TabOrder = 0
             OnSelectItem = cbRelacionesSelectItem
+            ExplicitWidth = 180
           end
           object cbTipo: TAdvComboBox
             Left = 87
@@ -513,7 +527,7 @@ object FrmListas: TFrmListas
           Left = 6
           Top = 22
           Width = 195
-          Height = 396
+          Height = 408
           Anchors = [akLeft, akTop, akBottom]
           Columns = <
             item
@@ -523,8 +537,10 @@ object FrmListas: TFrmListas
           ReadOnly = True
           RowSelect = True
           SmallImages = ilEntidades
+          SortType = stText
           TabOrder = 0
           ViewStyle = vsReport
+          ExplicitHeight = 396
         end
         object btnNueva: TJvXPButton
           Left = 207
@@ -544,10 +560,11 @@ object FrmListas: TFrmListas
         TabFont.Height = -11
         TabFont.Name = 'Tahoma'
         TabFont.Style = []
-        ExplicitTop = 0
+        ExplicitWidth = 574
+        ExplicitHeight = 426
         DesignSize = (
-          574
-          426)
+          586
+          438)
         object lblAtributos: TLabel
           Left = 6
           Top = 16
@@ -557,7 +574,7 @@ object FrmListas: TFrmListas
         end
         object lblAtributo: TLabel
           Left = 6
-          Top = 353
+          Top = 365
           Width = 39
           Height = 13
           Anchors = [akLeft, akBottom]
@@ -566,7 +583,7 @@ object FrmListas: TFrmListas
         end
         object lblExpresion: TLabel
           Left = 181
-          Top = 353
+          Top = 365
           Width = 47
           Height = 13
           Anchors = [akLeft, akBottom]
@@ -583,13 +600,14 @@ object FrmListas: TFrmListas
         object nxtgrdAtributos: TNextGrid
           Left = 6
           Top = 35
-          Width = 560
+          Width = 572
           Height = 253
           Anchors = [akLeft, akTop, akRight]
           Options = [goGrid, goHeader]
           TabOrder = 0
           TabStop = True
           OnCellClick = nxtgrdAtributosCellClick
+          ExplicitWidth = 560
           object nxchckbxclmnSeleccion: TNxCheckBoxColumn
             DefaultWidth = 20
             Font.Charset = DEFAULT_CHARSET
@@ -658,7 +676,7 @@ object FrmListas: TFrmListas
             ParentFont = False
             Position = 4
             SortType = stAlphabetic
-            Width = 148
+            Width = 160
           end
           object nxnmbrclmnNumber: TNxNumberColumn
             DefaultValue = '0'
@@ -678,9 +696,10 @@ object FrmListas: TFrmListas
         object nxtgrdAtributosExpresion: TNextGrid
           Left = 6
           Top = 315
-          Width = 560
-          Height = 43
+          Width = 572
+          Height = 47
           Anchors = [akLeft, akTop, akRight, akBottom]
+          Enabled = False
           Options = [goGrid, goHeader]
           TabOrder = 2
           TabStop = True
@@ -709,28 +728,33 @@ object FrmListas: TFrmListas
             ParentFont = False
             Position = 1
             SortType = stAlphabetic
-            Width = 438
+            Width = 450
           end
         end
         object edtAtributo: TEdit
           Left = 6
-          Top = 368
+          Top = 380
           Width = 169
           Height = 21
           Anchors = [akLeft, akBottom]
+          Enabled = False
           TabOrder = 3
+          ExplicitTop = 368
         end
         object edtExpresion: TEdit
           Left = 181
-          Top = 368
-          Width = 385
+          Top = 380
+          Width = 397
           Height = 21
           Anchors = [akLeft, akRight, akBottom]
+          Enabled = False
           TabOrder = 4
+          ExplicitTop = 368
+          ExplicitWidth = 385
         end
         object btnAgregar: TJvXPButton
-          Left = 413
-          Top = 394
+          Left = 425
+          Top = 406
           Height = 25
           Caption = '&Agregar'
           TabOrder = 5
@@ -772,10 +796,12 @@ object FrmListas: TFrmListas
             0000}
           Anchors = [akRight, akBottom]
           OnClick = btnPasarClick
+          ExplicitLeft = 413
+          ExplicitTop = 394
         end
         object btnEliminar: TJvXPButton
-          Left = 492
-          Top = 394
+          Left = 504
+          Top = 406
           Height = 25
           Caption = '&Quitar'
           TabOrder = 6
@@ -817,6 +843,8 @@ object FrmListas: TFrmListas
             0000}
           Anchors = [akRight, akBottom]
           OnClick = btnQuitarClick
+          ExplicitLeft = 492
+          ExplicitTop = 394
         end
         object cbbFuncionesAgregacion: TNxComboBox
           Left = 248
@@ -841,12 +869,13 @@ object FrmListas: TFrmListas
     object jvxpcntnr1: TJvXPContainer
       Left = 0
       Top = 0
-      Width = 574
+      Width = 586
       Height = 33
       Caption = 'jvxpcntnr1'
       Align = alTop
+      ExplicitWidth = 574
       DesignSize = (
-        574
+        586
         33)
       object lblNombre: TLabel
         Left = 6
@@ -858,13 +887,14 @@ object FrmListas: TFrmListas
       object edtNombreLista: TEdit
         Left = 69
         Top = 6
-        Width = 409
+        Width = 421
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
+        ExplicitWidth = 409
       end
       object btnAceptar: TJvXPButton
-        Left = 484
+        Left = 496
         Top = 6
         Width = 82
         Caption = '&Guardar'
@@ -908,6 +938,7 @@ object FrmListas: TFrmListas
           0000}
         Anchors = [akTop, akRight]
         OnClick = btnAceptarClick
+        ExplicitLeft = 484
       end
     end
   end
@@ -1330,7 +1361,7 @@ object FrmListas: TFrmListas
   object pmTareas: TPopupMenu
     Images = ilLista
     Left = 400
-    Top = 448
+    Top = 424
     object Nueva1: TMenuItem
       Caption = '&Agregar'
       ImageIndex = 2

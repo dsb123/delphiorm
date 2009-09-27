@@ -363,7 +363,8 @@ constructor TORMRelacion.Create( CamposPrimarios, CamposForaneos: TORMCamposRela
                               const TipoRelacion: TORMTipoRelacion);
 begin
   FCamposPrimario := CamposPrimarios.Clonar;
-  FCamposForaneo := CamposForaneos.Clonar;
+  FCamposForaneo  := CamposForaneos.Clonar;
+  FTipoRelacion   := TipoRelacion;
 end;
 
 function TORMRelacion.Clonar: TORMRelacion;

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Grids, DBGrids, StdCtrls, DB, uTestEntidades;
+  Dialogs, Grids, DBGrids, StdCtrls, DB;
 
 type
   TFrmPrincipal = class(TForm)
@@ -21,20 +21,20 @@ type
     btnPersonaDocumento: TButton;
     btnObtener: TButton;
     btn1: TButton;
+    mmo1: TMemo;
+    btnListaTipo: TButton;
+    Button1: TButton;
+    btn2: TButton;
     procedure FormCreate(Sender: TObject);
-    procedure btnAgregarTipoDocumentoClick(Sender: TObject);
-    procedure btnAgregarTipoDomicilioClick(Sender: TObject);
-    procedure btnAgregarPersonaClick(Sender: TObject);
-    procedure btnObtenerClick(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-    procedure btnPersDomClick(Sender: TObject);
-    procedure btnPersonaDocumentoClick(Sender: TObject);
-    procedure btnVerListaClick(Sender: TObject);
     procedure btn1Click(Sender: TObject);
+    procedure btnListaTipoClick(Sender: TObject);
+    procedure btn2Click(Sender: TObject);
+    procedure btnVerTipoDocumentoClick(Sender: TObject);
+    procedure btnVerListaClick(Sender: TObject);
   private
     { Private declarations }
-    unaPersonaPrivada: TPersona;
-    unaLista: TListaPersona;
+    //unaPersonaPrivada: TPersona;
+    //unaLista: TListaPersona;
     procedure AtraparErrores(e: exception);
   public
     { Public declarations }
@@ -45,7 +45,9 @@ var
 
 implementation
 
-uses uDataModule, uExpresiones;
+uses  uDataModule,
+      uExpresiones,
+      uTestEntidades;
 
 {$R *.dfm}
 
@@ -57,139 +59,72 @@ end;
 procedure TFrmPrincipal.btn1Click(Sender: TObject);
 begin
   ds.DataSet.Post;
-  unaPersonaPrivada.Guardar;
+  //unaPersonaPrivada.Guardar;
 end;
 
-procedure TFrmPrincipal.btnAgregarPersonaClick(Sender: TObject);
+procedure TFrmPrincipal.btn2Click(Sender: TObject);
 var
-  unaPersona: TPersona;
+  unaPersona : TPersona;
 begin
-  unaPersona := TPersona.Create;
-  unaPersona.Apellido := 'Perez';
-  unaPersona.Nombre := 'Juan';
-  unaPersona.TipoDocumentoID := 1; //DNI
-  unaPersona.NumeroDocumento := 33333333;
-
-  //Ahora agrego los domicilios
-  with TDomicilio.Create(unaPersona.ColeccionDomicilio) do
-  begin
-    TipoDomicilioID := 1; //Particular
-    Calle := 'Cucha Cucha';
-    Numero := 5655;
-  end;
-
-  //Ahora agrego los domicilios
-  with TDomicilio.Create(unaPersona.ColeccionDomicilio) do
-  begin
-    TipoDomicilioID := 2; //Laboral
-    Calle := 'San Martin';
-    Numero := 1225;
-  end;
-
+  unaPersona := TPersona.Create(1);
+  unaPersona.Nombre := 'Gabrieliiiiiiiiito';
+  unaPersona.Apellido := 'Melgar';
+  unaPersona.TipoDocumento.Descripcion := 'DNI';
+  unaPersona.NumeroDocumento := 25459633;
   unaPersona.Guardar;
-  unaPersona.Free;
+  FreeAndNil(unaPersona);
 end;
 
-procedure TFrmPrincipal.btnAgregarTipoDocumentoClick(Sender: TObject);
+procedure TFrmPrincipal.btnListaTipoClick(Sender: TObject);
 var
-  unTipoDoc: TTipoDocumento;
+  unaColeccion: TColeccionTipoDocumento;
+  unTipoPersona: TTipoDocumento;
 begin
-  unTipoDoc:= TTipoDocumento.Create;
-  unTipoDoc.Descripcion := 'Documento Nacional de Identidad';
-  unTipoDoc.DescripcionReducida := 'DNI';
-  unTipoDoc.Observaciones := 'Nada';
-  if not unTipoDoc.Guardar then
-    ShowMessage(SingleConnection.LastException.Message);
-  unTipoDoc.Free;
+  unaColeccion:= TColeccionTipoDocumento.Create;
+  unaColeccion.ObtenerTodos;
 
-  unTipoDoc:= TTipoDocumento.Create;
-  unTipoDoc.Descripcion := 'Cédula';
-  unTipoDoc.DescripcionReducida := 'Cédula';
-  unTipoDoc.Observaciones := 'Nada 2';
-  unTipoDoc.Guardar;
-  unTipoDoc.Free;
-
-  unTipoDoc:= TTipoDocumento.Create;
-  unTipoDoc.Descripcion := 'Libreta Cívica';
-  unTipoDoc.DescripcionReducida := 'LC';
-  unTipoDoc.ORMCampos[TIndiceTipoDocumento.Observaciones].EsNulo := true;
-  unTipoDoc.Guardar;
-  unTipoDoc.Free;
-end;
-
-procedure TFrmPrincipal.btnAgregarTipoDomicilioClick(Sender: TObject);
-var
-  Coleccion: TColeccionTipoDomicilio;
-begin
-  Coleccion := TColeccionTipoDomicilio.Create;
-  with TTipoDomicilio.Create(Coleccion) do
+  for unTipoPersona in unaColeccion do
   begin
-    Descripcion := 'Particular';
-    DescripcionReducida := 'Particular';
+    mmo1.Lines.Add(unTipoPersona.Descripcion);
   end;
 
-  with TTipoDomicilio.Create(Coleccion) do
-  begin
-    Descripcion := 'Laboral';
-    DescripcionReducida := 'Laboral';
-  end;
-
-  with TTipoDomicilio.Create(Coleccion) do
-  begin
-    Descripcion := 'Constituido';
-    DescripcionReducida := 'Constituido';
-  end;
-  Coleccion.Guardar;
-  Coleccion.Free;
-end;
-
-procedure TFrmPrincipal.btnObtenerClick(Sender: TObject);
-begin
-  unaPersonaPrivada := TPersona.Create(1); // Le paso el ID = 1
-  SingleConnection.LastException
-end;
-
-procedure TFrmPrincipal.btnPersDomClick(Sender: TObject);
-begin
-  ds.DataSet := unaPersonaPrivada.ColeccionDomicilio.AsDataSet;
-  ds.DataSet.Open;
-end;
-
-procedure TFrmPrincipal.btnPersonaDocumentoClick(Sender: TObject);
-begin
-  ShowMessage(unaPersonaPrivada.TipoDocumento.Descripcion);
+  FreeAndNil(unaColeccion);
 end;
 
 procedure TFrmPrincipal.btnVerListaClick(Sender: TObject);
 var
-  unFiltro: TExpresionCondicion;
+  unaLista: TListaPersona;
 begin
-  if not Assigned(unaLista) then
-    unaLista := TListaPersona.Create;
+  unaLista := TListaPersona.Create;
+  unaLista.ObtenerTodos;
 
-  unFiltro := TExpresionCondicion.Create;
-  unFiltro.Agregar(TCondicionComparacion.Create(TFabricaCampoTipoDocumento.TipoDocumentoID,
-                    tcIgual, 1 ));
-  unaLista.ObtenerMuchos(unFiltro);
+  ShowMessage(IntToStr(unaLista.Count));
+  ShowMessage(unaLista[0].DescripcionTipoDocumento);
 
-  ds.DataSet := unaLista.AsDataSet;
-  ds.DataSet.Open;
+  FreeAndNil(unaLista);
+
+end;
+
+procedure TFrmPrincipal.btnVerTipoDocumentoClick(Sender: TObject);
+var
+  unaColeccion: TColeccionPersona;
+  unPersona: TPersona;
+begin
+  unaColeccion:= TColeccionPersona.Create;
+  unaColeccion.ObtenerTodos;
+
+  for unPersona in unaColeccion do
+  begin
+    mmo1.Lines.Add(unPersona.Nombre + ', ' + unPersona.Apellido);
+  end;
+
+  FreeAndNil(unaColeccion);
 end;
 
 procedure TFrmPrincipal.FormCreate(Sender: TObject);
 begin
-  uDataModule.sDataBase := 'localhost:c:\Desarrollos\Delphi\DelphiORM\DelphiORMTest\Datos\DelphiORM.fdb';
-  SingleConnection := TFabricauTestEntidades.CrearNuevaEntidadConexion(true);
-  OnuTestEntidadesException := AtraparErrores;
-end;
-
-procedure TFrmPrincipal.FormDestroy(Sender: TObject);
-begin
-  if Assigned(unaPersonaPrivada)  then
-    FreeAndNil(unaPErsonaPrivada);
-  if assigned(unaLista) then
-    FreeAndNil(unaLista);
-  
+  uDataModule.sDataBase := '192.168.0.107:1521/XE';
+  SingleConnection := uTestEntidades.TFabricauTestEntidades.CrearNuevaEntidadConexion(True);
 end;
 
 end.

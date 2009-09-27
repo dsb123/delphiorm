@@ -93,6 +93,9 @@ type
   function EntidadSimpleDefault(CampoClave: TORMCampo;
                                 NombreEntidad,
                                 NombreEntidadPlural: string): TORMEntidadSimpleDef; overload;
+  function EntidadSimpleDefaultSoloDescripcion(  const Tabla, CampoClave, NombreEntidad,
+                                NombreEntidadPlural: string): TORMEntidadSimpleDef;
+
 
 const
   icClave = 0;
@@ -115,6 +118,19 @@ begin
   Result.NombreEntidad := NombreEntidad;
   Result.NombrePlural := NombreEntidadPlural;
   Result.ClaveEsIdentidad := true;
+end;
+
+function EntidadSimpleDefaultSoloDescripcion(  const Tabla, CampoClave, NombreEntidad,
+                                NombreEntidadPlural: string): TORMEntidadSimpleDef;
+begin
+  Result.Tabla              := Tabla;
+  Result.CampoClave         := CampoClave;
+  Result.CampoDescripcion   := 'Descripcion';
+  Result.CampoDescrReducida := '';
+  Result.CampoObservaciones := '';
+  Result.NombreEntidad      := NombreEntidad;
+  Result.NombrePlural       := NombreEntidadPlural;
+  Result.ClaveEsIdentidad   := true;
 end;
 
 function EntidadSimpleDefault(  CampoClave: TORMCampo;
@@ -148,18 +164,18 @@ begin
   }
   if ClaveEsIdentidad then
      FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
-                                    60, true, true, false, false, tdInteger, faNinguna, 0))
+                                    60, 0, 0, true, true, false, false, tdInteger, faNinguna, 0))
   else
      FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
-                                    60, false, true, false, false, tdInteger, faNinguna, 0));
+                                    60,  0, 0, false, true, false, false, tdInteger, faNinguna, 0));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
-                                icDescripcion, 60, false, false, false, false, tdString,
+                                icDescripcion, 60,  0, 0, false, false, false, false, tdString,
                                 faNinguna, ''));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
-                                icDescripcionReducida, 60, false, false, true, false, tdString,
+                                icDescripcionReducida, 60,  0, 0, false, false, true, false, tdString,
                                 faNinguna, ''));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
-                                icObservaciones, 60, false, false, true, false, tdString,
+                                icObservaciones, 60,  0, 0, false, false, true, false, tdString,
                                 faNinguna, ''));
   EsNueva := true;
 end;
@@ -288,19 +304,19 @@ begin
   }
   if ClaveEsIdentidad then
      FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
-                                    60, true, true, false, false, tdInteger, faNinguna, 0))
+                                    60,  0, 0, true, true, false, false, tdInteger, faNinguna, 0))
   else
      FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
-                                    60, true, true, false, false, tdInteger, faNinguna, 0));
+                                    60,  0, 0, true, true, false, false, tdInteger, faNinguna, 0));
 
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
-                                icDescripcion, 60, false, false, false, false, tdString,
+                                icDescripcion, 60,  0, 0, false, false, false, false, tdString,
                                 faNinguna, ''));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
-                                icDescripcionReducida, 60, false, false, true, false, tdString,
+                                icDescripcionReducida, 60,  0, 0, false, false, true, false, tdString,
                                 faNinguna, ''));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
-                                icObservaciones, 60, false, false, true, false, tdString,
+                                icObservaciones, 60,  0, 0, false, false, true, false, tdString,
                                 faNinguna, ''));
 
 end;
@@ -317,7 +333,8 @@ begin
   begin
     with EntidadSimple.ORMCampo[nCampo] do
       FCampos.Agregar(TORMCampo.Create(Tabla, Nombre, Secuencia, AliasCampo,
-                                    AliasTabla, Indice, Longitud, EsIdentidad,
+                                    AliasTabla, Indice, Longitud, Precision,
+                                    Escala, EsIdentidad,
                                     EsClavePrimaria, EsClaveForanea, AceptaNull,
                                     TipoDato,FuncionAgregacion, ValorPorDefecto));
   end;

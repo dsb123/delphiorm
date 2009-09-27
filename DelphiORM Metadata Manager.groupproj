@@ -8,6 +8,7 @@
     <Projects Include="DelphiORMBaseDriver.dproj" />
     <Projects Include="DelphiORMFirebirdDriver.dproj" />
     <Projects Include="DelphiORMMSSQLServerDriver.dproj" />
+    <Projects Include="DelphiORMOracleDriver.dproj" />
   </ItemGroup>
   <ProjectExtensions>
     <Borland.Personality>Default.Personality</Borland.Personality>
@@ -51,14 +52,23 @@
   <Target Name="DelphiORMMSSQLServerDriver:Make">
     <MSBuild Projects="DelphiORMMSSQLServerDriver.dproj" Targets="Make" />
   </Target>
+  <Target Name="DelphiORMOracleDriver">
+    <MSBuild Projects="DelphiORMOracleDriver.dproj" Targets="" />
+  </Target>
+  <Target Name="DelphiORMOracleDriver:Clean">
+    <MSBuild Projects="DelphiORMOracleDriver.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DelphiORMOracleDriver:Make">
+    <MSBuild Projects="DelphiORMOracleDriver.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="DelphiORM;DelphiORMFirebirdDriver;DelphiORMBaseDriver;DelphiORMMSSQLServerDriver" />
+    <CallTarget Targets="DelphiORM;DelphiORMFirebirdDriver;DelphiORMBaseDriver;DelphiORMMSSQLServerDriver;DelphiORMOracleDriver" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="DelphiORM:Clean;DelphiORMFirebirdDriver:Clean;DelphiORMBaseDriver:Clean;DelphiORMMSSQLServerDriver:Clean" />
+    <CallTarget Targets="DelphiORM:Clean;DelphiORMFirebirdDriver:Clean;DelphiORMBaseDriver:Clean;DelphiORMMSSQLServerDriver:Clean;DelphiORMOracleDriver:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="DelphiORM:Make;DelphiORMFirebirdDriver:Make;DelphiORMBaseDriver:Make;DelphiORMMSSQLServerDriver:Make" />
+    <CallTarget Targets="DelphiORM:Make;DelphiORMFirebirdDriver:Make;DelphiORMBaseDriver:Make;DelphiORMMSSQLServerDriver:Make;DelphiORMOracleDriver:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

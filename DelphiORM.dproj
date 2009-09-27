@@ -31,6 +31,11 @@
       
       
       
+      
+      
+      
+      
+      
       <Excluded_Packages Name="C:\Documents and Settings\All Users\Documentos\RAD Studio\5.0\Bpl\mbTBXLibD10D.bpl">Toolbar2000 -- mbTBX Lib Pack v1.6</Excluded_Packages>
       <Excluded_Packages Name="C:\Componentes\NextComponents\Lib\Delphi 2006\NxSheetRun.bpl">File C:\Componentes\NextComponents\Lib\Delphi 2006\NxSheetRun.bpl not found</Excluded_Packages>
       <Excluded_Packages Name="C:\Documents and Settings\All Users\Documentos\RAD Studio\5.0\Bpl\dclshlctrls100.bpl">Shell Control Property and Component Editors</Excluded_Packages>

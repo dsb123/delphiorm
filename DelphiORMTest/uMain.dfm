@@ -2,8 +2,8 @@ object FrmPrincipal: TFrmPrincipal
   Left = 0
   Top = 0
   Caption = 'Principal'
-  ClientHeight = 318
-  ClientWidth = 551
+  ClientHeight = 571
+  ClientWidth = 564
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,7 +12,6 @@ object FrmPrincipal: TFrmPrincipal
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object btnAgregarTipoDocumento: TButton
@@ -22,7 +21,6 @@ object FrmPrincipal: TFrmPrincipal
     Height = 25
     Caption = 'Agregar Tipos de Documento'
     TabOrder = 0
-    OnClick = btnAgregarTipoDocumentoClick
   end
   object btnAgregarTipoDomicilio: TButton
     Left = 8
@@ -31,7 +29,6 @@ object FrmPrincipal: TFrmPrincipal
     Height = 25
     Caption = 'Agregar Tipo Domicilio'
     TabOrder = 2
-    OnClick = btnAgregarTipoDomicilioClick
   end
   object btnAgregarPersona: TButton
     Left = 8
@@ -40,7 +37,6 @@ object FrmPrincipal: TFrmPrincipal
     Height = 25
     Caption = 'Agregar Persona'
     TabOrder = 3
-    OnClick = btnAgregarPersonaClick
   end
   object dbgrd: TDBGrid
     Left = 191
@@ -62,6 +58,7 @@ object FrmPrincipal: TFrmPrincipal
     Height = 25
     Caption = 'Ver Tipo Doc'
     TabOrder = 8
+    OnClick = btnVerTipoDocumentoClick
   end
   object btnVerTipoDom: TButton
     Left = 288
@@ -95,7 +92,6 @@ object FrmPrincipal: TFrmPrincipal
     Height = 25
     Caption = 'Persona->Domicilio'
     TabOrder = 5
-    OnClick = btnPersDomClick
   end
   object btnPersonaDocumento: TButton
     Left = 8
@@ -104,7 +100,6 @@ object FrmPrincipal: TFrmPrincipal
     Height = 25
     Caption = 'Persona -> Tipo documento'
     TabOrder = 6
-    OnClick = btnPersonaDocumentoClick
   end
   object btnObtener: TButton
     Left = 8
@@ -113,7 +108,6 @@ object FrmPrincipal: TFrmPrincipal
     Height = 25
     Caption = 'Obtener Persona ID = 1'
     TabOrder = 4
-    OnClick = btnObtenerClick
   end
   object btn1: TButton
     Left = 110
@@ -123,6 +117,41 @@ object FrmPrincipal: TFrmPrincipal
     Caption = 'btn1'
     TabOrder = 7
     OnClick = btn1Click
+  end
+  object mmo1: TMemo
+    Left = 191
+    Top = 304
+    Width = 334
+    Height = 97
+    Lines.Strings = (
+      'mmo1')
+    TabOrder = 12
+  end
+  object btnListaTipo: TButton
+    Left = 191
+    Top = 407
+    Width = 105
+    Height = 25
+    Caption = 'Lista Tipo Persona'
+    TabOrder = 13
+    OnClick = btnListaTipoClick
+  end
+  object Button1: TButton
+    Left = 302
+    Top = 407
+    Width = 115
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 14
+  end
+  object btn2: TButton
+    Left = 191
+    Top = 438
+    Width = 75
+    Height = 25
+    Caption = 'btn2'
+    TabOrder = 15
+    OnClick = btn2Click
   end
   object ds: TDataSource
     Left = 120

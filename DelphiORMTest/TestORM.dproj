@@ -17,12 +17,88 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_Define>DEBUG</DCC_Define>
+    <DCC_UnitSearchPath>C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Oracle</DCC_UnitSearchPath>
+    <DCC_ResourcePath>C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Oracle</DCC_ResourcePath>
+    <DCC_ObjPath>C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Oracle</DCC_ObjPath>
+    <DCC_IncludePath>C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Oracle</DCC_IncludePath>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">3082</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       <Excluded_Packages Name="C:\Documents and Settings\All Users\Documentos\RAD Studio\5.0\Bpl\MBRibbon_D.bpl">(untitled)</Excluded_Packages>
       <Excluded_Packages Name="C:\Documents and Settings\All Users\Documentos\RAD Studio\5.0\Bpl\mbTBXLibD10D.bpl">Toolbar2000 -- mbTBX Lib Pack v1.6</Excluded_Packages>
       <Excluded_Packages Name="C:\Componentes\NextComponents\Lib\Delphi 2006\NxSheetRun.bpl">File C:\Componentes\NextComponents\Lib\Delphi 2006\NxSheetRun.bpl not found</Excluded_Packages>
@@ -36,17 +112,17 @@
     <DelphiCompile Include="TestORM.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="..\ClasesBase\Firebird\uComunGeneradores.pas" />
-    <DCCReference Include="..\ClasesBase\Firebird\uFBSQLStatementManager.pas" />
-    <DCCReference Include="..\ClasesBase\Firebird\uFuncionesGeneradores.pas" />
-    <DCCReference Include="..\ClasesBase\Firebird\uGeneradorAgrupamientos.pas" />
-    <DCCReference Include="..\ClasesBase\Firebird\uGeneradorCondiciones.pas" />
-    <DCCReference Include="..\ClasesBase\Firebird\uGeneradorDelete.pas" />
-    <DCCReference Include="..\ClasesBase\Firebird\uGeneradorInsert.pas" />
-    <DCCReference Include="..\ClasesBase\Firebird\uGeneradorOrdenamiento.pas" />
-    <DCCReference Include="..\ClasesBase\Firebird\uGeneradorRelaciones.pas" />
-    <DCCReference Include="..\ClasesBase\Firebird\uGeneradorSelect.pas" />
-    <DCCReference Include="..\ClasesBase\Firebird\uGeneradorUpdate.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uComunGeneradores.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uFuncionesGeneradores.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uGeneradorAgrupamientos.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uGeneradorCondiciones.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uGeneradorDelete.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uGeneradorInsert.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uGeneradorOrdenamiento.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uGeneradorRelaciones.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uGeneradorSelect.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uGeneradorUpdate.pas" />
+    <DCCReference Include="..\ClasesBase\Oracle\uOracleSQLStatementManager.pas" />
     <DCCReference Include="..\ClasesBase\uCampos.pas" />
     <DCCReference Include="..\ClasesBase\uColeccionEntidades.pas" />
     <DCCReference Include="..\ClasesBase\uConexion.pas" />

@@ -3,7 +3,6 @@ program TestORM;
 uses
   Forms,
   uMain in 'uMain.pas' {FrmPrincipal},
-  uTestEntidades in 'uTestEntidades.pas',
   uDataModule in 'uDataModule.pas',
   uCampos in '..\ClasesBase\uCampos.pas',
   uColeccionEntidades in '..\ClasesBase\uColeccionEntidades.pas',
@@ -14,17 +13,18 @@ uses
   uExpresiones in '..\ClasesBase\uExpresiones.pas',
   uSQLBuilder in '..\ClasesBase\uSQLBuilder.pas',
   uSQLConnectionGenerator in 'uSQLConnectionGenerator.pas',
-  uComunGeneradores in '..\ClasesBase\Firebird\uComunGeneradores.pas',
-  uFBSQLStatementManager in '..\ClasesBase\Firebird\uFBSQLStatementManager.pas',
-  uFuncionesGeneradores in '..\ClasesBase\Firebird\uFuncionesGeneradores.pas',
-  uGeneradorAgrupamientos in '..\ClasesBase\Firebird\uGeneradorAgrupamientos.pas',
-  uGeneradorCondiciones in '..\ClasesBase\Firebird\uGeneradorCondiciones.pas',
-  uGeneradorDelete in '..\ClasesBase\Firebird\uGeneradorDelete.pas',
-  uGeneradorInsert in '..\ClasesBase\Firebird\uGeneradorInsert.pas',
-  uGeneradorOrdenamiento in '..\ClasesBase\Firebird\uGeneradorOrdenamiento.pas',
-  uGeneradorRelaciones in '..\ClasesBase\Firebird\uGeneradorRelaciones.pas',
-  uGeneradorSelect in '..\ClasesBase\Firebird\uGeneradorSelect.pas',
-  uGeneradorUpdate in '..\ClasesBase\Firebird\uGeneradorUpdate.pas';
+  uComunGeneradores in '..\ClasesBase\Oracle\uComunGeneradores.pas',
+  uFuncionesGeneradores in '..\ClasesBase\Oracle\uFuncionesGeneradores.pas',
+  uGeneradorAgrupamientos in '..\ClasesBase\Oracle\uGeneradorAgrupamientos.pas',
+  uGeneradorCondiciones in '..\ClasesBase\Oracle\uGeneradorCondiciones.pas',
+  uGeneradorDelete in '..\ClasesBase\Oracle\uGeneradorDelete.pas',
+  uGeneradorInsert in '..\ClasesBase\Oracle\uGeneradorInsert.pas',
+  uGeneradorOrdenamiento in '..\ClasesBase\Oracle\uGeneradorOrdenamiento.pas',
+  uGeneradorRelaciones in '..\ClasesBase\Oracle\uGeneradorRelaciones.pas',
+  uGeneradorSelect in '..\ClasesBase\Oracle\uGeneradorSelect.pas',
+  uGeneradorUpdate in '..\ClasesBase\Oracle\uGeneradorUpdate.pas',
+  uOracleSQLStatementManager in '..\ClasesBase\Oracle\uOracleSQLStatementManager.pas',
+  uTestEntidades in 'uTestEntidades.pas';
 
 {$R *.res}
 

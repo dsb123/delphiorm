@@ -3,7 +3,7 @@
 {                                                                       }
 {                           XML Data Binding                            }
 {                                                                       }
-{         Generated on: 02/04/2009 10:04:56                             }
+{         Generated on: 23/06/2009 02:35:11 p.m.                        }
 {       Generated from: C:\Desarrollos\Delphi\DelphiORM\ORMXMLDef.xdb   }
 {   Settings stored in: C:\Desarrollos\Delphi\DelphiORM\ORMXMLDef.xdb   }
 {                                                                       }
@@ -13,7 +13,7 @@ unit ORMXMLDef;
 
 interface
 
-uses xmldom, XMLDoc, XMLIntf;
+uses xmldom, XMLDoc, XMLIntf, Variants;
 
 type
 
@@ -42,7 +42,7 @@ type
 { IXMLORMEntidadesType }
 
   IXMLORMEntidadesType = interface(IXMLNode)
-    ['{5FCE76A1-CC03-4281-AAA7-E9350653B7E2}']
+    ['{3EDEAF9A-4ABA-4958-B862-0360ECB1D783}']
     { Property Accessors }
     function Get_Driver: WideString;
     function Get_StringConexion: WideString;
@@ -65,7 +65,7 @@ type
 { IXMLGeneradoresType }
 
   IXMLGeneradoresType = interface(IXMLNodeCollection)
-    ['{39FF5A79-D522-4121-B088-76085DA302DC}']
+    ['{44382A93-FB85-4A8E-AC67-257194AAD790}']
     { Property Accessors }
     function Get_Generador(Index: Integer): IXMLGeneradorType;
     { Methods & Properties }
@@ -77,7 +77,7 @@ type
 { IXMLGeneradorType }
 
   IXMLGeneradorType = interface(IXMLNode)
-    ['{108C2AD6-5F41-4990-8CC0-58898CEA3F9A}']
+    ['{0E267000-BC71-402D-B2D1-86E9C84787D5}']
     { Property Accessors }
     function Get_Nombre: WideString;
     procedure Set_Nombre(Value: WideString);
@@ -88,7 +88,7 @@ type
 { IXMLEntidadesType }
 
   IXMLEntidadesType = interface(IXMLNodeCollection)
-    ['{8F260AA0-49E4-4607-BBBA-F62BCEC6B5DE}']
+    ['{7B5BCB4F-CEE3-47DE-999E-B2A5B3F8C274}']
     { Property Accessors }
     function Get_Entidad(Index: Integer): IXMLEntidadType;
     { Methods & Properties }
@@ -100,7 +100,7 @@ type
 { IXMLEntidadType }
 
   IXMLEntidadType = interface(IXMLNode)
-    ['{062FBDCD-EB1F-45F9-A284-F42D840357F8}']
+    ['{BD0C892F-6302-4982-89F4-795F12F8101F}']
     { Property Accessors }
     function Get_Nombre: WideString;
     function Get_TieneGenerador: Boolean;
@@ -126,7 +126,7 @@ type
 { IXMLCamposType }
 
   IXMLCamposType = interface(IXMLNodeCollection)
-    ['{55A20FE6-6CA2-464E-AFDD-B9EF53D22DAA}']
+    ['{DA17E3ED-DEA8-46F6-BDEB-E395823F4D84}']
     { Property Accessors }
     function Get_Campo(Index: Integer): IXMLCampoType;
     { Methods & Properties }
@@ -138,13 +138,15 @@ type
 { IXMLCampoType }
 
   IXMLCampoType = interface(IXMLNode)
-    ['{BC21C677-A363-4315-9322-1CFB5B827087}']
+    ['{EA37903F-D95A-4FF9-8383-CA37AC48FF19}']
     { Property Accessors }
     function Get_Nombre: WideString;
     function Get_Alias: WideString;
     function Get_Tipo: WideString;
     function Get_SubTipo: WideString;
     function Get_Longitud: Integer;
+    function Get_Precision: Integer;
+    function Get_Escala: Integer;
     function Get_AceptaNull: Boolean;
     function Get_EsClavePrimaria: Boolean;
     function Get_EsClaveForanea: Boolean;
@@ -155,6 +157,8 @@ type
     procedure Set_Tipo(Value: WideString);
     procedure Set_SubTipo(Value: WideString);
     procedure Set_Longitud(Value: Integer);
+    procedure Set_Precision(Value: Integer);
+    procedure Set_Escala(Value: Integer);
     procedure Set_AceptaNull(Value: Boolean);
     procedure Set_EsClavePrimaria(Value: Boolean);
     procedure Set_EsClaveForanea(Value: Boolean);
@@ -166,6 +170,8 @@ type
     property Tipo: WideString read Get_Tipo write Set_Tipo;
     property SubTipo: WideString read Get_SubTipo write Set_SubTipo;
     property Longitud: Integer read Get_Longitud write Set_Longitud;
+    property Precision: Integer read Get_Precision write Set_Precision;
+    property Escala: Integer read Get_Escala write Set_Escala;
     property AceptaNull: Boolean read Get_AceptaNull write Set_AceptaNull;
     property EsClavePrimaria: Boolean read Get_EsClavePrimaria write Set_EsClavePrimaria;
     property EsClaveForanea: Boolean read Get_EsClaveForanea write Set_EsClaveForanea;
@@ -176,7 +182,7 @@ type
 { IXMLForeignkeysType }
 
   IXMLForeignkeysType = interface(IXMLNodeCollection)
-    ['{EFF3818A-6FA1-4B1E-8C64-EA4E85469F59}']
+    ['{976417D8-707C-4438-B7E2-53D9D9BFA193}']
     { Property Accessors }
     function Get_Foreignkey(Index: Integer): IXMLForeignkeyType;
     { Methods & Properties }
@@ -188,7 +194,7 @@ type
 { IXMLForeignkeyType }
 
   IXMLForeignkeyType = interface(IXMLNode)
-    ['{9880D9D5-626A-41C4-85BF-E4F8C61A76B5}']
+    ['{5F1B88FB-DDE3-4F92-AE59-324682AC29D9}']
     { Property Accessors }
     function Get_TablaRelacionada: WideString;
     function Get_NombreRelacion: WideString;
@@ -209,7 +215,7 @@ type
 { IXMLForeignkeyTypeList }
 
   IXMLForeignkeyTypeList = interface(IXMLNodeCollection)
-    ['{BD55ADCE-3183-41D6-AC23-DD09C12FE3E6}']
+    ['{1E647864-D582-489D-B12D-776CE8A5F3B6}']
     { Methods & Properties }
     function Add: IXMLForeignkeyType;
     function Insert(const Index: Integer): IXMLForeignkeyType;
@@ -220,7 +226,7 @@ type
 { IXMLOrigenType }
 
   IXMLOrigenType = interface(IXMLNodeCollection)
-    ['{D63DE3FE-B465-4393-A2D6-6C4208DF149B}']
+    ['{C7EF3207-1166-45FA-8BB1-B03E4313F87C}']
     { Property Accessors }
     function Get_CampoRed(Index: Integer): IXMLCampoRedType;
     { Methods & Properties }
@@ -232,7 +238,7 @@ type
 { IXMLCampoRedType }
 
   IXMLCampoRedType = interface(IXMLNode)
-    ['{1980E983-B325-4735-8B2A-FF3911E66722}']
+    ['{5A15C62D-A790-47FB-8B65-8DA0D19D064F}']
     { Property Accessors }
     function Get_Tabla: WideString;
     function Get_Nombre: WideString;
@@ -246,7 +252,7 @@ type
 { IXMLDestinoType }
 
   IXMLDestinoType = interface(IXMLNodeCollection)
-    ['{06CFEAA6-710C-4FBC-B49B-C6BDEA25354D}']
+    ['{8E165B99-C6B4-42BB-9A77-89B4B1687CD2}']
     { Property Accessors }
     function Get_CampoRed(Index: Integer): IXMLCampoRedType;
     { Methods & Properties }
@@ -258,7 +264,7 @@ type
 { IXMLListasType }
 
   IXMLListasType = interface(IXMLNodeCollection)
-    ['{27269E72-9C24-4E60-AB11-9DF6411C12D7}']
+    ['{04EE6A3A-5851-4A8A-9456-6C46617C2C88}']
     { Property Accessors }
     function Get_Lista(Index: Integer): IXMLListaType;
     { Methods & Properties }
@@ -270,7 +276,7 @@ type
 { IXMLListaType }
 
   IXMLListaType = interface(IXMLNode)
-    ['{AB35E8E5-6848-4FBF-B135-1F6F9A2F2774}']
+    ['{E91375AB-DE87-4E3F-91B9-0562037573B3}']
     { Property Accessors }
     function Get_Nombre: WideString;
     function Get_Entidades: IXMLEntidadesType;
@@ -285,7 +291,7 @@ type
 { IXMLListaTypeList }
 
   IXMLListaTypeList = interface(IXMLNodeCollection)
-    ['{7459CC10-F610-4709-9617-4D5E73575D16}']
+    ['{95D19CF5-19FC-411A-8DA9-71E4C40F32BE}']
     { Methods & Properties }
     function Add: IXMLListaType;
     function Insert(const Index: Integer): IXMLListaType;
@@ -296,7 +302,7 @@ type
 { IXMLRelacionesType }
 
   IXMLRelacionesType = interface(IXMLNodeCollection)
-    ['{8C277D34-CB30-4BEF-BBD4-2339055394C8}']
+    ['{B9E97074-E2C2-4BFE-941D-48FDD1C5371A}']
     { Property Accessors }
     function Get_Relacion(Index: Integer): IXMLRelacionType;
     { Methods & Properties }
@@ -308,7 +314,7 @@ type
 { IXMLRelacionType }
 
   IXMLRelacionType = interface(IXMLNode)
-    ['{442B43AF-977F-471D-971B-FD3EF41A82D1}']
+    ['{84BB6EC6-3D8D-41A1-991C-4687A80352D9}']
     { Property Accessors }
     function Get_TablaOrigen: WideString;
     function Get_TablaDestino: WideString;
@@ -331,7 +337,7 @@ type
 { IXMLRelacionTypeList }
 
   IXMLRelacionTypeList = interface(IXMLNodeCollection)
-    ['{E2CC57D2-A8C5-446D-B608-8F9157BD07E1}']
+    ['{7C652341-C89B-4BA9-A311-E350B35426F9}']
     { Methods & Properties }
     function Add: IXMLRelacionType;
     function Insert(const Index: Integer): IXMLRelacionType;
@@ -454,6 +460,8 @@ type
     function Get_Tipo: WideString;
     function Get_SubTipo: WideString;
     function Get_Longitud: Integer;
+    function Get_Precision: Integer;
+    function Get_Escala: Integer;
     function Get_AceptaNull: Boolean;
     function Get_EsClavePrimaria: Boolean;
     function Get_EsClaveForanea: Boolean;
@@ -464,6 +472,8 @@ type
     procedure Set_Tipo(Value: WideString);
     procedure Set_SubTipo(Value: WideString);
     procedure Set_Longitud(Value: Integer);
+    procedure Set_Precision(Value: Integer);
+    procedure Set_Escala(Value: Integer);
     procedure Set_AceptaNull(Value: Boolean);
     procedure Set_EsClavePrimaria(Value: Boolean);
     procedure Set_EsClaveForanea(Value: Boolean);
@@ -904,6 +914,32 @@ end;
 procedure TXMLCampoType.Set_Longitud(Value: Integer);
 begin
   SetAttribute('Longitud', Value);
+end;
+
+function TXMLCampoType.Get_Precision: Integer;
+begin
+  if VarIsNull(AttributeNodes['Precision'].NodeValue)  then
+    Result := 0
+  else
+    Result := AttributeNodes['Precision'].NodeValue;
+end;
+
+procedure TXMLCampoType.Set_Precision(Value: Integer);
+begin
+  SetAttribute('Precision', Value);
+end;
+
+function TXMLCampoType.Get_Escala: Integer;
+begin
+  if VarIsNull(AttributeNodes['Escala'].NodeValue)  then
+    Result := 0
+  else
+    Result := AttributeNodes['Escala'].NodeValue;
+end;
+
+procedure TXMLCampoType.Set_Escala(Value: Integer);
+begin
+  SetAttribute('Escala', Value);
 end;
 
 function TXMLCampoType.Get_AceptaNull: Boolean;

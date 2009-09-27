@@ -28,6 +28,7 @@ type
     FDataSet: TDataSet;
     FEntidadConexion    : TORMEntidadConexion;
     FOwnsEntidadConexion: boolean;
+    FLastSQLStatement: string;
 
     function GetDataSet: TDataSet;
     procedure SetDataSet(const Value: TDataSet);
@@ -49,6 +50,7 @@ type
 
     function CrearNuevaConexionEntidad: TORMEntidadConexion; virtual;
     procedure AsignarConexion( ConexionEntidad: TORMEntidadConexion);
+    function GetLastSQLStatement: string;
 
     function ObtenerTodos: integer; virtual;
     function ObtenerMuchos( Filtro: TExpresionCondicion;
@@ -201,6 +203,11 @@ begin
   Result := FEntidadconexion;
 end;
 
+function TORMColeccionEntidades.GetLastSQLStatement: string;
+begin
+  Result := FLastSQLStatement;
+end;
+
 function TORMColeccionEntidades.Guardar: boolean;
 var
   bCerrarTransaccion: boolean;
@@ -265,7 +272,9 @@ begin
     end;
   end;
   }
+
   FSelectStatement.LiberarExpresiones := false;
+  FLastSQLStatement := FSelectStatement.SQLStatement;
 
   FreeAndNil(FSelectStatement);
   Result := Count;
