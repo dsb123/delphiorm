@@ -83,6 +83,41 @@ implementation
 uses  uFrmMetadataHandler, uFrmInfoEntidades, uDialogoGenerador, uFrmListas,
       ORMXMLDef, XMLDoc, Registry, shlobj;
 
+function GetExeByExtension(sExt : string) : string;
+var
+   sExtDesc:string;
+begin
+  sExt := '.' + sExt;
+   with TRegistry.Create do
+   begin
+     try
+       RootKey:=HKEY_CLASSES_ROOT;
+       if OpenKeyReadOnly(sExt) then
+       begin
+         sExtDesc:=ReadString('') ;
+         CloseKey;
+       end;
+       if sExtDesc <>'' then
+       begin
+         if OpenKeyReadOnly(sExtDesc + '\Shell\Open\Command') then
+         begin
+           Result:= ReadString('') ;
+         end
+       end;
+     finally
+       Free;
+     end;
+   end;
+
+   if Result <> '' then
+   begin
+     if Result[1] = '"' then
+     begin
+       Result:=Copy(Result,2,-1 + Pos('"',Copy(Result,2,MaxINt))) ;
+     end
+   end;
+end;
+
 procedure RegisterFileType(ExtName:String; AppName:String) ;
 var
    reg: TRegistry;
@@ -132,7 +167,7 @@ var
   unCampoFK    : TCamposFK;
   unaRelacion  : TRelacion;
 
-  ConvertirTipo: procedure(unCampo: TCampo; const sTipo: string; const sSubTipo: string);
+  ConvertirTipo: procedure(unCampo: TCampo; const sTipo: string; const sSubTipo: string; const nPrecision: Integer; const nEscala: integer);
   phm: HModule;
 begin
   sNombreArchivo := sArchivo;
@@ -184,11 +219,16 @@ begin
                 unCampo.EsClaveForanea    := Entidad[nTabla].Campos.Campo[nCampo].EsClaveForanea;
                 unCampo.AceptaNull        := Entidad[nTabla].Campos.Campo[nCampo].AceptaNull;
                 unCampo.Longitud          := Entidad[nTabla].Campos.Campo[nCampo].Longitud;
+                unCampo.Precision         := Entidad[nTabla].Campos.Campo[nCampo].Precision;
+                unCampo.Escala            := Entidad[nTabla].Campos.Campo[nCampo].Escala;
+
                 unCampo.FuncionAgregacion := Entidad[nTabla].Campos.Campo[nCampo].FuncionAgregacion;
                 //unCampo.ValorDefault      := ENTIDAD[nTabla].CAMPOS.CAMPO[nCampo].ValorDefault;
 
                 ConvertirTipo(unCampo,  Entidad[nTabla].Campos.Campo[nCampo].Tipo,
-                                        Entidad[nTabla].Campos.Campo[nCampo].SubTipo);
+                                        Entidad[nTabla].Campos.Campo[nCampo].SubTipo,
+                                        Entidad[nTabla].Campos.Campo[nCampo].Precision,
+                                        Entidad[nTabla].Campos.Campo[nCampo].Escala);
               end;
             end;
           end;
@@ -268,6 +308,8 @@ begin
                 unCampo.Longitud          := unCampoInfo.Longitud;
                 unCampo.TipoORM           := unCampoInfo.TipoORM;
                 unCampo.TipoBD            := unCampoInfo.TipoBD;
+                unCampo.Precision         := unCampoInfo.Precision;
+                unCampo.Escala            := unCampoInfo.Escala;
               end;
             end;
           end;
@@ -373,7 +415,8 @@ begin
   if ParamCount > 0 then
     AbrirArchivo(ParamStr(1));
 
-  RegisterFileType('do', Application.ExeName) ;
+  if Pos(Application.ExeName, GetExeByExtension('do'))=0 then
+    RegisterFileType('.do', Application.ExeName) ;
 end;
 
 procedure TFrmMain.FormDestroy(Sender: TObject);
@@ -447,6 +490,8 @@ begin
           Tipo              := unCampo.TipoBD;
           SubTipo	          := unCampo.SubTipoBD;
           Longitud          := unCampo.Longitud;
+          Precision         := unCampo.Precision;
+          Escala            := unCampo.Escala;
           AceptaNull        := unCampo.AceptaNull;
           EsClavePrimaria   := unCampo.EsClavePrimaria;
           EsClaveForanea    := unCampo.EsClaveForanea;

@@ -4,5 +4,18 @@
     <Transaction>2009/02/13 10:23:30.765.pas,C:\Documents and Settings\Adrian\Mis documentos\RAD Studio\Projects\Unit1.pas=C:\Desarrollos\Delphi\DelphiORM\DelphiORMTest\uMain.pas</Transaction>
     <Transaction>2009/02/13 10:23:30.765.dfm,C:\Documents and Settings\Adrian\Mis documentos\RAD Studio\Projects\Unit1.dfm=C:\Desarrollos\Delphi\DelphiORM\DelphiORMTest\uMain.dfm</Transaction>
     <Transaction>2009/02/13 10:23:39.781.dproj,C:\Documents and Settings\Adrian\Mis documentos\RAD Studio\Projects\Project1.dproj=C:\Desarrollos\Delphi\DelphiORM\DelphiORMTest\TestORM.dproj</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uComunGeneradores.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uFBSQLStatementManager.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uFuncionesGeneradores.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uGeneradorAgrupamientos.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uGeneradorCondiciones.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uGeneradorDelete.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uGeneradorInsert.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uGeneradorOrdenamiento.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uGeneradorRelaciones.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uGeneradorSelect.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:18.140.pas,C:\Desarrollos\Delphi\DelphiORM\ClasesBase\Firebird\uGeneradorUpdate.pas=</Transaction>
+    <Transaction>2009/06/23 17:54:24.562.pas,C:\Desarrollos\Delphi\DelphiORM\DelphiORMTest\uGabrielEntidades.pas=</Transaction>
+    <Transaction>2009/06/23 18:04:31.000.pas,C:\Desarrollos\Delphi\DelphiORM\DelphiORMTest\uTestEntidades.pas=</Transaction>
   </Transactions>
 </BorlandProject>

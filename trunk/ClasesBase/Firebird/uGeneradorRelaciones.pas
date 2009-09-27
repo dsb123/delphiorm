@@ -61,7 +61,8 @@ begin
       tdDerecha: Result := Result + ' RIGHT JOIN ';
     end;
 
-    Result := Result + '' + NombreTabla(Relacion.CamposForaneo.Tabla) + ' ON ';
+    //Result := Result + '' + NombreTabla(Relacion.CamposForaneo.Tabla) + ' ON ';
+    Result := Result + '' + NombreTabla(Relacion.CamposPrimario.Tabla) + ' ON ';
 
     for nCampo := 0 to Relacion.CamposForaneo.CantCampos - 1 do
     begin

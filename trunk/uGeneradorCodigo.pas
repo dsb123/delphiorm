@@ -323,11 +323,14 @@ begin
     sVarAux := StringReplace(sVarAux, '<bEsClavePrimaria>', BoolToStr(EntidadActiva.Campos.Campo[i].EsClavePrimaria,true), [rfReplaceAll]);
     sVarAux := StringReplace(sVarAux, '<bEsClaveForanea>',  BoolToStr(EntidadActiva.Campos.Campo[i].EsClaveForanea,true), [rfReplaceAll]);
     sVarAux := StringReplace(sVarAux, '<LongitudCampo>',    IntToStr(EntidadActiva.Campos.Campo[i].Longitud), [rfReplaceAll]);
+    sVarAux := StringReplace(sVarAux, '<PrecisionCampo>',   IntToStr(EntidadActiva.Campos.Campo[i].Precision), [rfReplaceAll]);
+    sVarAux := StringReplace(sVarAux, '<EscalaCampo>',      IntToStr(EntidadActiva.Campos.Campo[i].Escala), [rfReplaceAll]);
     sVarAux := StringReplace(sVarAux, '<tdTipoCampo>',      EntidadActiva.Campos.Campo[i].TipoORM, [rfReplaceAll]);
 
     if (EntidadActiva.Campos.Campo[i].TipoORM = 'tdString') then
       sVarAux := StringReplace(sVarAux, '<TipoORM>', QuotedStr(''), [rfReplaceAll])
-   else if EntidadActiva.Campos.Campo[i].TipoORM = 'tdInteger' then
+   else if (  (EntidadActiva.Campos.Campo[i].TipoORM = 'tdInteger')or
+              (EntidadActiva.Campos.Campo[i].TipoORM = 'tdfloat')) then
       sVarAux := StringReplace(sVarAux, '<TipoORM>','0', [rfReplaceAll])
    else if  (EntidadActiva.Campos.Campo[i].TipoORM = 'tdDateTime') or
             (EntidadActiva.Campos.Campo[i].TipoORM = 'tdDate') or
@@ -476,10 +479,12 @@ begin
         end;
 
         //unCampoInfo := Tablas.ObtenerTabla(EntidadActiva.Nombre).Campos.ObtenerCampo(Campo[nCampo].Nombre);
-        sVarAux := StringReplace(sVarAux, '<TipoCampo>',    Campo[nCampo].TipoVariable, [rfReplaceAll]);
-        sVarAux := StringReplace(sVarAux, '<AsKeyWord>',    Campo[nCampo].AsKeyWord, [rfReplaceAll]);
-        sVarAux := StringReplace(sVarAux, '<LongitudCampo>',IntToStr(Campo[nCampo].Longitud), [rfReplaceAll]);
-        sVarAux := StringReplace(sVarAux, '<tdTipoCampo>',  Campo[nCampo].TipoORM, [rfReplaceAll]);
+        sVarAux := StringReplace(sVarAux, '<TipoCampo>',      Campo[nCampo].TipoVariable, [rfReplaceAll]);
+        sVarAux := StringReplace(sVarAux, '<AsKeyWord>',      Campo[nCampo].AsKeyWord, [rfReplaceAll]);
+        sVarAux := StringReplace(sVarAux, '<LongitudCampo>',  IntToStr(Campo[nCampo].Longitud), [rfReplaceAll]);
+        sVarAux := StringReplace(sVarAux, '<PrecisionCampo>', IntToStr(Campo[nCampo].Precision), [rfReplaceAll]);
+        sVarAux := StringReplace(sVarAux, '<EscalaCampo>',    IntToStr(Campo[nCampo].Escala), [rfReplaceAll]);
+        sVarAux := StringReplace(sVarAux, '<tdTipoCampo>',    Campo[nCampo].TipoORM, [rfReplaceAll]);
 
         {
         sVarAux := StringReplace(sVarAux, '<TipoCampo>',    unCampoInfo.TipoVariable, [rfReplaceAll]);
@@ -599,115 +604,143 @@ begin
   Result := '';
   for nTabla := 0 to Tablas.Count - 1 do
   begin
-    sVarAux   := sVariableContexto;
-    nPosStart := Pos('<IfTieneRelacion>', sVarAux);
+    //Proceso las entidades reales, no las clonadas.
+    if Trim(Tablas.Tabla[nTabla].Alias) = '' then
+    begin
+      sVarAux   := sVariableContexto;
+      nPosStart := Pos('<IfEntidadConRelaciones>', sVarAux);
 
-    while nPosStart > 0 do begin
-      if Tablas.Tabla[nTabla].CamposFK.Count > 0 then
-      begin
-        nPosEnd     := Pos('</IfTieneRelacion>', sVarAux);
-        sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
-        sVarAuxDer  := MidStr(sVarAux,  nPosEnd + 18, length(sVarAux));
-        sVarAux2    := MidStr(sVarAux,  nPosStart + 17, nPosEnd - (nPosStart + 17));
-        sVarAux     := sVarAuxIzq + sVarAux2;//saco los If y mando para que se procese lo del medio normalmente
-        sVarAux     := sVarAux + sVarAuxDer;
-        nPosStart   := Pos('<IfTieneRelacion>', sVarAux);
-      end
-      else
-      begin
-        nPosEnd     := Pos('</IfTieneRelacion>', sVarAux);
-        sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
-        sVarAuxDer  := MidStr(sVarAux, nPosEnd + 18, length(sVarAux));
-        sVarAux     := sVarAuxIzq + sVarAuxDer;
-        nPosStart   := Pos('<IfTieneRelacion>', sVarAux);
+      while nPosStart > 0 do begin
+        if (Tablas.Tabla[nTabla].CamposFK.Count +
+            Tablas.Tabla[nTabla].CamposColeccion.Count) > 0 then
+        begin
+          nPosEnd     := Pos('</IfEntidadConRelaciones>', sVarAux);
+          sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
+          sVarAuxDer  := MidStr(sVarAux,  nPosEnd + 25, length(sVarAux));
+          sVarAux2    := MidStr(sVarAux,  nPosStart + 24, nPosEnd - (nPosStart + 24));
+          sVarAux     := sVarAuxIzq + sVarAux2;//saco los If y mando para que se procese lo del medio normalmente
+          sVarAux     := sVarAux + sVarAuxDer;
+          nPosStart   := Pos('<IfEntidadConRelaciones>', sVarAux);
+        end
+        else
+        begin
+          nPosEnd     := Pos('</IfEntidadConRelaciones>', sVarAux);
+          sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
+          sVarAuxDer  := MidStr(sVarAux, nPosEnd + 25, length(sVarAux));
+          sVarAux     := sVarAuxIzq + sVarAuxDer;
+          nPosStart   := Pos('<IfEntidadConRelaciones>', sVarAux);
+        end;
       end;
-    end;
 
-    nPosStart := Pos('<PorCadaEntidadAsociada>', sVarAux);
-    while nPosStart > 0 do
-    begin
-      nPosEnd     := Pos('</PorCadaEntidadAsociada>', sVarAux);
-      sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
-      sVarAuxDer  := MidStr(sVarAux,nPosEnd + 25, length(sVarAux));
-      sVarAux2    := MidStr(sVarAux, nPosStart + 24, nPosEnd - (nPosStart + 24));
-      sVarAux     := sVarAuxIzq + ContextoEntidadAsociada(Tablas.Tabla[nTabla], sVarAux2);
-      sVarAux     := sVarAux + sVarAuxDer;
-      nPosStart   := Pos('<PorCadaEntidadAsociada>', sVarAux);
-    end;
+      nPosStart := Pos('<IfTieneRelacion>', sVarAux);
 
-    nPosStart := Pos('<IfTieneRelacionAMuchos>', sVarAux);
-    while nPosStart > 0 do begin
-      if Tablas.Tabla[nTabla].CamposColeccion.Count > 0 then begin
-        nPosEnd     := Pos('</IfTieneRelacionAMuchos>', sVarAux);
-        sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
-        sVarAuxDer  := MidStr(sVarAux,  nPosEnd + 25, length(sVarAux));
-        sVarAux2    := MidStr(sVarAux,  nPosStart + 24, nPosEnd - (nPosStart + 24));
-        sVarAux     := sVarAuxIzq + sVarAux2;//saco los If y mando para que se procese lo del medio normalmente
-        sVarAux     := sVarAux + sVarAuxDer;
-        nPosStart   := Pos('<IfTieneRelacionAMuchos>', sVarAux);
-      end
-      else
-      begin
-        nPosEnd     := Pos('</IfTieneRelacionAMuchos>', sVarAux);
-        sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
-        sVarAuxDer  := MidStr(sVarAux,  nPosEnd + 25, length(sVarAux));
-        sVarAux     := sVarAuxIzq + sVarAuxDer;
-        nPosStart   := Pos('<IfTieneRelacionAMuchos>', sVarAux);
+      while nPosStart > 0 do begin
+        if Tablas.Tabla[nTabla].CamposFK.Count > 0 then
+        begin
+          nPosEnd     := Pos('</IfTieneRelacion>', sVarAux);
+          sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
+          sVarAuxDer  := MidStr(sVarAux,  nPosEnd + 18, length(sVarAux));
+          sVarAux2    := MidStr(sVarAux,  nPosStart + 17, nPosEnd - (nPosStart + 17));
+          sVarAux     := sVarAuxIzq + sVarAux2;//saco los If y mando para que se procese lo del medio normalmente
+          sVarAux     := sVarAux + sVarAuxDer;
+          nPosStart   := Pos('<IfTieneRelacion>', sVarAux);
+        end
+        else
+        begin
+          nPosEnd     := Pos('</IfTieneRelacion>', sVarAux);
+          sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
+          sVarAuxDer  := MidStr(sVarAux, nPosEnd + 18, length(sVarAux));
+          sVarAux     := sVarAuxIzq + sVarAuxDer;
+          nPosStart   := Pos('<IfTieneRelacion>', sVarAux);
+        end;
       end;
-    end;
 
-    nPosStart := Pos('<PorCadaColeccionAsociada>', sVarAux);
-    while (nPosStart > 0) do
-    begin
-      nPosEnd     := Pos('</PorCadaColeccionAsociada>', sVarAux);
-      sVarAuxIzq  := LeftStr(sVarAux,nPosStart-1);
-      sVarAuxDer  := MidStr(sVarAux,nPosEnd + 27, length(sVarAux));
-      sVarAux2    := MidStr(sVarAux, nPosStart + 26, nPosEnd - (nPosStart + 26));
-      sVarAux     := sVarAuxIzq + ContextoColeccionEntidadAsociada(Tablas.Tabla[nTabla], sVarAux2);
-      sVarAux     := sVarAux + sVarAuxDer;
-      nPosStart   := Pos('<PorCadaColeccionAsociada>', sVarAux);
-    end;
+      nPosStart := Pos('<PorCadaEntidadAsociada>', sVarAux);
+      while nPosStart > 0 do
+      begin
+        nPosEnd     := Pos('</PorCadaEntidadAsociada>', sVarAux);
+        sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
+        sVarAuxDer  := MidStr(sVarAux,nPosEnd + 25, length(sVarAux));
+        sVarAux2    := MidStr(sVarAux, nPosStart + 24, nPosEnd - (nPosStart + 24));
+        sVarAux     := sVarAuxIzq + ContextoEntidadAsociada(Tablas.Tabla[nTabla], sVarAux2);
+        sVarAux     := sVarAux + sVarAuxDer;
+        nPosStart   := Pos('<PorCadaEntidadAsociada>', sVarAux);
+      end;
 
-    nPosStart := Pos('<PorCadaCampo>', sVarAux);
-    while (nPosStart > 0) do
-    begin
-      nPosEnd     := Pos('</PorCadaCampo>', sVarAux);
-      sVarAuxIzq  := LeftStr(sVarAux,nPosStart - 1);
-      sVarAuxDer  := MidStr(sVarAux,nPosEnd + 15, length(sVarAux));
-      sVarAux2    := MidStr(sVarAux, nPosStart + 14, nPosEnd - (nPosStart + 14));
-      sVarAux     := sVarAuxIzq + ContextoCampo(Tablas.Tabla[nTabla],sVarAux2);
-      sVarAux     := sVarAux + sVarAuxDer;
-      nPosStart   := Pos('<PorCadaCampo>', sVarAux);
-    end;
+      nPosStart := Pos('<IfTieneRelacionAMuchos>', sVarAux);
+      while nPosStart > 0 do begin
+        if Tablas.Tabla[nTabla].CamposColeccion.Count > 0 then begin
+          nPosEnd     := Pos('</IfTieneRelacionAMuchos>', sVarAux);
+          sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
+          sVarAuxDer  := MidStr(sVarAux,  nPosEnd + 25, length(sVarAux));
+          sVarAux2    := MidStr(sVarAux,  nPosStart + 24, nPosEnd - (nPosStart + 24));
+          sVarAux     := sVarAuxIzq + sVarAux2;//saco los If y mando para que se procese lo del medio normalmente
+          sVarAux     := sVarAux + sVarAuxDer;
+          nPosStart   := Pos('<IfTieneRelacionAMuchos>', sVarAux);
+        end
+        else
+        begin
+          nPosEnd     := Pos('</IfTieneRelacionAMuchos>', sVarAux);
+          sVarAuxIzq  := LeftStr(sVarAux, nPosStart - 1);
+          sVarAuxDer  := MidStr(sVarAux,  nPosEnd + 25, length(sVarAux));
+          sVarAux     := sVarAuxIzq + sVarAuxDer;
+          nPosStart   := Pos('<IfTieneRelacionAMuchos>', sVarAux);
+        end;
+      end;
 
-    nPosStart := Pos('<PorCadaCampoClave>', sVarAux);
-    while (nPosStart > 0) do
-    begin
-      nPosEnd     := Pos('</PorCadaCampoClave>', sVarAux);
-      sVarAuxIzq  := LeftStr(sVarAux,nPosStart - 1);
-      sVarAuxDer  := MidStr(sVarAux,nPosEnd + 20, length(sVarAux));
-      sVarAux2    := MidStr(sVarAux, nPosStart + 19, nPosEnd - (nPosStart + 19));
-      sVarAux     := sVarAuxIzq + ContextoCampoClave(Tablas.Tabla[nTabla],  sVarAux2);
-      sVarAux     := sVarAux + sVarAuxDer;
+      nPosStart := Pos('<PorCadaColeccionAsociada>', sVarAux);
+      while (nPosStart > 0) do
+      begin
+        nPosEnd     := Pos('</PorCadaColeccionAsociada>', sVarAux);
+        sVarAuxIzq  := LeftStr(sVarAux,nPosStart-1);
+        sVarAuxDer  := MidStr(sVarAux,nPosEnd + 27, length(sVarAux));
+        sVarAux2    := MidStr(sVarAux, nPosStart + 26, nPosEnd - (nPosStart + 26));
+        sVarAux     := sVarAuxIzq + ContextoColeccionEntidadAsociada(Tablas.Tabla[nTabla], sVarAux2);
+        sVarAux     := sVarAux + sVarAuxDer;
+        nPosStart   := Pos('<PorCadaColeccionAsociada>', sVarAux);
+      end;
+
+      nPosStart := Pos('<PorCadaCampo>', sVarAux);
+      while (nPosStart > 0) do
+      begin
+        nPosEnd     := Pos('</PorCadaCampo>', sVarAux);
+        sVarAuxIzq  := LeftStr(sVarAux,nPosStart - 1);
+        sVarAuxDer  := MidStr(sVarAux,nPosEnd + 15, length(sVarAux));
+        sVarAux2    := MidStr(sVarAux, nPosStart + 14, nPosEnd - (nPosStart + 14));
+        sVarAux     := sVarAuxIzq + ContextoCampo(Tablas.Tabla[nTabla],sVarAux2);
+        sVarAux     := sVarAux + sVarAuxDer;
+        nPosStart   := Pos('<PorCadaCampo>', sVarAux);
+      end;
+
       nPosStart := Pos('<PorCadaCampoClave>', sVarAux);
-    end;
+      while (nPosStart > 0) do
+      begin
+        nPosEnd     := Pos('</PorCadaCampoClave>', sVarAux);
+        sVarAuxIzq  := LeftStr(sVarAux,nPosStart - 1);
+        sVarAuxDer  := MidStr(sVarAux,nPosEnd + 20, length(sVarAux));
+        sVarAux2    := MidStr(sVarAux, nPosStart + 19, nPosEnd - (nPosStart + 19));
+        sVarAux     := sVarAuxIzq + ContextoCampoClave(Tablas.Tabla[nTabla],  sVarAux2);
+        sVarAux     := sVarAux + sVarAuxDer;
+        nPosStart := Pos('<PorCadaCampoClave>', sVarAux);
+      end;
 
 
-    sVarAux := StringReplace(sVarAux, '<IndiceEntidad>', IntToStr(nTabla), [rfReplaceAll]);
-    sVarAux := StringReplace(sVarAux, '<NombreEntidad>', Tablas.Tabla[nTabla].Nombre, [rfReplaceAll]);
-    sVarAux := StringReplace(sVarAux, '<NombreGenerador>', Tablas.Tabla[nTabla].NombreGenerador, [rfReplaceAll]);
-    if nTabla < (Tablas.Count - 1) then
-    begin
-      sVarAux := StringReplace(sVarAux, '</ComaParaEnum>', ',', [rfReplaceAll]);
-      sVarAux := StringReplace(sVarAux, '</PComaParaEnum>',';', [rfReplaceAll]);
-    end
-    else
-    begin
-      sVarAux := StringReplace(sVarAux, '</ComaParaEnum>', '', [rfReplaceAll]);
-      sVarAux := StringReplace(sVarAux, '</PComaParaEnum>','', [rfReplaceAll]);
+      sVarAux := StringReplace(sVarAux, '<IndiceEntidad>', IntToStr(nTabla), [rfReplaceAll]);
+      sVarAux := StringReplace(sVarAux, '<NombreEntidad>', Tablas.Tabla[nTabla].Nombre, [rfReplaceAll]);
+      sVarAux := StringReplace(sVarAux, '<NombreGenerador>', Tablas.Tabla[nTabla].NombreGenerador, [rfReplaceAll]);
+      if nTabla < (Tablas.Count - 1) then
+      begin
+        sVarAux := StringReplace(sVarAux, '</ComaParaEnum>', ',', [rfReplaceAll]);
+        sVarAux := StringReplace(sVarAux, '</PComaParaEnum>',';', [rfReplaceAll]);
+      end
+      else
+      begin
+        sVarAux := StringReplace(sVarAux, '</ComaParaEnum>', '', [rfReplaceAll]);
+        sVarAux := StringReplace(sVarAux, '</PComaParaEnum>','', [rfReplaceAll]);
+      end;
+      sVarAux :=  LimpiarLineasBlancos(sVarAux);
+      Result  := Result + sVarAux;
     end;
-    sVarAux :=  LimpiarLineasBlancos(sVarAux);
-    Result  := Result + sVarAux;
   end;
 end;
 
@@ -847,52 +880,32 @@ function TGeneradorCodigo.ContextoRelacionListas(ListaEntidad: TListaTabla;
   sVariableContexto: string): string;
 var
   sVarAux: string;
-  nTablas, nRelacion, nAux: integer;
-  sNombreEntidad: string;
-  unaTabla : TTabla;
+  nRelacion: integer;
 begin
   Result := '';
-  if ListaEntidad.Componentes.Count > 1 then
+  if ListaEntidad.Relaciones.Count > 0 then
   begin
-    for nTablas := 1 to ListaEntidad.Componentes.Count - 1 do begin
-      unaTabla := Tablas.ObtenerTabla(ListaEntidad.Componentes.Tabla[nTablas].Nombre);
-      sNombreEntidad := '';
-      for nRelacion := 0 to unaTabla.CamposFK.Count - 1 do
-      begin
-        for nAux := 0 to nTablas do
-        begin
-          if unaTabla.CamposFK.CamposFK[nRelacion].TablaDestino = ListaEntidad.Componentes.Tabla[nAux].Nombre then
-          begin
-            sNombreEntidad := ListaEntidad.Componentes.Tabla[nAux].Nombre;
-            break;
-          end;
-        end;
-        if sNombreEntidad <> '' then
-          break;
-      end;
-
-      if sNombreEntidad = '' then
-      begin
-        for nRelacion := 0 to unaTabla.CamposColeccion.Count - 1 do
-        begin
-          for nAux := 0 to nTablas do
-          begin
-            if unaTabla.CamposColeccion.CamposFK[nRelacion].TablaDestino = ListaEntidad.Componentes.Tabla[nAux].Nombre then
-            begin
-              sNombreEntidad := ListaEntidad.Componentes.Tabla[nAux].Nombre;
-              break;
-            end;
-          end;
-          if sNombreEntidad <> '' then
-            break;
-        end;
-      end;
-
+    for nRelacion := 0 to ListaEntidad.Relaciones.Count - 1 do
+    begin
       sVarAux := sVariableContexto;
+      if Trim(ListaEntidad.Relaciones.Relacion[nRelacion].CamposFK.NomRelacion)<>'' then
+        sVarAux := StringReplace( sVarAux, '<NombreRelacion>',
+                                  ListaEntidad.Relaciones.Relacion[nRelacion].CamposFK.NomRelacion,
+                                  [rfReplaceAll])
+      else
+        sVarAux := StringReplace( sVarAux, '<NombreRelacion>',
+                                  ListaEntidad.Relaciones.Relacion[nRelacion].CamposFK.NomRelacionAMuchos,
+                                  [rfReplaceAll]);
+
       sVarAux := StringReplace(sVarAux, '<NombreEntidad>',
-                              sNombreEntidad, [rfReplaceAll]);
-      sVarAux := StringReplace(sVarAux, '<NombreEntidadRelacionada>',
-                              ListaEntidad.Componentes.Tabla[nTablas].Nombre, [rfReplaceAll]);
+                                ListaEntidad.Relaciones.Relacion[nRelacion].CamposFK.TablaOrigen,
+                                [rfReplaceAll]);
+      sVarAux := StringReplace( sVarAux, '<NombreEntidadRelacionada>',
+                                ListaEntidad.Relaciones.Relacion[nRelacion].CamposFK.TablaDestino,
+                                [rfReplaceAll]);
+      sVarAux := StringReplace( sVarAux, '<TipoRelacion>',
+                                ListaEntidad.Relaciones.Relacion[nRelacion].TipoRelacion,
+                                [rfReplaceAll]);
 
       Result := Result + sVarAux;
     end;

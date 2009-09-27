@@ -11,7 +11,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function GetConnection: TSQLConnection;
+    function GetConnection(sIDConexion: string=''): TSQLConnection;
   end;
 
 implementation
@@ -32,13 +32,14 @@ begin
   inherited;
 end;
 
-function TSQLConnectionGenerator.GetConnection: TSQLConnection;
+function TSQLConnectionGenerator.GetConnection(sIDConexion: string): TSQLConnection;
 begin
+
   Result := TSQLConnection.Create(nil);
   Result.LoginPrompt := False;
   Result.DriverName := DM.SQLConnection.DriverName;
   Result.ConnectionName := DM.SQLConnection.ConnectionName;
-  Result.Name := DM.SQLConnection.Name + 'Clone1';
+  Result.Name := DM.SQLConnection.Name + 'Clone1_' + sIDConexion;
   Result.Params.AddStrings(DM.SQLConnection.Params);
   Result.GetDriverFunc := DM.SQLConnection.GetDriverFunc;
   Result.LibraryName := DM.SQLConnection.LibraryName;

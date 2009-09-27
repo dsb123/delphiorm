@@ -3,7 +3,7 @@ unit uTestEntidades;
 interface
 
 uses Classes, SysUtils, uEntidades, uColeccionEntidades, uCampos, uExpresiones,
-	 uConexion, uSQLConnectionGenerator, uFBSQLStatementManager;
+	 uConexion, uSQLConnectionGenerator, uOracleSQLStatementManager;
 
 type
 
@@ -17,7 +17,7 @@ const
 end;
 TIndicePersona=class
 const
-	PerdonaID=0;
+	PersonaID=0;
 	Apellido=1;
 	Nombre=2;
 	TipoDocumentoID=3;
@@ -40,10 +40,9 @@ end;
 
 TIndiceListaPersona=class
 const
-	PerdonaID=0;
-	Apellido=1;
-	Nombre=2;
-	DescripcionTipoDocumento=3;
+	Apellido=0;
+	Nombre=1;
+	DescripcionTipoDocumento=2;
 end;
 
 TFabricaCampoDomicilio=class
@@ -56,7 +55,7 @@ public
 end;
 TFabricaCampoPersona=class
 public
-	class function PerdonaID: TORMCampo;
+	class function PersonaID: TORMCampo;
 	class function Apellido: TORMCampo;
 	class function Nombre: TORMCampo;
 	class function TipoDocumentoID: TORMCampo;
@@ -150,8 +149,8 @@ TPersona=class(TORMEntidadBase)
 private
 	FTipoDocumento: TTipoDocumento;
 	FColeccionDomicilio: TColeccionDomicilio;
-	function GetPerdonaID: integer;
-	procedure SetPerdonaID(const Value:integer);
+	function GetPersonaID: integer;
+	procedure SetPersonaID(const Value:integer);
 	function GetApellido: string;
 	procedure SetApellido(const Value:string);
 	function GetNombre: string;
@@ -164,13 +163,13 @@ private
 	function GetColeccionDomicilio: TColeccionDomicilio;
 public
 	constructor Create(Coleccion: TCollection = nil; ComoEntidadNueva: boolean = true); overload;
-	constructor Create(const PerdonaID: integer); overload;
-	function ObtenerEntidad(const PerdonaID: integer): boolean;
+	constructor Create(const PersonaID: integer); overload;
+	function ObtenerEntidad(const PersonaID: integer): boolean;
 	destructor Destroy; override;
 	function CrearNuevaConexionEntidad: TORMEntidadConexion; override;
 	function GetORMCampo(IndiceCampo: integer): TORMCampo;
 	procedure LiberarTipoDocumento;
-	function EsNuloPerdonaID: boolean;
+	function EsNuloPersonaID: boolean;
 	function EsNuloApellido: boolean;
 	function EsNuloNombre: boolean;
 	function EsNuloTipoDocumentoID: boolean;
@@ -178,7 +177,7 @@ public
 	property TipoDocumento: TTipoDocumento read GetTipoDocumento;
 	property ColeccionDomicilio: TColeccionDomicilio read GetColeccionDomicilio;
 published
-	property PerdonaID: integer read GetPerdonaID write SetPerdonaID;
+	property PersonaID: integer read GetPersonaID write SetPersonaID;
 	property Apellido: string read GetApellido write SetApellido;
 	property Nombre: string read GetNombre write SetNombre;
 	property TipoDocumentoID: integer read GetTipoDocumentoID write SetTipoDocumentoID;
@@ -352,8 +351,6 @@ end;
 
 TFilaListaPersona=class(TORMEntidadBase)
 private
-	function GetPerdonaID: integer;
-	procedure SetPerdonaID(const Value: integer);
 	function GetApellido: string;
 	procedure SetApellido(const Value: string);
 	function GetNombre: string;
@@ -365,7 +362,6 @@ public
 	destructor Destroy; override;
 	function CrearNuevaConexionEntidad: TORMEntidadConexion; override;
 published
-	property PerdonaID: integer read GetPerdonaID write SetPerdonaID;
 	property Apellido: string read GetApellido write SetApellido;
 	property Nombre: string read GetNombre write SetNombre;
 	property DescripcionTipoDocumento: string read GetDescripcionTipoDocumento write SetDescripcionTipoDocumento;
@@ -420,7 +416,7 @@ class function TFabricauTestEntidades.CrearNuevaEntidadConexion(ConexionPublica:
 begin
 	if not assigned(SingleConnection) then
 	begin
-		Result := TORMEntidadConexion.Create(SQLConnectionGenerator.GetConnection, TFBSQLStatementManager.Create); 
+		Result := TORMEntidadConexion.Create(SQLConnectionGenerator.GetConnection('uTestEntidades'), TOracleSQLStatementManager.Create); 
 		Result.ConexionPublica := ConexionPublica;
 	end
 	else
@@ -433,11 +429,11 @@ constructor TDomicilio.Create(Coleccion: TCollection; ComoEntidadNueva: boolean)
 begin
 	inherited Create(Coleccion, ComoEntidadNueva);
 	FTabla:='Domicilio';
-	FCampos.Agregar(TORMCampo.Create(FTabla,'DomicilioID', '','','',TIndiceDomicilio.DomicilioID, 0,  True, True,False, True, tdInteger, faNinguna,0));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'TipoDomicilioID', '','','',TIndiceDomicilio.TipoDomicilioID, 0,  False, False,True, False, tdInteger, faNinguna,0));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'PersonaID', '','','',TIndiceDomicilio.PersonaID, 0,  False, False,True, False, tdInteger, faNinguna,0));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'Calle', '','','',TIndiceDomicilio.Calle, 50,  False, False,False, False, tdString, faNinguna,''));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'Numero', '','','',TIndiceDomicilio.Numero, 0,  False, False,False, False, tdInteger, faNinguna,0));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'DomicilioID', 'DomicilioSequence','','',TIndiceDomicilio.DomicilioID, 0,  0, 0, True, True,False, False, tdInteger, faNinguna,0));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'TipoDomicilioID', '','','',TIndiceDomicilio.TipoDomicilioID, 0,  0, 0, False, False,True, True, tdInteger, faNinguna,0));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'PersonaID', '','','',TIndiceDomicilio.PersonaID, 0,  0, 0, False, False,True, True, tdInteger, faNinguna,0));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'Calle', '','','',TIndiceDomicilio.Calle, 50,  0, 0, False, False,False, True, tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'Numero', '','','',TIndiceDomicilio.Numero, 0,  0, 0, False, False,False, True, tdInteger, faNinguna,0));
 	FTipoDomicilio:=nil;
 	FPersona:=nil;
 end;
@@ -562,7 +558,7 @@ begin
 		FPersona.AsignarConexion(Conexion);
 		FPersona.ObtenerEntidad(PersonaID);
 		nEntidadAsociada := AgregarEntidadAsociada(FPersona);
-		AgregarCamposAsociadosEntidad(nEntidadAsociada, TIndiceDomicilio.PersonaID,TIndicePersona.PerdonaID);
+		AgregarCamposAsociadosEntidad(nEntidadAsociada, TIndiceDomicilio.PersonaID,TIndicePersona.PersonaID);
 	end;
 	Result := FPersona;
 end;
@@ -576,11 +572,11 @@ constructor TPersona.Create(Coleccion: TCollection; ComoEntidadNueva: boolean);
 begin
 	inherited Create(Coleccion, ComoEntidadNueva);
 	FTabla:='Persona';
-	FCampos.Agregar(TORMCampo.Create(FTabla,'PerdonaID', '','','',TIndicePersona.PerdonaID, 0,  True, True,False, True, tdInteger, faNinguna,0));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'Apellido', '','','',TIndicePersona.Apellido, 50,  False, False,False, False, tdString, faNinguna,''));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'Nombre', '','','',TIndicePersona.Nombre, 50,  False, False,False, False, tdString, faNinguna,''));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'TipoDocumentoID', '','','',TIndicePersona.TipoDocumentoID, 0,  False, False,True, False, tdInteger, faNinguna,0));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'NumeroDocumento', '','','',TIndicePersona.NumeroDocumento, 0,  False, False,False, False, tdInteger, faNinguna,0));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'PersonaID', 'PersonaSequence','','',TIndicePersona.PersonaID, 0,  0, 0, True, True,False, False, tdInteger, faNinguna,0));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'Apellido', '','','',TIndicePersona.Apellido, 50,  0, 0, False, False,False, True, tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'Nombre', '','','',TIndicePersona.Nombre, 50,  0, 0, False, False,False, True, tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'TipoDocumentoID', '','','',TIndicePersona.TipoDocumentoID, 0,  0, 0, False, False,True, True, tdInteger, faNinguna,0));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'NumeroDocumento', '','','',TIndicePersona.NumeroDocumento, 0,  0, 0, False, False,False, True, tdInteger, faNinguna,0));
 	FTipoDocumento:=nil;
 	FColeccionDomicilio:=nil;
 end;
@@ -602,18 +598,18 @@ function TPersona.GetORMCampo(IndiceCampo: integer): TORMCampo;
 begin
 	Result := FCampos.ORMCampo[IndiceCampo];
 end;	
-constructor TPersona.Create(const PerdonaID: integer);
+constructor TPersona.Create(const PersonaID: integer);
 begin
 	Create;
-	ObtenerEntidad(PerdonaID);
+	ObtenerEntidad(PersonaID);
 end;	
-function TPersona.GetPerdonaID: integer;
+function TPersona.GetPersonaID: integer;
 begin
-	Result := FCampos.ORMCampo[TIndicePersona.PerdonaID].AsInteger;
+	Result := FCampos.ORMCampo[TIndicePersona.PersonaID].AsInteger;
 end;
-function TPersona.EsNuloPerdonaID: boolean;
+function TPersona.EsNuloPersonaID: boolean;
 begin
-	Result := FCampos.ORMCampo[TIndicePersona.PerdonaID].EsNulo;
+	Result := FCampos.ORMCampo[TIndicePersona.PersonaID].EsNulo;
 end;
 function TPersona.GetApellido: string;
 begin
@@ -647,9 +643,9 @@ function TPersona.EsNuloNumeroDocumento: boolean;
 begin
 	Result := FCampos.ORMCampo[TIndicePersona.NumeroDocumento].EsNulo;
 end;
-procedure TPersona.SetPerdonaID(const Value: integer);
+procedure TPersona.SetPersonaID(const Value: integer);
 begin
-	FCampos.ORMCampo[TIndicePersona.PerdonaID].AsInteger:= Value;
+	FCampos.ORMCampo[TIndicePersona.PersonaID].AsInteger:= Value;
 end;	
 procedure TPersona.SetApellido(const Value: string);
 begin
@@ -667,12 +663,12 @@ procedure TPersona.SetNumeroDocumento(const Value: integer);
 begin
 	FCampos.ORMCampo[TIndicePersona.NumeroDocumento].AsInteger:= Value;
 end;	
-function TPersona.ObtenerEntidad(const PerdonaID: integer): boolean;
+function TPersona.ObtenerEntidad(const PersonaID: integer): boolean;
 var
 	select : TSelectStatement;
 begin
 	select := TSelectStatement.Create(FCampos);
-	select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[TIndicePersona.PerdonaID], tcIgual, PerdonaID));
+	select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[TIndicePersona.PersonaID], tcIgual, PersonaID));
 	Result := AsignarCamposDesdeSeleccion(select);
 	select.Free;
 end;
@@ -705,8 +701,8 @@ begin
 		FColeccionDomicilio.AsignarConexion(Conexion);
 		nColeccionAsociada:= AgregarColeccionAsociada(FColeccionDomicilio);
 		unFiltro := TExpresionCondicion.Create;
-		unFiltro.Agregar(TCondicionComparacion.Create(FColeccionDomicilio.FCampos.ORMCampo[TIndiceDomicilio.PersonaID], tcIgual, PerdonaID));
-		AgregarCamposAsociadosColeccion(nColeccionAsociada, TIndicePersona.PerdonaID,TIndiceDomicilio.PersonaID);
+		unFiltro.Agregar(TCondicionComparacion.Create(FColeccionDomicilio.FCampos.ORMCampo[TIndiceDomicilio.PersonaID], tcIgual, PersonaID));
+		AgregarCamposAsociadosColeccion(nColeccionAsociada, TIndicePersona.PersonaID,TIndiceDomicilio.PersonaID);
 		FColeccionDomicilio.ObtenerMuchos(unFiltro);
 		unFiltro.Free;
 	end;
@@ -717,10 +713,10 @@ constructor TTipoDocumento.Create(Coleccion: TCollection; ComoEntidadNueva: bool
 begin
 	inherited Create(Coleccion, ComoEntidadNueva);
 	FTabla:='TipoDocumento';
-	FCampos.Agregar(TORMCampo.Create(FTabla,'TipoDocumentoID', '','','',TIndiceTipoDocumento.TipoDocumentoID, 0,  True, True,False, True, tdInteger, faNinguna,0));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'Descripcion', '','','',TIndiceTipoDocumento.Descripcion, 50,  False, False,False, False, tdString, faNinguna,''));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'DescripcionReducida', '','','',TIndiceTipoDocumento.DescripcionReducida, 20,  False, False,False, False, tdString, faNinguna,''));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'Observaciones', '','','',TIndiceTipoDocumento.Observaciones, 100,  False, False,False, False, tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'TipoDocumentoID', 'TipoDocumentoSequence','','',TIndiceTipoDocumento.TipoDocumentoID, 0,  0, 0, True, True,False, False, tdInteger, faNinguna,0));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'Descripcion', '','','',TIndiceTipoDocumento.Descripcion, 50,  0, 0, False, False,False, True, tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'DescripcionReducida', '','','',TIndiceTipoDocumento.DescripcionReducida, 30,  0, 0, False, False,False, True, tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'Observaciones', '','','',TIndiceTipoDocumento.Observaciones, 60,  0, 0, False, False,False, True, tdString, faNinguna,''));
 	FColeccionPersona:=nil;
 end;
 destructor TTipoDocumento.Destroy;
@@ -823,10 +819,10 @@ constructor TTipoDomicilio.Create(Coleccion: TCollection; ComoEntidadNueva: bool
 begin
 	inherited Create(Coleccion, ComoEntidadNueva);
 	FTabla:='TipoDomicilio';
-	FCampos.Agregar(TORMCampo.Create(FTabla,'TipoDomicilioID', '','','',TIndiceTipoDomicilio.TipoDomicilioID, 0,  True, True,False, True, tdInteger, faNinguna,0));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'Descripcion', '','','',TIndiceTipoDomicilio.Descripcion, 50,  False, False,False, False, tdString, faNinguna,''));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'DescripcionReducida', '','','',TIndiceTipoDomicilio.DescripcionReducida, 30,  False, False,False, False, tdString, faNinguna,''));
-	FCampos.Agregar(TORMCampo.Create(FTabla,'Observaciones', '','','',TIndiceTipoDomicilio.Observaciones, 100,  False, False,False, False, tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'TipoDomicilioID', 'TipoDomicilioSequence','','',TIndiceTipoDomicilio.TipoDomicilioID, 0,  0, 0, True, True,False, False, tdInteger, faNinguna,0));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'Descripcion', '','','',TIndiceTipoDomicilio.Descripcion, 50,  0, 0, False, False,False, True, tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'DescripcionReducida', '','','',TIndiceTipoDomicilio.DescripcionReducida, 30,  0, 0, False, False,False, True, tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create(FTabla,'Observaciones', '','','',TIndiceTipoDomicilio.Observaciones, 60,  0, 0, False, False,False, True, tdString, faNinguna,''));
 	FColeccionDomicilio:=nil;
 end;
 destructor TTipoDomicilio.Destroy;
@@ -1047,10 +1043,10 @@ begin
 		while not Datos.Eof  do
 		begin
 			unaEntidad := TPersona.Create(self, false);
-			if (Datos.Fields[TIndicePersona.PerdonaID].IsNull) then
-			   unaEntidad.ORMCampos[TIndicePersona.PerdonaID].EsNulo := true
+			if (Datos.Fields[TIndicePersona.PersonaID].IsNull) then
+			   unaEntidad.ORMCampos[TIndicePersona.PersonaID].EsNulo := true
 			else
-				unaEntidad.PerdonaID := Datos.Fields[TIndicePersona.PerdonaID].AsInteger;
+				unaEntidad.PersonaID := Datos.Fields[TIndicePersona.PersonaID].AsInteger;
 			if (Datos.Fields[TIndicePersona.Apellido].IsNull) then
 			   unaEntidad.ORMCampos[TIndicePersona.Apellido].EsNulo := true
 			else
@@ -1273,7 +1269,7 @@ begin
 	sCamposOrigen := TStringList.Create;
 	sCamposDestino:= TStringList.Create;
 	sCamposOrigen.Add('PersonaID');
-	sCamposDestino.Add('PerdonaID');
+	sCamposDestino.Add('PersonaID');
 	CamposOrigen := TORMCamposRelacion.Create('Domicilio', sCamposOrigen);
 	CamposDestino:= TORMCamposRelacion.Create('Persona', sCamposDestino);  
 	Result := TORMRelacion.Create(CamposOrigen, CamposDestino, TipoRelacion);
@@ -1307,7 +1303,7 @@ var
 begin
 	sCamposOrigen := TStringList.Create;
 	sCamposDestino:= TStringList.Create;
-	sCamposOrigen.Add('PerdonaID');
+	sCamposOrigen.Add('PersonaID');
 	sCamposDestino.Add('PersonaID');
 	CamposOrigen:= TORMCamposRelacion.Create('Persona', sCamposOrigen);
 	CamposDestino:= TORMCamposRelacion.Create('Domicilio', sCamposDestino); 
@@ -1323,10 +1319,9 @@ constructor TFilaListaPersona.Create(Coleccion: TCollection);
 begin
 	inherited Create(Coleccion, false);
 	FTabla:='ListaPersona';
-	FCampos.Agregar(TORMCampo.Create('Persona','PerdonaID', '','PerdonaID','',TIndiceListaPersona.PerdonaID, 0,  false, false,false,false,tdInteger, faNinguna,''));
-	FCampos.Agregar(TORMCampo.Create('Persona','Apellido', '','Apellido','',TIndiceListaPersona.Apellido, 50,  false, false,false,false,tdString, faNinguna,''));
-	FCampos.Agregar(TORMCampo.Create('Persona','Nombre', '','Nombre','',TIndiceListaPersona.Nombre, 50,  false, false,false,false,tdString, faNinguna,''));
-	FCampos.Agregar(TORMCampo.Create('TipoDocumento','Descripcion', '','DescripcionTipoDocumento','',TIndiceListaPersona.DescripcionTipoDocumento, 50,  false, false,false,false,tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create('Persona','Apellido', '','Apellido','',TIndiceListaPersona.Apellido, 50,  0, 0, false, false,false,false,tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create('Persona','Nombre', '','Nombre','',TIndiceListaPersona.Nombre, 50,  0, 0, false, false,false,false,tdString, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create('TipoDocumento','Descripcion', '','DescripcionTipoDocumento','',TIndiceListaPersona.DescripcionTipoDocumento, 50,  0, 0, false, false,false,false,tdString, faNinguna,''));
 end;
 destructor TFilaListaPersona.Destroy;
 begin
@@ -1336,14 +1331,6 @@ function TFilaListaPersona.CrearNuevaConexionEntidad: TORMEntidadConexion;
 begin
 	Result := nil;
 end;
-function TFilaListaPersona.GetPerdonaID: integer;
-begin
-	Result := FCampos.ORMCampo[TIndiceListaPersona.PerdonaID].AsInteger; 
-end;
-procedure TFilaListaPersona.SetPerdonaID(const Value: integer);
-begin
-	FCampos.ORMCampo[TIndiceListaPersona.PerdonaID].AsInteger:= Value;
-end;	
 function TFilaListaPersona.GetApellido: string;
 begin
 	Result := FCampos.ORMCampo[TIndiceListaPersona.Apellido].AsString; 
@@ -1455,10 +1442,6 @@ begin
 		while not Datos.Eof  do
 		begin
 			unaEntidad := TFilaListaPersona.Create(self);
-			if (Datos.Fields[TIndiceListaPersona.PerdonaID].IsNull) then
-			    unaEntidad.ORMCampos[TIndiceListaPersona.PerdonaID].EsNulo := true
-			else
-				unaEntidad.PerdonaID := Datos.Fields[TIndiceListaPersona.PerdonaID].AsInteger;
 			if (Datos.Fields[TIndiceListaPersona.Apellido].IsNull) then
 			    unaEntidad.ORMCampos[TIndiceListaPersona.Apellido].EsNulo := true
 			else
@@ -1495,75 +1478,75 @@ end;
 
 class function TFabricaCampoDomicilio.DomicilioID: TORMCampo;
 begin
-	Result := TORMCampo.Create('Domicilio','DomicilioID', '','','',TIndiceDomicilio.DomicilioID, 0,  True, True,False, True, tdInteger, faNinguna,0); 
+	Result := TORMCampo.Create('Domicilio','DomicilioID', 'DomicilioSequence','','',TIndiceDomicilio.DomicilioID, 0,  0, 0, True, True,False, False, tdInteger, faNinguna,0); 
 end;
 class function TFabricaCampoDomicilio.TipoDomicilioID: TORMCampo;
 begin
-	Result := TORMCampo.Create('Domicilio','TipoDomicilioID', '','','',TIndiceDomicilio.TipoDomicilioID, 0,  False, False,True, False, tdInteger, faNinguna,0); 
+	Result := TORMCampo.Create('Domicilio','TipoDomicilioID', '','','',TIndiceDomicilio.TipoDomicilioID, 0,  0, 0, False, False,True, True, tdInteger, faNinguna,0); 
 end;
 class function TFabricaCampoDomicilio.PersonaID: TORMCampo;
 begin
-	Result := TORMCampo.Create('Domicilio','PersonaID', '','','',TIndiceDomicilio.PersonaID, 0,  False, False,True, False, tdInteger, faNinguna,0); 
+	Result := TORMCampo.Create('Domicilio','PersonaID', '','','',TIndiceDomicilio.PersonaID, 0,  0, 0, False, False,True, True, tdInteger, faNinguna,0); 
 end;
 class function TFabricaCampoDomicilio.Calle: TORMCampo;
 begin
-	Result := TORMCampo.Create('Domicilio','Calle', '','','',TIndiceDomicilio.Calle, 50,  False, False,False, False, tdString, faNinguna,''); 
+	Result := TORMCampo.Create('Domicilio','Calle', '','','',TIndiceDomicilio.Calle, 50,  0, 0, False, False,False, True, tdString, faNinguna,''); 
 end;
 class function TFabricaCampoDomicilio.Numero: TORMCampo;
 begin
-	Result := TORMCampo.Create('Domicilio','Numero', '','','',TIndiceDomicilio.Numero, 0,  False, False,False, False, tdInteger, faNinguna,0); 
+	Result := TORMCampo.Create('Domicilio','Numero', '','','',TIndiceDomicilio.Numero, 0,  0, 0, False, False,False, True, tdInteger, faNinguna,0); 
 end;
-class function TFabricaCampoPersona.PerdonaID: TORMCampo;
+class function TFabricaCampoPersona.PersonaID: TORMCampo;
 begin
-	Result := TORMCampo.Create('Persona','PerdonaID', '','','',TIndicePersona.PerdonaID, 0,  True, True,False, True, tdInteger, faNinguna,0); 
+	Result := TORMCampo.Create('Persona','PersonaID', 'PersonaSequence','','',TIndicePersona.PersonaID, 0,  0, 0, True, True,False, False, tdInteger, faNinguna,0); 
 end;
 class function TFabricaCampoPersona.Apellido: TORMCampo;
 begin
-	Result := TORMCampo.Create('Persona','Apellido', '','','',TIndicePersona.Apellido, 50,  False, False,False, False, tdString, faNinguna,''); 
+	Result := TORMCampo.Create('Persona','Apellido', '','','',TIndicePersona.Apellido, 50,  0, 0, False, False,False, True, tdString, faNinguna,''); 
 end;
 class function TFabricaCampoPersona.Nombre: TORMCampo;
 begin
-	Result := TORMCampo.Create('Persona','Nombre', '','','',TIndicePersona.Nombre, 50,  False, False,False, False, tdString, faNinguna,''); 
+	Result := TORMCampo.Create('Persona','Nombre', '','','',TIndicePersona.Nombre, 50,  0, 0, False, False,False, True, tdString, faNinguna,''); 
 end;
 class function TFabricaCampoPersona.TipoDocumentoID: TORMCampo;
 begin
-	Result := TORMCampo.Create('Persona','TipoDocumentoID', '','','',TIndicePersona.TipoDocumentoID, 0,  False, False,True, False, tdInteger, faNinguna,0); 
+	Result := TORMCampo.Create('Persona','TipoDocumentoID', '','','',TIndicePersona.TipoDocumentoID, 0,  0, 0, False, False,True, True, tdInteger, faNinguna,0); 
 end;
 class function TFabricaCampoPersona.NumeroDocumento: TORMCampo;
 begin
-	Result := TORMCampo.Create('Persona','NumeroDocumento', '','','',TIndicePersona.NumeroDocumento, 0,  False, False,False, False, tdInteger, faNinguna,0); 
+	Result := TORMCampo.Create('Persona','NumeroDocumento', '','','',TIndicePersona.NumeroDocumento, 0,  0, 0, False, False,False, True, tdInteger, faNinguna,0); 
 end;
 class function TFabricaCampoTipoDocumento.TipoDocumentoID: TORMCampo;
 begin
-	Result := TORMCampo.Create('TipoDocumento','TipoDocumentoID', '','','',TIndiceTipoDocumento.TipoDocumentoID, 0,  True, True,False, True, tdInteger, faNinguna,0); 
+	Result := TORMCampo.Create('TipoDocumento','TipoDocumentoID', 'TipoDocumentoSequence','','',TIndiceTipoDocumento.TipoDocumentoID, 0,  0, 0, True, True,False, False, tdInteger, faNinguna,0); 
 end;
 class function TFabricaCampoTipoDocumento.Descripcion: TORMCampo;
 begin
-	Result := TORMCampo.Create('TipoDocumento','Descripcion', '','','',TIndiceTipoDocumento.Descripcion, 50,  False, False,False, False, tdString, faNinguna,''); 
+	Result := TORMCampo.Create('TipoDocumento','Descripcion', '','','',TIndiceTipoDocumento.Descripcion, 50,  0, 0, False, False,False, True, tdString, faNinguna,''); 
 end;
 class function TFabricaCampoTipoDocumento.DescripcionReducida: TORMCampo;
 begin
-	Result := TORMCampo.Create('TipoDocumento','DescripcionReducida', '','','',TIndiceTipoDocumento.DescripcionReducida, 20,  False, False,False, False, tdString, faNinguna,''); 
+	Result := TORMCampo.Create('TipoDocumento','DescripcionReducida', '','','',TIndiceTipoDocumento.DescripcionReducida, 30,  0, 0, False, False,False, True, tdString, faNinguna,''); 
 end;
 class function TFabricaCampoTipoDocumento.Observaciones: TORMCampo;
 begin
-	Result := TORMCampo.Create('TipoDocumento','Observaciones', '','','',TIndiceTipoDocumento.Observaciones, 100,  False, False,False, False, tdString, faNinguna,''); 
+	Result := TORMCampo.Create('TipoDocumento','Observaciones', '','','',TIndiceTipoDocumento.Observaciones, 60,  0, 0, False, False,False, True, tdString, faNinguna,''); 
 end;
 class function TFabricaCampoTipoDomicilio.TipoDomicilioID: TORMCampo;
 begin
-	Result := TORMCampo.Create('TipoDomicilio','TipoDomicilioID', '','','',TIndiceTipoDomicilio.TipoDomicilioID, 0,  True, True,False, True, tdInteger, faNinguna,0); 
+	Result := TORMCampo.Create('TipoDomicilio','TipoDomicilioID', 'TipoDomicilioSequence','','',TIndiceTipoDomicilio.TipoDomicilioID, 0,  0, 0, True, True,False, False, tdInteger, faNinguna,0); 
 end;
 class function TFabricaCampoTipoDomicilio.Descripcion: TORMCampo;
 begin
-	Result := TORMCampo.Create('TipoDomicilio','Descripcion', '','','',TIndiceTipoDomicilio.Descripcion, 50,  False, False,False, False, tdString, faNinguna,''); 
+	Result := TORMCampo.Create('TipoDomicilio','Descripcion', '','','',TIndiceTipoDomicilio.Descripcion, 50,  0, 0, False, False,False, True, tdString, faNinguna,''); 
 end;
 class function TFabricaCampoTipoDomicilio.DescripcionReducida: TORMCampo;
 begin
-	Result := TORMCampo.Create('TipoDomicilio','DescripcionReducida', '','','',TIndiceTipoDomicilio.DescripcionReducida, 30,  False, False,False, False, tdString, faNinguna,''); 
+	Result := TORMCampo.Create('TipoDomicilio','DescripcionReducida', '','','',TIndiceTipoDomicilio.DescripcionReducida, 30,  0, 0, False, False,False, True, tdString, faNinguna,''); 
 end;
 class function TFabricaCampoTipoDomicilio.Observaciones: TORMCampo;
 begin
-	Result := TORMCampo.Create('TipoDomicilio','Observaciones', '','','',TIndiceTipoDomicilio.Observaciones, 100,  False, False,False, False, tdString, faNinguna,''); 
+	Result := TORMCampo.Create('TipoDomicilio','Observaciones', '','','',TIndiceTipoDomicilio.Observaciones, 60,  0, 0, False, False,False, True, tdString, faNinguna,''); 
 end;
 
 

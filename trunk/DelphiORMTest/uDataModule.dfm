@@ -4,29 +4,26 @@ object SysDataModule: TSysDataModule
   Height = 150
   Width = 215
   object SQLConnection: TSQLConnection
-    ConnectionName = 'IBConnection'
-    DriverName = 'Interbase'
-    GetDriverFunc = 'getSQLDriverINTERBASE'
-    LibraryName = 'dbxint30.dll'
+    ConnectionName = 'OracleConnection'
+    DriverName = 'Oracle'
+    GetDriverFunc = 'getSQLDriverORACLE'
+    LibraryName = 'dbxora.dll'
     LoginPrompt = False
     Params.Strings = (
-      'DriverName=Interbase'
-      
-        'Database=localhost:c:\Desarrollos\Delphi\DelphiORM\DelphiORMTest' +
-        '\Datos\DelphiORM.fdb'
-      'RoleName=RoleName'
-      'User_Name=sysdba'
-      'Password=masterkey'
-      'ServerCharSet='
-      'SQLDialect=3'
+      'DriverName=Oracle'
+      'DataBase=192.168.0.107:1521/XE'
+      'User_Name=adearmas'
+      'Password=ydpsrt'
+      'RowsetSize=20'
+      'BlobSize=-1'
       'ErrorResourceFile='
       'LocaleCode=0000'
-      'BlobSize=-1'
-      'CommitRetain=False'
-      'WaitOnLocks=True'
-      'Interbase TransIsolation=ReadCommited'
-      'Trim Char=False')
-    VendorLib = 'gds32.dll'
+      'Oracle TransIsolation=ReadCommited'
+      'OS Authentication=False'
+      'Multiple Transaction=False'
+      'Trim Char=False'
+      'Decimal Separator=.')
+    VendorLib = 'oci.dll'
     Left = 88
     Top = 56
   end

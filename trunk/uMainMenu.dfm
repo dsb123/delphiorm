@@ -71,7 +71,6 @@ object FrmMain: TFrmMain
       end>
     LargeImages = ilMenu
     TabOrder = 0
-    ExplicitHeight = 690
   end
   object jvxpcntnrContainer: TJvXPContainer
     Left = 161
@@ -80,7 +79,6 @@ object FrmMain: TFrmMain
     Height = 710
     Caption = 'jvxpcntnrContainer'
     Align = alClient
-    ExplicitHeight = 690
   end
   object ilMenu: TImageList
     Height = 32

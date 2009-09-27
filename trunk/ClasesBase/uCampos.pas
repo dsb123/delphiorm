@@ -39,6 +39,8 @@ type
     FIndiceParametro  : integer;
     FIndice           : integer;
     FLongitud         : integer;
+    FPrecision        : integer;
+    FEscala           : integer;
     FEsIdentidad      : boolean;
     FEsClavePrimaria  : boolean;
     FEsClaveForanea   : boolean;
@@ -75,6 +77,8 @@ type
                         const AliasTabla: string;
                         const Indice: integer;
                         const Longitud: integer;
+                        const Precision: integer;
+                        const Escala: Integer;
                         const EsIdentidad: boolean;
                         const EsClavePrimaria: boolean;
                         const EsClaveForanea: boolean;
@@ -94,6 +98,8 @@ type
     property IndiceParametro: integer read FIndiceParametro write FIndiceParametro;
     property Indice: integer read FIndice;
     property Longitud: integer read FLongitud;
+    property Precision: integer read FPrecision;
+    property Escala: Integer read FEscala;
     property EsIdentidad: boolean read FEsIdentidad write FEsIdentidad;
     property EsClavePrimaria: boolean read FEsClavePrimaria;
     property EsClaveForanea: boolean read FEsClaveForanea;
@@ -147,7 +153,7 @@ uses Variants;
 { TDOrmCampo }
 
 constructor TORMCampo.Create(const Tabla, NombreCampo, Secuencia, AliasCampo, AliasTabla : string;
-  const Indice, Longitud: integer; const EsIdentidad, EsClavePrimaria, EsClaveForanea, AceptaNull: boolean;
+  const Indice, Longitud, Precision, Escala: integer; const EsIdentidad, EsClavePrimaria, EsClaveForanea, AceptaNull: boolean;
   const TipoDato: TORMTipoDato; const FuncionAgregacion: TORMFuncionAgregacion; const ValorPorDefecto: variant);
 begin
   FNombre := NombreCampo;
@@ -160,6 +166,8 @@ begin
 
   FIndice := Indice;
   FLongitud := Longitud;
+  FPrecision := Precision;
+  FEscala := Escala;
   FEsIdentidad := EsIdentidad;
   FEsClavePrimaria := EsClavePrimaria;
   FEsClaveForanea := EsClaveForanea;
@@ -171,13 +179,14 @@ begin
 
   FValorPorDefecto  := ValorPorDefecto;
   FValorActual := FValorPorDefecto;
+
   FPadre := nil;
 end;
 
 function TORMCampo.Clonar: TORMCampo;
 begin
   Result := TORMCampo.Create(FTabla, FNombre, FSecuencia, FAliasCampo, FAliasTabla,
-  FIndice, FLongitud, FEsIdentidad, FEsClavePrimaria, FEsClaveForanea, FAceptaNull, FTipoDato,
+  FIndice, FLongitud, FPrecision, FEscala, FEsIdentidad, FEsClavePrimaria, FEsClaveForanea, FAceptaNull, FTipoDato,
   FFuncionAgregacion,  FValorPorDefecto);
 
   Result.ValorActual := ValorActual;
@@ -312,7 +321,7 @@ begin
     FValorActual := Value;
   end
   else begin
-    if ValorActual <> Value  then
+    if ((ValorActual <> Value)  or (FEsNulo)) then
     begin
       FEsNulo := false;
       FFueCambiado := true;

@@ -52,6 +52,8 @@
 		<xs:attribute name="Tipo" type="xs:string"/>
 		<xs:attribute name="SubTipo" type="xs:string"/>
 		<xs:attribute name="Longitud" type="xs:integer"/>
+		<xs:attribute name="Precision" type="xs:integer"/>
+		<xs:attribute name="Escala" type="xs:integer"/>
 		<xs:attribute name="AceptaNull" type="xs:string"><xs:annotation>
 				<xs:appinfo xdb:dataType="Boolean"/>
 			</xs:annotation>

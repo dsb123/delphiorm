@@ -234,7 +234,7 @@ begin
 	inherited Create(Coleccion, ComoEntidadNueva);
 	FTabla:='<NombreEntidad>';
 	<PorCadaCampo>
-	FCampos.Agregar(TCampo.Create(Tabla,'<NombreCampo>', '<TieneGenerador>','','',TIndice<NombreEntidad>.<NombreCampo>, <LongitudCampo>,  <bTieneGenerador>, <bEsClavePrimaria>,<bEsClaveForanea>, <bAceptaNull>, <tdTipoCampo>, faNinguna,<TipoORM>));
+	FCampos.Agregar(TCampo.Create(Tabla,'<NombreCampo>', '<TieneGenerador>','','',TIndice<NombreEntidad>.<NombreCampo>, <LongitudCampo>,  <PrecisionCampo>, <EscalaCampo>,  <bTieneGenerador>, <bEsClavePrimaria>,<bEsClaveForanea>, <bAceptaNull>, <tdTipoCampo>, faNinguna,<TipoORM>));
 	</PorCadaCampo>
 	<PorCadaEntidadAsociada>
 	F<NombreRelacion>:=nil;

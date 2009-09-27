@@ -8,33 +8,34 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: uDelphiORMMSSQLServerDriver.PAS, released on 2008-08-26.
+The Original Code is: uDelphiORMOracleDriver.PAS, released on 2008-08-26.
 
 The Initial Developer of the Original Code is Adrian De Armas [adearmas@gmail.com]
 Portions created by Adrian De Armas are Copyright (C) 2008 Adrian De Armas.
 All Rights Reserved.
 -----------------------------------------------------------------------------}
-unit uDelphiORMMSSQLServerDriver;
+
+unit uDelphiORMOracleDriver;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, uDelphiORMBaseDriver, WideStrings, DB, SqlExpr,
-  uCoreClasses;
+  Dialogs, StdCtrls, WideStrings, DB, SqlExpr, uDelphiORMBaseDriver, uCoreClasses;
 
 type
   TORMDriverManager = class(TForm, IORMDriverManager)
-    sqlConn: TSQLConnection;
     lblServer: TLabel;
-    lblUsuario: TLabel;
-    lblPassword: TLabel;
-    lblBD: TLabel;
     edtServer: TEdit;
+    lblUsuario: TLabel;
     edtUsuario: TEdit;
+    lblPassword: TLabel;
     edtPassword: TEdit;
+    lblBD: TLabel;
     edtBD: TEdit;
-    chbUtilizarAutSO: TCheckBox;
+    sqlConn: TSQLConnection;
+    lblPuerto: TLabel;
+    edtPuerto: TEdit;
   private
     { Private declarations }
     function ObtenerSQLInfoTablas: string;
@@ -57,9 +58,13 @@ type
     Campo = 1;
     PermiteNulo = 2;
     Longitud = 3;
-    TipoDato = 4;
-    EsIdentidad=5;
-    EsClavePrimaria = 6;
+    Escala = 4;
+    TipoDato = 5;
+    SubTipoDato = 6;
+    LongitudChar = 7;
+    PrecisionNumerica = 8;
+    ValorDefault = 9;
+    EsClavePrimaria = 10;
   end;
 
   TDatosRelacion=class
@@ -76,13 +81,13 @@ var
 
 implementation
 
-{$R *.dfm}
-
 uses StrUtils;
+
+{$R *.dfm}
 
 function GetDelphiORMDriverName(): PChar;
 begin
-  Result := PChar('MSSQL - Delphi ORM Driver');
+  Result := PChar('Oracle - Delphi ORM Driver');
 end;
 
 procedure ConvertirTipo(unCampo: TCampo; const sVariable: string; const sSubVar: string;
@@ -95,33 +100,70 @@ begin
   unCampo.TipoBD    := sTipo;
   unCampo.SubTipoBD := sSubTipo;
 
-  if ((sTipo = 'varchar') or (sTipo = 'char') or (sTipo = 'ntext') or
-      (sTipo = 'nvarchar') or (sTipo = 'nchar')) then begin
+  if  ( (sTipo = 'CHAR') or
+        (sTipo = 'VARCHAR') or
+        (sTipo = 'NCHAR') or
+        (sTipo = 'NVARCHAR2') or
+        (sTipo = 'VARCHAR2') or
+        (sTipo = 'CLOB') or
+        (sTipo = 'NCLOB') or
+        (sTipo = 'LONG')) then begin
     unCampo.TipoVariable := 'string';
     unCampo.TipoORM := 'tdString';
     unCampo.AsKeyWord := 'AsString';
   end
-  else if ((sTipo = 'tinyint') or (sTipo = 'smallint') or (sTipo = 'int')) then begin
+  else if ( (sTipo = 'INTEGER') or
+            (sTipo = 'INT') or
+            (sTipo = 'SMALLINT')) then begin
     unCampo.TipoVariable := 'integer';
     unCampo.TipoORM := 'tdInteger';
     unCampo.AsKeyWord := 'AsInteger';
   end
-  else if ((sTipo = 'real') or (sTipo = 'money')) then begin
+  else if sTipo = 'DATE' then begin
+    unCampo.TipoVariable := 'TDateTime';
+    unCampo.TipoORM := 'tdDate';
+    unCampo.AsKeyWord := 'AsDateTime';
+  end
+  else if ( (sTipo = 'FLOAT') or
+            (sTipo = 'REAL') or
+            (sTipo = 'DOUBLE PRECISION')) then begin
     unCampo.TipoVariable := 'double';
     unCampo.TipoORM := 'tdfloat';
     unCampo.AsKeyWord := 'AsFloat';
   end
-  else if (sTipo = 'bit') then begin
-    unCampo.TipoVariable := 'boolean';
-    unCampo.TipoORM := 'tdBoolean';
-    unCampo.AsKeyWord := 'AsBoolean';
+  else if ( (sTipo = 'NUMBER') or
+            (sTipo = 'NUMERIC') or
+            (sTipo = 'DEC') or
+            (sTipo = 'DECIMAL')) then begin
+    if nEscala > 0 then
+    begin
+      unCampo.TipoVariable := 'double';
+      unCampo.TipoORM := 'tdfloat';
+      unCampo.AsKeyWord := 'AsFloat';
+    end
+    else
+    begin
+      unCampo.TipoVariable := 'integer';
+      unCampo.TipoORM := 'tdInteger';
+      unCampo.AsKeyWord := 'AsInteger';
+    end;
   end
-  else if ((sTipo = 'timestamp') or (sTipo = 'smalldatetime') or (sTipo = 'datetime')) then begin
+  else if (sTipo = 'TIMESTAMP') then begin
+    unCampo.TipoVariable := 'TDateTime';
+    unCampo.TipoORM := 'tdTimeStamp';
+    unCampo.AsKeyWord := 'AsDateTime';
+  end
+  else if (sTipo = 'DATE') then begin
+    unCampo.TipoVariable := 'TDateTime';
+    unCampo.TipoORM := 'tdDate';
+    unCampo.AsKeyWord := 'AsDateTime';
+  end
+  else if (sTipo = 'TIME') then begin
     unCampo.TipoVariable := 'TDateTime';
     unCampo.TipoORM := 'tdTime';
     unCampo.AsKeyWord := 'AsDateTime';
   end
-  else if (sTipo = 'image') then begin
+  else if (sTipo = 'BLOB') then begin
     //Binario
     unCampo.TipoVariable := 'TMemoryStream';
     unCampo.TipoORM := 'tdBlobBinary';
@@ -129,20 +171,18 @@ begin
   end;
 end;
 
+
 { TORMDriverManager }
 
 function TORMDriverManager.Connect: Boolean;
 begin
-  sqlConn.Params.Values['HostName']   := edtServer.Text;
-  sqlConn.Params.Values['Database']   := edtBD.Text;
-  sqlConn.Params.Values['User_Name']  := edtUsuario.Text;
-  sqlConn.Params.Values['Password']   := edtPassword.Text;
-  if chbUtilizarAutSO.Checked then
-    sqlConn.Params.Values['OS Authentication'] := 'True'
-  else
-    sqlConn.Params.Values['OS Authentication'] := 'False';
-
+  sqlConn.Params.Values['Database'] :=  edtServer.Text + ':' +
+                                        edtPuerto.Text + '/' +
+                                        edtBD.Text;
+  sqlConn.Params.Values['User_Name'] := edtUsuario.Text;
+  sqlConn.Params.Values['Password'] := edtPassword.Text;
   sqlConn.Open;
+
   Result := sqlConn.Connected;
 end;
 
@@ -155,24 +195,35 @@ end;
 function TORMDriverManager.GetConnectionParameters: string;
 begin
   Result := 'Server=' + edtServer.Text;
+  Result := Result + '; Port=' + edtPuerto.Text;
   Result := Result + '; DataBase=' + edtBD.Text;
   Result := Result + '; UserName=' + edtUsuario.Text;
   Result := Result + '; Password=' + edtPassword.Text;
-  Result := Result + '; OSAut=';
-  if chbUtilizarAutSO.Checked then
-    Result := Result + 'True'
-  else
-    Result := Result + 'False';
 end;
 
 function TORMDriverManager.GetGeneratorsInfo: TColeccionGenerador;
+var
+  unDataSet: TDataSet;
+  sSQL: string;
 begin
   Result := TColeccionGenerador.Create;
+
+  unDataSet := TSQLDataSet.Create(nil);
+  sSQL := 'SELECT sequence_name FROM user_sequences order by 1';
+  sqlConn.Execute(sSQL, nil, @unDataSet);
+
+  while not unDataSet.Eof do
+  begin
+    with TGenerador.Create(Result) do
+      Nombre := Trim(unDataSet.Fields[0].AsString);
+    unDataSet.Next;
+  end;
+  FreeAndNil(unDataSet);
 end;
 
 function TORMDriverManager.GetModule: THandle;
 begin
-  Result := Windows.GetModuleHandle ('DelphiORMMSSQLServerDriver.bpl');
+  Result := Windows.GetModuleHandle ('DelphiORMOracleDriver.bpl');
 end;
 
 function TORMDriverManager.GetTablesInfo: TColeccionTabla;
@@ -181,7 +232,7 @@ var
   sSQL: string;
   unaTabla: TTabla;
   unaTablaRelacionada: TTabla;
-  //Generadores: TColeccionGenerador;
+  Generadores: TColeccionGenerador;
 
   unCampo: TCampo;
   unCampoFK: TCamposFK;
@@ -191,6 +242,7 @@ var
   sRelacionAnterior: string;
 begin
   Result := TColeccionTabla.Create;
+  Generadores := GetGeneratorsInfo;
 
   unDataSet := TSQLDataSet.Create(nil);
   sSQL := ObtenerSQLInfoTablas;
@@ -205,19 +257,24 @@ begin
       unaTabla.Inicializar;
       sTablaAnterior := unDataSet.Fields[TDatosTabla.Tabla].AsString;
       unaTabla.Nombre := Trim(sTablaAnterior);
+      unaTabla.TieneGenerador := Generadores.ExisteGenerador(unaTabla.Nombre);
+      unaTabla.NombreGenerador := unaTabla.Nombre;
     end;
 
     unCampo := TCampo.Create(unaTabla.Campos);
-    if  ((unDataSet.Fields[TDatosTabla.EsClavePrimaria].AsInteger = 1) and
-        (unDataSet.Fields[TDatosTabla.EsIdentidad].AsInteger = 1)) then
-      unaTabla.TieneGenerador := true;
-
     unCampo.Nombre := Trim(unDataSet.Fields[TDatosTabla.Campo].AsString);
-    unCampo.Longitud := unDataSet.Fields[TDatosTabla.Longitud].AsInteger;
-    ConvertirTipo(unCampo,  unDataSet.Fields[TDatosTabla.TipoDato].AsString, '', 0, 0);
-    unCampo.AceptaNull := (unDataSet.Fields[TDatosTabla.PermiteNulo].AsString = 'YES');
+    unCampo.Longitud  := unDataSet.Fields[TDatosTabla.LongitudChar].AsInteger;
+    unCampo.Precision := unDataSet.Fields[TDatosTabla.PrecisionNumerica].AsInteger;
+    unCampo.Escala    := unDataSet.Fields[TDatosTabla.Escala].AsInteger;
+
+    ConvertirTipo(unCampo,  unDataSet.Fields[TDatosTabla.TipoDato].AsString,
+                            unDataSet.Fields[TDatosTabla.SubTipoDato].AsString,
+                            unDataSet.Fields[TDatosTabla.PrecisionNumerica].AsInteger,
+                            unDataSet.Fields[TDatosTabla.Escala].AsInteger);
+
+    unCampo.AceptaNull := (unDataSet.Fields[TDatosTabla.PermiteNulo].AsString = 'Y');
     unCampo.EsClavePrimaria := (unDataSet.Fields[TDatosTabla.EsClavePrimaria].AsInteger = 1);
-    //unCampo.ValorDefault := unDataSet.Fields[TDatosTabla.ValorDefault].AsVariant;
+    unCampo.ValorDefault := unDataSet.Fields[TDatosTabla.ValorDefault].AsVariant;
 
     unDataSet.Next;
   end;
@@ -270,49 +327,68 @@ begin
     end;
   end;
   FreeAndNil(unDataSet);
+  FreeAndNil(Generadores);
 end;
 
 function TORMDriverManager.ObtenerSQLInfoRelaciones: string;
 begin
-  Result := 'SELECT	b.CONSTRAINT_NAME,'+
-          	'	      a.TABLE_NAME As TablaOrigen,'+
-		        '       a.COLUMN_NAME as ColumnaOrigen,'+
-		        '       c.TABLE_NAME as TablaDestino,'+
-		        '       c.COLUMN_NAME as ColumnaDestino'+
-            ' FROM	INFORMATION_SCHEMA.KEY_COLUMN_USAGE a,'+
-            '   		INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS b,'+
-            '   		INFORMATION_SCHEMA.KEY_COLUMN_USAGE c'+
-            ' WHERE a.CONSTRAINT_NAME = b.CONSTRAINT_NAME AND'+
-            '       c.CONSTRAINT_NAME = b.UNIQUE_CONSTRAINT_NAME'+
-            ' ORDER BY 1, 2';
+  Result := 'select'+
+            '    b.constraint_name,'+
+            '    a.table_name,'+
+            '    b.column_name,'+
+            '    c.table_name parent_table,'+
+            '    d.column_name parent_pk '+
+            'from'+
+            '    all_constraints a,'+
+            '    all_cons_columns b,'+
+            '    all_constraints c,'+
+            '    all_cons_columns d,'+
+            '    user_tables t '+
+            'where'+
+            '    a.constraint_name = b.constraint_name'+
+            '    and t.table_name=c.table_name'+
+            '    and a.r_constraint_name is not null'+
+            '    and a.r_constraint_name=c.constraint_name'+
+            '    and c.constraint_name=d.constraint_name '+
+            'order by'+
+            '    a.constraint_name,'+
+            '    a.table_name, b.position';
 end;
 
 function TORMDriverManager.ObtenerSQLInfoTablas: string;
 begin
-  Result :=  '  SELECT	INFORMATION_SCHEMA.COLUMNS.TABLE_NAME,'+
-             '   		COLUMN_NAME,'+
-             '   		IS_NULLABLE,'+
-             '   		CHARACTER_MAXIMUM_LENGTH,'+
-             '   		DATA_TYPE,'+
-             '      (SELECT COLUMNPROPERTY(OBJECT_ID(INFORMATION_SCHEMA.COLUMNS.TABLE_NAME),'+
-             '          INFORMATION_SCHEMA.COLUMNS.COLUMN_NAME, ''IsIdentity'')) AS IsIdentity, '+
-             '      (ISNULL((SELECT 1 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE'+
-             '          WHERE	TABLE_NAME=INFORMATION_SCHEMA.COLUMNS.TABLE_NAME AND'+
-             '              TABLE_SCHEMA=''dbo'' AND'+
-             '              COLUMN_NAME=INFORMATION_SCHEMA.COLUMNS.COLUMN_NAME AND'+
-             '              EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS'+
-             '                  WHERE	TABLE_NAME=INFORMATION_SCHEMA.COLUMNS.TABLE_NAME AND'+
-             '                      TABLE_SCHEMA=''dbo'' AND'+
-             '                      CONSTRAINT_TYPE = ''PRIMARY KEY'' AND'+
-             '                      CONSTRAINT_NAME=INFORMATION_SCHEMA.KEY_COLUMN_USAGE.CONSTRAINT_NAME)), 0)) AS IsPrimaryKey'+
-             '  FROM	INFORMATION_SCHEMA.COLUMNS,'+
-             '      INFORMATION_SCHEMA.TABLES'+
-             '  WHERE	INFORMATION_SCHEMA.TABLES.TABLE_NAME = INFORMATION_SCHEMA.COLUMNS.TABLE_NAME AND'+
-             '      INFORMATION_SCHEMA.TABLES.TABLE_TYPE = ''BASE TABLE'' AND'+
-             '      INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA=''dbo'' AND'+
-             '      INFORMATION_SCHEMA.COLUMNS.TABLE_NAME NOT LIKE ''sys%'' AND'+
-             '      INFORMATION_SCHEMA.COLUMNS.TABLE_NAME NOT LIKE ''dt%'''+
-             '  ORDER BY 1,3';
+  Result := 'select'+
+            '    t.table_name,'+
+            '    c.column_name,'+
+            '    c.nullable,'+
+            '    c.data_length,'+
+            '    c.data_scale,'+
+            '    c.data_type,'+
+            '    c.data_type_mod,'+
+            '    c.char_length,'+
+            '    c.data_precision,'+
+            '    c.data_default,'+
+            '    ('+
+            '        select distinct '+
+            '            1'+
+            '        from'+
+            '            all_constraints cons,'+
+            '            all_cons_columns cols'+
+            '        where'+
+            '            cols.table_name = t.table_name'+
+            '            and     cols.column_name = c.column_name'+
+            '            and     cons.constraint_type = ''P'''+
+            '            and     cons.constraint_name = cols.constraint_name'+
+            '            and     cons.owner = cols.owner'+
+            '    ) ispkfield '+
+            'from'+
+            '    user_tables t,'+
+            '    all_tab_columns c '+
+            'where'+
+            '    t.table_name = c.table_name '+
+            'order by'+
+            '    t.table_name,'+
+            '    c.column_id';
 end;
 
 procedure TORMDriverManager.SetConnectionParameters(
@@ -326,13 +402,10 @@ begin
   //No voy a validar que el string esté bien. Simplemente,
   //como siempre se genera, voy a presuponer que está bien formado.
   edtServer.Text := Trim(MidStr(sLista[0], Pos('=', sLista[0])+1, Length(sLista[0])));
-  edtBD.Text := Trim(MidStr(sLista[1], Pos('=', sLista[1])+1, Length(sLista[1])));
-  edtUsuario.Text := Trim(MidStr(sLista[2], Pos('=', sLista[2])+1, Length(sLista[2])));
-  edtPassword.Text := Trim(MidStr(sLista[3], Pos('=', sLista[3])+1, Length(sLista[3])));
-  if Trim(MidStr(sLista[4], Pos('=', sLista[4])+1, Length(sLista[4]))) = 'True' then
-    chbUtilizarAutSO.Checked := True
-  else
-    chbUtilizarAutSO.Checked := False;
+  edtPuerto.Text := Trim(MidStr(sLista[1], Pos('=', sLista[1])+1, Length(sLista[1])));
+  edtBD.Text := Trim(MidStr(sLista[2], Pos('=', sLista[2])+1, Length(sLista[2])));
+  edtUsuario.Text := Trim(MidStr(sLista[3], Pos('=', sLista[3])+1, Length(sLista[3])));
+  edtPassword.Text := Trim(MidStr(sLista[4], Pos('=', sLista[4])+1, Length(sLista[4])));
 
   sLista.Free;
 end;
@@ -348,30 +421,33 @@ begin
     edtServer.SetFocus;
     Result := False;
   end
+  else if Trim(edtPuerto.Text) = '' then
+  begin
+    Application.MessageBox('Debe ingresar el puerto listener para realizar la conexión',
+      'Atención', MB_OK + MB_ICONWARNING);
+    edtBD.SetFocus;
+    Result := False;
+  end
   else if Trim(edtBD.Text) = '' then
   begin
     Application.MessageBox('Debe ingresar la BD para realizar la conexión',
       'Atención', MB_OK + MB_ICONWARNING);
     edtBD.SetFocus;
     Result := False;
-  end;
-
-  if not chbUtilizarAutSO.Checked then
+  end
+  else if Trim(edtUsuario.Text) = '' then
   begin
-    if Trim(edtUsuario.Text) = '' then
-    begin
-      Application.MessageBox('Debe ingresar el nombre del usuario para realizar la conexión',
-        'Atención', MB_OK + MB_ICONWARNING);
-      edtUsuario.SetFocus;
-      Result := False;
-    end
-    else if Trim(edtPassword.Text) = '' then
-    begin
-      Application.MessageBox('Debe ingresar la clave del usuario para realizar la conexión',
-        'Atención', MB_OK + MB_ICONWARNING);
-      edtPassword.SetFocus;
-      Result := False;
-    end;
+    Application.MessageBox('Debe ingresar el nombre del usuario para realizar la conexión',
+      'Atención', MB_OK + MB_ICONWARNING);
+    edtUsuario.SetFocus;
+    Result := False;
+  end
+  else if Trim(edtPassword.Text) = '' then
+  begin
+    Application.MessageBox('Debe ingresar la clave del usuario para realizar la conexión',
+      'Atención', MB_OK + MB_ICONWARNING);
+    edtPassword.SetFocus;
+    Result := False;
   end;
 end;
 
@@ -382,6 +458,6 @@ exports
 initialization
   theClass := TORMDriverManager;
   theForm  := nil;
-  //RegisterFormClass (TORMDriverManager, Windows.GetModuleHandle('DelphiORMFirebirdDriver.bpl'));
+  //RegisterFormClass (TORMDriverManager, Windows.GetModuleHandle('DelphiORMOracleDriver.bpl'));
 
 end.

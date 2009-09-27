@@ -88,7 +88,8 @@ begin
   Result := PChar('Firebird - Delphi ORM Driver');
 end;
 
-procedure ConvertirTipo(unCampo: TCampo; const sVariable: string; const sSubVar: string);
+procedure ConvertirTipo(unCampo: TCampo; const sVariable: string; const sSubVar: string;
+                        const nPrecision: Integer; const nEscala: integer);
 var
   sTipo, sSubTipo: string;
 begin
@@ -239,7 +240,9 @@ begin
     unCampo.Nombre := Trim(unDataSet.Fields[TDatosTabla.Campo].AsString);
     unCampo.Longitud := unDataSet.Fields[TDatosTabla.LongitudChar].AsInteger;
     ConvertirTipo(unCampo,  unDataSet.Fields[TDatosTabla.TipoDato].AsString,
-                            unDataSet.Fields[TDatosTabla.SubTipoDato].AsString);
+                            unDataSet.Fields[TDatosTabla.SubTipoDato].AsString,
+                            unDataSet.Fields[TDatosTabla.PrecisionNumerica].AsInteger,
+                            unDataSet.Fields[TDatosTabla.Escala].AsInteger);
     unCampo.AceptaNull := not (unDataSet.Fields[TDatosTabla.PermiteNulo].AsInteger = 1);
     unCampo.EsClavePrimaria := (unDataSet.Fields[TDatosTabla.EsClavePrimaria].AsInteger = 1);
     unCampo.ValorDefault := unDataSet.Fields[TDatosTabla.ValorDefault].AsVariant;

@@ -117,6 +117,12 @@ type
                                       NombreEntidadPlural,
                                       NombreEntidadAsoc,
                                       NombreEntidadAsocPlural: string): TORMEntidadSimpleComboDef; overload;
+  function EntidadSimpleComboDefaultSoloDescripcion(  Tabla, CampoClave, CampoClaveForanea,
+                                                      TablaEntidadAsociada, CampoClaveEntidadAsociada,
+                                                      NombreEntidad,
+                                                      NombreEntidadPlural,
+                                                      NombreEntidadAsoc,
+                                                      NombreEntidadAsocPlural: string): TORMEntidadSimpleComboDef;
 
 
 const
@@ -142,16 +148,41 @@ begin
   Result.CampoClave := CampoClave;
   Result.CampoDescripcion := 'Descripcion';
   Result.CampoDescrReducida := 'DescripcionReducida';
-  Result.CampoObservaciones := 'Observaciones';
-  Result.ClaveEsIdentidad := true;
+  Result.CampoObservaciones := 'Observaciones';  Result.ClaveEsIdentidad := true;
   Result.EntidadSimpleAsociada := EntidadSimpleDefault( TablaEntidadAsociada,
-                                                        CampoClaveEntidadAsociada,
-                                                        NombreEntidadAsoc,
-                                                        NombreEntidadAsocPlural);
-  Result.Relacion.CampoPrimario.Tabla := Tabla;
-  Result.Relacion.CampoPrimario.Campo := CampoClaveForanea;
-  Result.Relacion.CampoForaneo.Tabla := TablaEntidadAsociada;
-  Result.Relacion.CampoForaneo.Campo := CampoClaveEntidadAsociada;
+                                                                        CampoClaveEntidadAsociada,
+                                                                        NombreEntidadAsoc,
+                                                                        NombreEntidadAsocPlural);
+  Result.Relacion.CampoPrimario.Tabla := TablaEntidadAsociada;
+  Result.Relacion.CampoPrimario.Campo := CampoClaveEntidadAsociada;
+  Result.Relacion.CampoForaneo.Tabla := Tabla;
+  Result.Relacion.CampoForaneo.Campo := CampoClaveForanea;
+  Result.Relacion.TipoRelacion := trAmbas;
+  Result.NombreEntidad := NombreEntidad;
+  Result.NombrePlural := NombreEntidadPlural;
+end;
+
+function EntidadSimpleComboDefaultSoloDescripcion(  Tabla, CampoClave, CampoClaveForanea,
+                                                    TablaEntidadAsociada, CampoClaveEntidadAsociada,
+                                                    NombreEntidad,
+                                                    NombreEntidadPlural,
+                                                    NombreEntidadAsoc,
+                                                    NombreEntidadAsocPlural: string): TORMEntidadSimpleComboDef;
+begin
+  Result.Tabla := Tabla;
+  Result.CampoClave := CampoClave;
+  Result.CampoDescripcion := 'Descripcion';
+  Result.CampoDescrReducida := '';
+  Result.CampoObservaciones := '';
+  Result.ClaveEsIdentidad := true;
+  Result.EntidadSimpleAsociada := EntidadSimpleDefaultSoloDescripcion(  TablaEntidadAsociada,
+                                                                        CampoClaveEntidadAsociada,
+                                                                        NombreEntidadAsoc,
+                                                                        NombreEntidadAsocPlural);
+  Result.Relacion.CampoPrimario.Tabla := TablaEntidadAsociada;
+  Result.Relacion.CampoPrimario.Campo := CampoClaveEntidadAsociada;
+  Result.Relacion.CampoForaneo.Tabla := Tabla;
+  Result.Relacion.CampoForaneo.Campo := CampoClaveForanea;
   Result.Relacion.TipoRelacion := trAmbas;
   Result.NombreEntidad := NombreEntidad;
   Result.NombrePlural := NombreEntidadPlural;
@@ -175,10 +206,10 @@ begin
                                                         CampoClaveEntidadAsociada.Nombre,
                                                         NombreEntidadAsoc,
                                                         NombreEntidadAsocPlural);
-  Result.Relacion.CampoPrimario.Tabla := CampoClaveForanea.Tabla;
-  Result.Relacion.CampoPrimario.Campo := CampoClaveForanea.Nombre;
-  Result.Relacion.CampoForaneo.Tabla := CampoClaveEntidadAsociada.Tabla;
-  Result.Relacion.CampoForaneo.Campo := CampoClaveEntidadAsociada.Nombre;
+  Result.Relacion.CampoPrimario.Tabla := CampoClaveEntidadAsociada.Tabla;
+  Result.Relacion.CampoPrimario.Campo := CampoClaveEntidadAsociada.Nombre;
+  Result.Relacion.CampoForaneo.Tabla := CampoClaveForanea.Tabla;
+  Result.Relacion.CampoForaneo.Campo := CampoClaveForanea.Nombre;
   Result.Relacion.TipoRelacion := trAmbas;
   Result.NombreEntidad := NombreEntidad;
   Result.NombrePlural := NombreEntidadPlural;
@@ -205,24 +236,24 @@ begin
 
   if ClaveEsIdentidad then
      FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
-                                    60, true, true, false, false, tdInteger, faNinguna, 0))
+                                    60,  0, 0, true, true, false, false, tdInteger, faNinguna, 0))
   else
      FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
-                                    60, false, true, false, false, tdInteger, faNinguna, 0));
+                                    60,  0, 0, false, true, false, false, tdInteger, faNinguna, 0));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
-                                icDescripcion, 60, false, false, false, false, tdString,
+                                icDescripcion, 60,  0, 0, false, false, false, false, tdString,
                                 faNinguna, ''));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
-                                icDescripcionReducida, 60, false, false, true, false, tdString,
+                                icDescripcionReducida, 60,  0, 0, false, false, true, false, tdString,
                                 faNinguna, ''));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
-                                icObservaciones, 60, false, false, true, false, tdString,
+                                icObservaciones, 60,  0, 0, false, false, true, false, tdString,
                                 faNinguna, ''));
   FCampos.Agregar(TORMCampo.Create(Tabla, unaRelacion.CampoPrimario.Campo, '', '', '',
-                                icClaveForanea, 10, false, false, true, true, tdInteger,
+                                icClaveForanea, 10,  0, 0, false, false, true, true, tdInteger,
                                 faNinguna, 0));
   FCampos.Agregar(TORMCampo.Create(ES.Tabla, ES.CampoDescripcion, '', '', '',
-                                icDescripcionForanea, 60, false, false, true, false, tdString,
+                                icDescripcionForanea, 60,  0, 0, false, false, true, false, tdString,
                                 faNinguna, 0));
   FEntidadAsociada := nil;
 
@@ -367,24 +398,24 @@ begin
 
   if ClaveEsIdentidad then
      FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, Tabla, '', '', icClave,
-                                    60, true, true, false, false, tdInteger, faNinguna, 0))
+                                    60,  0, 0, true, true, false, false, tdInteger, faNinguna, 0))
   else
      FCampos.Agregar(TORMCampo.Create( Tabla, NombreCampoClave, '', '', '', icClave,
-                                    60, false, true, false, false, tdInteger, faNinguna, 0));
+                                    60,  0, 0, false, true, false, false, tdInteger, faNinguna, 0));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescripcion, '', '', '',
-                                icDescripcion, 60, false, false, false, false, tdString,
+                                icDescripcion, 60,  0, 0, false, false, false, false, tdString,
                                 faNinguna, ''));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoDescrReducida, '', '', '',
-                                icDescripcionReducida, 60, false, false, true, false, tdString,
+                                icDescripcionReducida, 60,  0, 0, false, false, true, false, tdString,
                                 faNinguna, ''));
   FCampos.Agregar(TORMCampo.Create(Tabla, NombreCampoObservaciones, '', '', '',
-                                icObservaciones, 60, false, false, true, false, tdString,
+                                icObservaciones, 60,  0, 0, false, false, true, false, tdString,
                                 faNinguna, ''));
   FCampos.Agregar(TORMCampo.Create(Tabla, Relacion.CampoPrimario.Campo, '', '', '',
-                                icClaveForanea, 10, false, false, true, true, tdInteger,
+                                icClaveForanea, 10,  0, 0, false, false, true, true, tdInteger,
                                 faNinguna, 0));
   FCampos.Agregar(TORMCampo.Create(ES.Tabla, ES.CampoDescripcion, '', '', '',
-                                icDescripcionForanea, 60, false, false, true, false, tdString,
+                                icDescripcionForanea, 60,  0, 0, false, false, true, false, tdString,
                                 faNinguna, 0));
 end;
 
@@ -409,9 +440,9 @@ begin
   begin
     with EntidadSimpleCombo.ORMCampo[nCampo] do
       FCampos.Agregar(TORMCampo.Create(Tabla, Nombre, Secuencia, AliasCampo,
-                                    AliasTabla, Indice, Longitud, EsIdentidad,
-                                    EsClavePrimaria, EsClaveForanea, AceptaNull, TipoDato,
-                                    FuncionAgregacion, ValorPorDefecto));
+                                    AliasTabla, Indice, Longitud, Precision, Escala,
+                                    EsIdentidad, EsClavePrimaria, EsClaveForanea,
+                                    AceptaNull, TipoDato, FuncionAgregacion, ValorPorDefecto));
   end;
 end;
 
@@ -427,7 +458,7 @@ var
   Relacion: TExpresionRelacion;
 begin
   orden := TExpresionOrdenamiento.Create;
-  Relacion := TExpresionRElacion.Create(FRelacion);
+  Relacion := TExpresionRelacion.Create(FRelacion);
   orden.Agregar(FCampos.ORMCampo[icDescripcionForanea], toAscendente);
   orden.Agregar(FCampos.ORMCampo[icDescripcion], toAscendente);
   Result := ObtenerMuchos(nil, orden, nil, Relacion);

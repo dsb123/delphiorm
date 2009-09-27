@@ -19,6 +19,8 @@ unit uConexion;
 
 interface
 
+{$I delphiorm.inc}
+
 uses SysUtils, {$ifdef DELPHI2007}DBXCommon, {$else}dbxpress, {$endif}SqlExpr, uSQLBuilder;
 
 type

@@ -44,6 +44,8 @@ type
     FNombre: string;
     FAlias: string;
     FLong: integer;
+    FPrecision: integer;
+    FEscala: integer;
     FEsClaveForanea: boolean;
     FAceptaNull: boolean;
     FAsKeyWord: string;
@@ -60,6 +62,8 @@ type
     property Nombre: string read FNombre write FNombre;
     property Alias: string read FAlias write FAlias;
     property Longitud: integer read FLong write FLong;
+    property Precision: integer read FPrecision write FPrecision;
+    property Escala: integer read FEscala write FEscala;
     property TipoVariable: string read FTipoVariable write FTipoVariable;
     property TipoORM: string read FTipoORM write FTipoORM;
     property TipoBD: string read FTipoBD write FTipoBD;
@@ -165,6 +169,7 @@ type
   public
     constructor Create; overload;
     property Tabla[index: integer]: TTabla read GetTabla;
+    function ObtenerTablaPorAlias(sAlias: string): TTabla;
     function ObtenerTabla(sNombre: string): TTabla;
   end;
 
@@ -374,7 +379,21 @@ var
 begin
   Result := nil;
   for i := 0 to Count - 1 do begin
-    if Tabla[i].Nombre = sNombre then begin
+    if ((Tabla[i].Nombre = sNombre) or (Tabla[i].Alias = sNombre)) then
+    begin
+      Result := Tabla[i];
+      exit;
+    end;
+  end;
+end;
+
+function TColeccionTabla.ObtenerTablaPorAlias(sAlias: string): TTabla;
+var
+  i : integer;
+begin
+  Result := nil;
+  for i := 0 to Count - 1 do begin
+    if Tabla[i].Alias = sAlias then begin
       Result := Tabla[i];
       exit;
     end;
@@ -406,7 +425,6 @@ var
   nCampoFK: integer;
   nCampo: integer;
   unCampoCandidato: TCamposFK;
-  unCampo: TCampo;
   bEslaFKBuscada: Boolean;
 begin
   Result := nil;
