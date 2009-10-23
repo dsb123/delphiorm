@@ -236,7 +236,10 @@ begin
           //Cargo las FK
           for nTabla := 0 to Count - 1 do
           begin
-            unaTabla := Tablas.ObtenerTabla(Entidad[nTabla].Nombre);
+            if Entidad[nTabla].Alias <> '' then
+              unaTabla := Tablas.ObtenerTablaPorAlias(Entidad[nTabla].Alias)
+            else
+              unaTabla := Tablas.ObtenerTabla(Entidad[nTabla].Nombre);
 
             for nCampoFK := 0 to Entidad[nTabla].Relacion1a1.Count - 1 do
             begin
@@ -477,6 +480,7 @@ begin
     with  ORMEntidades.Entidades.Entidad[nTabla] do
     begin
       Nombre          := unaTabla.Nombre;
+      Alias           := unaTabla.Alias;
       TieneGenerador  := unaTabla.TieneGenerador;
       NombreGenerador := unaTabla.NombreGenerador;
 

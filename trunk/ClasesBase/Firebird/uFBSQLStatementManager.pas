@@ -106,7 +106,7 @@ begin
     {$endif}
     select.Datos.Params.AssignValues(select.SQLParams);
     select.Datos.Prepared := true;
-    //FSQLConnection.Execute(select.SQLStatement, select.SQLParams, @select.Datos);
+//    FSQLConnection.Execute(select.SQLStatement, select.SQLParams, @select.Datos);
     //select.Datos.ExecSQL;
     select.Datos.Open;
     //SQLConnection.Close;

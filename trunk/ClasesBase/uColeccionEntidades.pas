@@ -19,6 +19,8 @@ unit uColeccionEntidades;
 
 interface
 
+{$I delphiorm.inc}
+
 uses Classes, Contnrs, DB, uSQLBuilder, uExpresiones, uCampos, uConexion;
 
 type
@@ -29,9 +31,10 @@ type
     FEntidadConexion    : TORMEntidadConexion;
     FOwnsEntidadConexion: boolean;
     FLastSQLStatement: string;
-
+{$IFNDEF SIN_VIRTUAL_DATASET}
     function GetDataSet: TDataSet;
     procedure SetDataSet(const Value: TDataSet);
+{$ENDIF}
     function GetEntidadConexion: TORMEntidadConexion;
   protected
     FCampos : TORMColeccionCampos;
@@ -60,13 +63,20 @@ type
                             FiltroHaving: TExpresionCondicion = nil;
                             const CantFilas: integer = 0; const TamPagina: integer = 0;
                             const NroPagina: integer = 0; const SinDuplicados: boolean = false): integer; virtual;
+{$IFNDEF SIN_VIRTUAL_DATASET}
     property AsDataSet: TDataSet read GetDataSet write SetDataSet;
+{$ENDIF}
     property Conexion: TORMEntidadConexion read GetEntidadConexion;
   end;
 
 implementation
 
+
+{$IFDEF SIN_VIRTUAL_DATASET}
+uses SysUtils, uEntidades;
+{$ELSE}
 uses SnapObjectDataset, SysUtils, uEntidades;
+{$ENDIF}
 
 { TColeccionEntidades }
 
@@ -160,7 +170,7 @@ begin
   Result := true;
   {$ifdef DELPHI2006UP}
   for unaEntidad in Self do
-    Result := Result and (unaEntidad as TEntidadBase).Eliminar;
+    Result := Result and (unaEntidad as TORMEntidadBase).Eliminar;
   {$else}
   for nEntidad:= 0 to Count-1 do
     Result := Result and (Items[nEntidad] as TORMEntidadBase).Eliminar;
@@ -182,7 +192,7 @@ function TORMColeccionEntidades.ObtenerCampo(index: integer): TORMCampo;
 begin
   Result := FCampos.ORMCampo[index];
 end;
-
+{$IFNDEF SIN_VIRTUAL_DATASET}
 function TORMColeccionEntidades.GetDataSet: TDataSet;
 begin
   if not assigned(FDataSet) then
@@ -192,6 +202,7 @@ begin
   end;
   Result := FDataSet;
 end;
+{$ENDIF}
 
 function TORMColeccionEntidades.GetEntidadConexion: TORMEntidadConexion;
 begin
@@ -229,7 +240,7 @@ begin
 
   {$ifdef DELPHI2006UP}
   for unaEntidad in Self do
-    Result := Result and (unaEntidad as TEntidadBase).Guardar;
+    Result := Result and (unaEntidad as TORMEntidadBase).Guardar;
   {$else}
   for nEntidad := 0 to Count -1 do
     Result := Result and (Items[nEntidad] as TORMEntidadBase).Guardar;
@@ -289,11 +300,12 @@ procedure TORMColeccionEntidades.ProcesarDataSet;
 begin
 
 end;
-
+{$IFNDEF SIN_VIRTUAL_DATASET}
 procedure TORMColeccionEntidades.SetDataSet(const Value: TDataSet);
 begin
   if FDataSet <> Value then
     FDataSet := Value;
 end;
+{$ENDIF}
 
 end.

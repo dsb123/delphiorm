@@ -296,6 +296,12 @@ begin
 	select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[TIndice<NombreEntidad>.<NombreCampoClave>], tcIgual, <NombreCampoClave>));
 	</PorCadaCampoClave>
 	Result := AsignarCamposDesdeSeleccion(select);
+	if not Result then
+	begin
+		<PorCadaCampoClave>
+		FCampos.ORMCampo[TIndice<NombreEntidad>.<NombreCampoClave>].<AsKeyWord> := <NombreCampoClave>; 
+		</PorCadaCampoClave>
+	end;
 	select.Free;
 end;
 <PorCadaEntidadAsociada>

@@ -262,6 +262,7 @@ object FrmListas: TFrmListas
         TabFont.Height = -11
         TabFont.Name = 'Tahoma'
         TabFont.Style = []
+        ExplicitTop = 0
         ExplicitWidth = 574
         ExplicitHeight = 426
         DesignSize = (
@@ -560,6 +561,7 @@ object FrmListas: TFrmListas
         TabFont.Height = -11
         TabFont.Name = 'Tahoma'
         TabFont.Style = []
+        ExplicitTop = 0
         ExplicitWidth = 574
         ExplicitHeight = 426
         DesignSize = (
@@ -665,7 +667,7 @@ object FrmListas: TFrmListas
             Width = 120
           end
           object nxtxtclmnEntidadCampos: TNxTextColumn
-            DefaultWidth = 148
+            DefaultWidth = 160
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
@@ -717,7 +719,7 @@ object FrmListas: TFrmListas
             Width = 120
           end
           object nxtxtclmnExpresion: TNxTextColumn
-            DefaultWidth = 438
+            DefaultWidth = 450
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
