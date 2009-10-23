@@ -21,7 +21,8 @@ interface
 
 {$I delphiorm.inc}
 
-uses SysUtils, {$ifdef DELPHI2007}DBXCommon, {$else}dbxpress, {$endif}SqlExpr, uSQLBuilder;
+uses  SysUtils, {$ifdef DELPHI2007}DBXCommon, {$else}dbxpress, {$endif}SqlExpr,
+      uSQLBuilder, DB;
 
 type
   TORMOnExceptionEvent = procedure(e: exception) of object;
@@ -65,6 +66,7 @@ type
   public
     constructor Create(Conexion: TSQLConnection; SQLStatementManager: TSQLStatementManager);
     destructor Destroy; override;
+    function ExecuteSQL(sSQL: string; Parametros: TParams; DataSetPtr: Pointer): Integer;
 
     procedure BeginTransaction;
     procedure Commit;
@@ -134,6 +136,12 @@ begin
   FreeAndNil(FSQLConnection);
   FreeAndNil(FSQLStatementManager);
   inherited;
+end;
+
+function TORMEntidadConexion.ExecuteSQL(sSQL: string; Parametros: TParams;
+  DataSetPtr: Pointer): Integer;
+begin
+  Result := FSQLConnection.Execute(sSQL, Parametros, DataSetPtr);
 end;
 
 function TORMEntidadConexion.GetEnTransaccion: boolean;

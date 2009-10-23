@@ -206,6 +206,7 @@ begin
   FNroPagina := NroPagina;
   FSinDuplicados := SinDuplicados;
   FDataSet := TSQLQuery.Create(nil);
+//  FDataSet := nil;
   FSQLString := '';
   FOwnSQLParams := false;
   FSQLParams := nil;
@@ -226,9 +227,10 @@ begin
   FRecordCount := -1;
   FSinDuplicados := false;
   FDataSet := TSQLQuery.Create(nil);
+//  FDataSet := nil;
   FSQLString := '';
   FOwnSQLParams := false;
-  FSQLParams := nil;  
+  FSQLParams := nil;
 end;
 
 constructor TSelectStatement.Create(Campos: TORMColeccionCampos; const CantFilas,
@@ -246,9 +248,10 @@ begin
   FNroPagina := NroPagina;
   FSinDuplicados := SinDuplicados;
   FDataSet := TSQLQuery.Create(nil);
+//  FDataSet := nil;
   FSQLString := '';
   FOwnSQLParams := false;
-  FSQLParams := nil;  
+  FSQLParams := nil;
 end;
 
 destructor TSelectStatement.Destroy;

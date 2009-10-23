@@ -125,6 +125,8 @@ implementation
 
 {$R *.dfm}
 
+uses StrUtils;
+
 { TFrmListas }
 
 procedure TFrmListas.AgregarTablaListaTablas(unaTabla: TTabla;
@@ -464,7 +466,7 @@ begin
 
     for nCampoFK := 0 to unaTabla.CamposFK.Count - 1 do
     begin
-      if  ComponeLaLista(unaTabla.CamposFK.CamposFK[nCampoFK].TablaDestino) then
+      if ComponeLaLista(unaTabla.CamposFK.CamposFK[nCampoFK].TablaDestino) then
       begin
         bAgregarEntidad := true;
         break;

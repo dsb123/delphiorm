@@ -149,7 +149,7 @@ type
 
 implementation
 
-uses Variants;
+uses Variants, StrUtils;
 { TDOrmCampo }
 
 constructor TORMCampo.Create(const Tabla, NombreCampo, Secuencia, AliasCampo, AliasTabla : string;
@@ -344,9 +344,10 @@ var
   unCampo: TORMCampo;
 begin
   Result := nil;
+  sCampo := LowerCase(sCampo);
   for unCampo in Self do
   begin
-    if unCampo.Nombre = sCampo then
+    if LowerCase(unCampo.Nombre) = sCampo then
     begin
       Result := unCampo;
       Break;

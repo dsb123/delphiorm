@@ -379,6 +379,7 @@ begin
      sVarAux := StringReplace(sVarAux, '<IndiceCampoClave>',  IntToStr(i), [rfReplaceAll]);
      sVarAux := StringReplace(sVarAux, '<NombreCampoClave>',  EntidadActiva.Campos.Campo[i].Nombre, [rfReplaceAll]);
      sVarAux := StringReplace(sVarAux, '<TipoCampoClave>',    EntidadActiva.Campos.Campo[i].TipoVariable, [rfReplaceAll]);
+     sVarAux := StringReplace(sVarAux, '<AsKeyWord>',         EntidadActiva.Campos.Campo[i].AsKeyWord, [rfReplaceAll]);
 
      if j < Contador then begin
        sVarAux := StringReplace(sVarAux, '</ComaParaEnum>',  ',', [rfReplaceAll]);
@@ -520,34 +521,38 @@ begin
   Result := '';
   for i := 0 to Tablas.Count - 1 do
   begin
-    sVarAux := sVariableContexto;
-
-    nPosStart := Pos('<PorCadaCampo>', sVarAux);
-    while (nPosStart > 0) do
+    //Proceso las entidades reales, no las clonadas.
+    if Trim(Tablas.Tabla[i].Alias) = '' then
     begin
-      nPosEnd     := Pos('</PorCadaCampo>', sVarAux);
-      sVarAuxIzq  := LeftStr(sVarAux,nPosStart - 1);
-      sVarAuxDer  := MidStr(sVarAux,nPosEnd + 15, length(sVarAux));
-      sVarAux2    := MidStr(sVarAux, nPosStart + 14, nPosEnd - (nPosStart + 14));
-      sVarAux     := sVarAuxIzq + ContextoCampo(Tablas.Tabla[i],sVarAux2);
-      sVarAux     := sVarAux + sVarAuxDer;
-      nPosStart   := Pos('<PorCadaCampo>', sVarAux);
-    end;
+      sVarAux := sVariableContexto;
 
-    sVarAux       := ContextoBlobType(Tablas.Tabla[i],sVarAux);
-    sVarAux       := StringReplace(sVarAux, '<IndiceEntidad>', IntToStr(i), [rfReplaceAll]);
-    sVarAux       := StringReplace(sVarAux, '<NombreEntidad>', Tablas.Tabla[i].Nombre, [rfReplaceAll]);
-    if i<(Tablas.Count - 1) then begin
-      sVarAux     := StringReplace(sVarAux, '</ComaParaEnum>',  ',', [rfReplaceAll]);
-      sVarAux     := StringReplace(sVarAux, '</PComaParaEnum>', ';', [rfReplaceAll]);
-    end
-    else
-    begin
-      sVarAux     := StringReplace(sVarAux, '</ComaParaEnum>',  '', [rfReplaceAll]);
-      sVarAux     := StringReplace(sVarAux, '</PComaParaEnum>', '', [rfReplaceAll]);
+      nPosStart := Pos('<PorCadaCampo>', sVarAux);
+      while (nPosStart > 0) do
+      begin
+        nPosEnd     := Pos('</PorCadaCampo>', sVarAux);
+        sVarAuxIzq  := LeftStr(sVarAux,nPosStart - 1);
+        sVarAuxDer  := MidStr(sVarAux,nPosEnd + 15, length(sVarAux));
+        sVarAux2    := MidStr(sVarAux, nPosStart + 14, nPosEnd - (nPosStart + 14));
+        sVarAux     := sVarAuxIzq + ContextoCampo(Tablas.Tabla[i],sVarAux2);
+        sVarAux     := sVarAux + sVarAuxDer;
+        nPosStart   := Pos('<PorCadaCampo>', sVarAux);
+      end;
+
+      sVarAux       := ContextoBlobType(Tablas.Tabla[i],sVarAux);
+      sVarAux       := StringReplace(sVarAux, '<IndiceEntidad>', IntToStr(i), [rfReplaceAll]);
+      sVarAux       := StringReplace(sVarAux, '<NombreEntidad>', Tablas.Tabla[i].Nombre, [rfReplaceAll]);
+      if i<(Tablas.Count - 1) then begin
+        sVarAux     := StringReplace(sVarAux, '</ComaParaEnum>',  ',', [rfReplaceAll]);
+        sVarAux     := StringReplace(sVarAux, '</PComaParaEnum>', ';', [rfReplaceAll]);
+      end
+      else
+      begin
+        sVarAux     := StringReplace(sVarAux, '</ComaParaEnum>',  '', [rfReplaceAll]);
+        sVarAux     := StringReplace(sVarAux, '</PComaParaEnum>', '', [rfReplaceAll]);
+      end;
+      sVarAux       := LimpiarLineasBlancos(sVarAux);
+      Result := Result + sVarAux;
     end;
-    sVarAux       := LimpiarLineasBlancos(sVarAux);
-    Result := Result + sVarAux;
   end;
 end;
 
