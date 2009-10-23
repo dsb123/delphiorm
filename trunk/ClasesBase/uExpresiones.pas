@@ -53,6 +53,7 @@ type
 
   TORMRelacion = class
   private
+    FAlias           : string;
     FCamposPrimario  : TORMCamposRelacion;
     FCamposForaneo   : TORMCamposRelacion;
     FTipoRelacion    : TORMTipoRelacion;
@@ -67,6 +68,7 @@ type
     destructor Destroy; override;
     function Clonar: TORMRelacion;
     function ObtenerDefinicion: TORMRelacionDefSimple;
+    property Alias: string read FAlias write FAlias;
     property CamposPrimario: TORMCamposRelacion read FCamposPrimario;
     property CamposForaneo: TORMCamposRelacion read FCamposForaneo;
     property TipoRelacion: TORMTipoRelacion read FTipoRelacion;
@@ -80,12 +82,15 @@ type
     Tag: integer;
     constructor Create(const TablaPrimaria, CampoPrimario, TablaForanea,CampoForaneo: string;
                         const TipoRelacion: TORMTipoRelacion); overload;
+    constructor Create(const Alias, TablaPrimaria, CampoPrimario, TablaForanea,CampoForaneo: string;
+                        const TipoRelacion: TORMTipoRelacion); overload;
     constructor Create(const Relacion: TORMRelacionDefSimple); overload;
     destructor Destroy; override;
     property Relacion[index: integer]: TORMRelacion read GetRelacion write SetRelacion;
-    function Agregar( const TablaPrimaria, CampoPrimario, TablaForanea,CampoForaneo: string;
+    function Agregar( const AliasRelacion, TablaPrimaria, CampoPrimario, TablaForanea,CampoForaneo: string;
                       const TipoRelacion: TORMTipoRelacion): integer; overload;
     function Agregar(Relacion: TORMRelacion): integer; overload;
+    function Agregar(Alias: string; Relacion: TORMRelacion): integer; overload;
     function Clonar: TExpresionRelacion;
   end;
 
@@ -359,7 +364,7 @@ begin
   FTipoRelacion := TipoRelacion;
 end;
 
-constructor TORMRelacion.Create( CamposPrimarios, CamposForaneos: TORMCamposRelacion;
+constructor TORMRelacion.Create(CamposPrimarios, CamposForaneos: TORMCamposRelacion;
                               const TipoRelacion: TORMTipoRelacion);
 begin
   FCamposPrimario := CamposPrimarios.Clonar;
@@ -404,14 +409,26 @@ end;
 
 { TExpresionRelacion }
 
-function TExpresionRelacion.Agregar(const TablaPrimaria, CampoPrimario, TablaForanea,
+function TExpresionRelacion.Agregar(const AliasRelacion, TablaPrimaria, CampoPrimario, TablaForanea,
   CampoForaneo: string; const TipoRelacion: TORMTipoRelacion): integer;
+var
+  unaRelacion: TORMRelacion;
 begin
-  Result := Add(TORMRelacion.Create(TablaPrimaria, CampoPrimario, TablaForanea, CampoForaneo, TipoRelacion));
+  unaRelacion := TORMRelacion.Create(TablaPrimaria, CampoPrimario,
+                                    TablaForanea, CampoForaneo, TipoRelacion);
+  unaRelacion.Alias := AliasRelacion;
+  Result := Add(unaRelacion);
 end;
 
 function TExpresionRelacion.Agregar(Relacion: TORMRelacion): integer;
 begin
+  Result := Add(Relacion);
+end;
+
+function TExpresionRelacion.Agregar(Alias: string;
+  Relacion: TORMRelacion): integer;
+begin
+  Relacion.Alias := Alias;
   Result := Add(Relacion);
 end;
 
@@ -423,6 +440,13 @@ begin
   for i := 0 to Count - 1 do
     Result.Agregar(GetRelacion(i).Clonar);
 
+end;
+
+constructor TExpresionRelacion.Create(const Alias, TablaPrimaria, CampoPrimario,
+  TablaForanea, CampoForaneo: string; const TipoRelacion: TORMTipoRelacion);
+begin
+  inherited Create(true);
+  Agregar(Alias, TablaPrimaria, CampoPrimario, TablaForanea, CampoForaneo, TipoRelacion);
 end;
 
 constructor TExpresionRelacion.Create(const Relacion: TORMRelacionDefSimple);
@@ -446,7 +470,7 @@ constructor TExpresionRelacion.Create(const TablaPrimaria, CampoPrimario,
   TablaForanea, CampoForaneo: string; const TipoRelacion: TORMTipoRelacion);
 begin
   inherited Create(true);
-  Agregar(TablaPrimaria, CampoPrimario, TablaForanea, CampoForaneo, TipoRelacion);
+  Agregar('', TablaPrimaria, CampoPrimario, TablaForanea, CampoForaneo, TipoRelacion);
 end;
 
 function TExpresionRelacion.GetRelacion(index: integer): TORMRelacion;

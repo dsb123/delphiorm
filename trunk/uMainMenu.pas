@@ -207,9 +207,10 @@ begin
             with TTabla.Create(Tablas) do
             begin
               Nombre          := Entidad[nTabla].Nombre;
-              Alias           := Entidad[nTabla].Alias;
               NombreGenerador := Entidad[nTabla].NombreGenerador;
               TieneGenerador  := Entidad[nTabla].TieneGenerador;
+              Alias           := Entidad[nTabla].Alias;
+
               for nCampo := 0 to Entidad[nTabla].Campos.Count - 1 do
               begin
                 unCampo := TCampo.Create(Campos);
@@ -281,6 +282,8 @@ begin
                   Nombre := Entidad[nTabla].Relacion1an.Foreignkey[nCampoFK].Destino.CampoRed[nCampo].Nombre;
               end;
             end;
+            if (unaTabla.Alias <> '') then
+               unaTabla.Alias := unaTabla.Alias;
           end;
         end;
 
@@ -324,6 +327,7 @@ begin
             with ORMEntidades.Listas.Lista[nLista].Relaciones do
             begin
               unaRelacion.TipoRelacion := Relacion[nRelacion].TipoRelacion;
+              unaRelacion.AliasRelacion:= Relacion[nRelacion].AliasRelacion;
               unaRelacion.CamposFK     := ObtenerCamposFK(Relacion[nRelacion].TablaOrigen,
                                                           Relacion[nRelacion].TablaDestino,
                                                           Relacion[nRelacion].NombreRelacion,
@@ -593,7 +597,8 @@ begin
           TablaDestino          := unaRelacion.CamposFK.TablaDestino;
           NombreRelacion        := unaRelacion.CamposFK.NomRelacion;
           NombreRelacionAMuchos := unaRelacion.CamposFK.NomRelacionAMuchos;
-          TipoRelacion := unaRelacion.TipoRelacion;
+          TipoRelacion          := unaRelacion.TipoRelacion;
+          AliasRelacion         := unaRelacion.AliasRelacion;
         end;
       end;
     end;

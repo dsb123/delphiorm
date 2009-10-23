@@ -199,7 +199,6 @@ object FrmListas: TFrmListas
     BevelInner = bvNone
     BevelKind = bkSoft
     TabOrder = 0
-    ExplicitWidth = 754
   end
   object tvListas: TTreeView
     Left = 0
@@ -216,7 +215,6 @@ object FrmListas: TFrmListas
     OnClick = tvListasClick
     OnContextPopup = tvListasContextPopup
     OnEdited = tvListasEdited
-    ExplicitHeight = 480
   end
   object jvxspltr1: TJvxSplitter
     Left = 177
@@ -225,7 +223,6 @@ object FrmListas: TFrmListas
     Height = 492
     ControlFirst = tvListas
     Align = alLeft
-    ExplicitHeight = 480
   end
   object pnlContenedor: TPanel
     Left = 180
@@ -235,8 +232,6 @@ object FrmListas: TFrmListas
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitWidth = 574
-    ExplicitHeight = 480
     object nxpgcntrlListas: TNxPageControl
       Left = 0
       Top = 33
@@ -251,8 +246,6 @@ object FrmListas: TFrmListas
       Margin = 0
       Spacing = 0
       TabHeight = 17
-      ExplicitWidth = 574
-      ExplicitHeight = 447
       object nxtbshtLista: TNxTabSheet
         Caption = 'Lista'
         PageIndex = 0
@@ -262,9 +255,6 @@ object FrmListas: TFrmListas
         TabFont.Height = -11
         TabFont.Name = 'Tahoma'
         TabFont.Style = []
-        ExplicitTop = 0
-        ExplicitWidth = 574
-        ExplicitHeight = 426
         DesignSize = (
           586
           438)
@@ -293,8 +283,6 @@ object FrmListas: TFrmListas
           TabOrder = 1
           TabStop = True
           OnSelectCell = nxtgrdListaSelectCell
-          ExplicitWidth = 280
-          ExplicitHeight = 307
           object nxtxtclmnEntidad: TNxTextColumn
             DefaultWidth = 120
             Font.Charset = DEFAULT_CHARSET
@@ -457,8 +445,6 @@ object FrmListas: TFrmListas
           Anchors = [akLeft, akRight, akBottom]
           Caption = 'Relaciones'
           TabOrder = 5
-          ExplicitTop = 335
-          ExplicitWidth = 280
           DesignSize = (
             292
             81)
@@ -496,7 +482,6 @@ object FrmListas: TFrmListas
             ItemIndex = -1
             TabOrder = 0
             OnSelectItem = cbRelacionesSelectItem
-            ExplicitWidth = 180
           end
           object cbTipo: TAdvComboBox
             Left = 87
@@ -541,7 +526,6 @@ object FrmListas: TFrmListas
           SortType = stText
           TabOrder = 0
           ViewStyle = vsReport
-          ExplicitHeight = 396
         end
         object btnNueva: TJvXPButton
           Left = 207
@@ -561,9 +545,6 @@ object FrmListas: TFrmListas
         TabFont.Height = -11
         TabFont.Name = 'Tahoma'
         TabFont.Style = []
-        ExplicitTop = 0
-        ExplicitWidth = 574
-        ExplicitHeight = 426
         DesignSize = (
           586
           438)
@@ -609,7 +590,6 @@ object FrmListas: TFrmListas
           TabOrder = 0
           TabStop = True
           OnCellClick = nxtgrdAtributosCellClick
-          ExplicitWidth = 560
           object nxchckbxclmnSeleccion: TNxCheckBoxColumn
             DefaultWidth = 20
             Font.Charset = DEFAULT_CHARSET
@@ -741,7 +721,6 @@ object FrmListas: TFrmListas
           Anchors = [akLeft, akBottom]
           Enabled = False
           TabOrder = 3
-          ExplicitTop = 368
         end
         object edtExpresion: TEdit
           Left = 181
@@ -751,8 +730,6 @@ object FrmListas: TFrmListas
           Anchors = [akLeft, akRight, akBottom]
           Enabled = False
           TabOrder = 4
-          ExplicitTop = 368
-          ExplicitWidth = 385
         end
         object btnAgregar: TJvXPButton
           Left = 425
@@ -798,8 +775,6 @@ object FrmListas: TFrmListas
             0000}
           Anchors = [akRight, akBottom]
           OnClick = btnPasarClick
-          ExplicitLeft = 413
-          ExplicitTop = 394
         end
         object btnEliminar: TJvXPButton
           Left = 504
@@ -845,8 +820,6 @@ object FrmListas: TFrmListas
             0000}
           Anchors = [akRight, akBottom]
           OnClick = btnQuitarClick
-          ExplicitLeft = 492
-          ExplicitTop = 394
         end
         object cbbFuncionesAgregacion: TNxComboBox
           Left = 248
@@ -875,7 +848,6 @@ object FrmListas: TFrmListas
       Height = 33
       Caption = 'jvxpcntnr1'
       Align = alTop
-      ExplicitWidth = 574
       DesignSize = (
         586
         33)
@@ -893,7 +865,6 @@ object FrmListas: TFrmListas
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
-        ExplicitWidth = 409
       end
       object btnAceptar: TJvXPButton
         Left = 496
@@ -940,7 +911,6 @@ object FrmListas: TFrmListas
           0000}
         Anchors = [akTop, akRight]
         OnClick = btnAceptarClick
-        ExplicitLeft = 484
       end
     end
   end
