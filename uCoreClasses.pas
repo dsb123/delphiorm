@@ -99,7 +99,7 @@ type
     function Clonar(Coleccion: TCollection = nil): TCamposFK;
 
     procedure AgregarCampos(sTablaOrigen: string; sCampoOrigen: string;
-                            sTablaDestino: string; sCampoDestino: string;
+                            sTablaDestino: string;sCampoDestino: string;
                             sNomRelacion:string = ''; sNomRelacionAMuchos: String = '');
 
     property TablaOrigen: string read FTablaOrigen write FTablaOrigen;
@@ -124,9 +124,11 @@ type
   private
     FCamposFK: TCamposFK;
     FTipoRelacion: string;
+    FAliasRelacion: string;
   public
     property CamposFK: TCamposFK read FCamposFK write FCamposFK;
     property TipoRelacion: string read FTipoRelacion write FTipoRelacion;
+    property AliasRelacion: string read FAliasRelacion write FAliasRelacion;
   end;
 
   TColeccionRelacion = class(TCollection)
@@ -466,7 +468,7 @@ procedure TCamposFK.AgregarCampos(sTablaOrigen, sCampoOrigen, sTablaDestino,
 var
   unCampo : TCampo;
 begin
-  FTablaOrigen := sTablaOrigen;
+  FTablaOrigen  := sTablaOrigen;
   FTablaDestino := sTablaDestino;
   if sNomRelacion <> '' then
     FNomRelacion := sNomRelacion;

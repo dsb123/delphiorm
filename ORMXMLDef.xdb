@@ -132,6 +132,7 @@
 		<xs:attribute name="TablaDestino" type="xs:string"/>
 		<xs:attribute name="NombreRelacion" type="xs:string"/>
 		<xs:attribute name="NombreRelacionAMuchos" type="xs:string"/>
+		<xs:attribute name="AliasRelacion" type="xs:string"/>
 		<xs:attribute name="TipoRelacion" type="xs:string"/>
 	</xs:complexType>
 </xs:schema>

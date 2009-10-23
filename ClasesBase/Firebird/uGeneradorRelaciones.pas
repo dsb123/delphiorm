@@ -46,6 +46,7 @@ var
   Relacion : TORMRelacion;
   nRelacion : integer;
   nCampo: Integer;
+  sAlias: string;
 begin
   Result := '';
   for nRelacion := 0 to Relaciones.Count - 1 do
@@ -60,19 +61,37 @@ begin
       trIzquierda: Result := Result + ' LEFT JOIN ';
       tdDerecha: Result := Result + ' RIGHT JOIN ';
     end;
-
     //Result := Result + '' + NombreTabla(Relacion.CamposForaneo.Tabla) + ' ON ';
-    Result := Result + '' + NombreTabla(Relacion.CamposPrimario.Tabla) + ' ON ';
-
-    for nCampo := 0 to Relacion.CamposForaneo.CantCampos - 1 do
+    if Relacion.Alias <> '' then
     begin
-      Result := Result + Nombrecampo( Relacion.CamposPrimario.Tabla,
-                                      Relacion.CamposPrimario.Campo[nCampo]) +
-                ' = ' +  NombreCampo( Relacion.CamposForaneo.Tabla,
-                                      Relacion.CamposForaneo.Campo[nCampo]);
-      if nCampo < (Relacion.CamposForaneo.CantCampos - 1) then
-        Result := Result + ' AND ';
+      Result := Result + '' + NombreTabla(Relacion.CamposPrimario.Tabla) + ' ' +
+                NombreTabla(Relacion.Alias) + ' ON ';
 
+      for nCampo := 0 to Relacion.CamposForaneo.CantCampos - 1 do
+      begin
+        Result := Result + Nombrecampo( Relacion.Alias,
+                                        Relacion.CamposPrimario.Campo[nCampo]) +
+                  ' = ' +  NombreCampo( Relacion.CamposForaneo.Tabla,
+                                        Relacion.CamposForaneo.Campo[nCampo]);
+        if nCampo < (Relacion.CamposForaneo.CantCampos - 1) then
+          Result := Result + ' AND ';
+
+      end;
+    end
+    else
+    begin
+      Result := Result + '' + NombreTabla(Relacion.CamposPrimario.Tabla) + ' ON ';
+
+      for nCampo := 0 to Relacion.CamposForaneo.CantCampos - 1 do
+      begin
+        Result := Result + Nombrecampo( Relacion.CamposPrimario.Tabla,
+                                        Relacion.CamposPrimario.Campo[nCampo]) +
+                  ' = ' +  NombreCampo( Relacion.CamposForaneo.Tabla,
+                                        Relacion.CamposForaneo.Campo[nCampo]);
+        if nCampo < (Relacion.CamposForaneo.CantCampos - 1) then
+          Result := Result + ' AND ';
+
+      end;
     end;
   end;
 end;

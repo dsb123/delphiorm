@@ -342,7 +342,8 @@ begin
   select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[icClave],
                                                         tcIgual, EntidadID));
 
-  select.Relaciones.Agregar(Relacion.CampoPrimario.Tabla,
+  select.Relaciones.Agregar('',
+                            Relacion.CampoPrimario.Tabla,
                             Relacion.CampoPrimario.Campo,
                             Relacion.CampoForaneo.Tabla,
                             Relacion.CampoForaneo.Campo,

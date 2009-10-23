@@ -64,7 +64,7 @@ object ORMDriverManager: TORMDriverManager
     Top = 56
     Width = 121
     Height = 21
-    TabOrder = 2
+    TabOrder = 3
   end
   object edtPassword: TEdit
     Left = 104
@@ -72,7 +72,7 @@ object ORMDriverManager: TORMDriverManager
     Width = 121
     Height = 21
     PasswordChar = '*'
-    TabOrder = 3
+    TabOrder = 4
   end
   object edtBD: TEdit
     Left = 104
@@ -80,14 +80,14 @@ object ORMDriverManager: TORMDriverManager
     Width = 407
     Height = 21
     Anchors = [akLeft, akTop, akRight]
-    TabOrder = 1
+    TabOrder = 2
   end
   object edtPuerto: TEdit
     Left = 286
     Top = 5
     Width = 51
     Height = 21
-    TabOrder = 4
+    TabOrder = 1
     Text = '1521'
   end
   object sqlConn: TSQLConnection

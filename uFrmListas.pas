@@ -220,8 +220,9 @@ begin
           begin
             with TRelacion(unaLista.Relaciones.Add) do
             begin
-              CamposFK := TCamposFK(Cell[2, nRow].ObjectReference);
-              TipoRelacion := Cell[3, nRow].AsString;
+              CamposFK      := TCamposFK(Cell[2, nRow].ObjectReference);
+              AliasRelacion := Cell[1, nRow].AsString;
+              TipoRelacion  := Cell[3, nRow].AsString;
             end;
           end;
         end;

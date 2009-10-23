@@ -89,15 +89,10 @@ end;
 class function TGeneradorCodigo.ComprobarTemplate(sl: TStringList): boolean;
 var
   nLinea: Integer;
-
   nEntidad, nEntidadAsociada: Integer;
-
   nLista,nListaEntidad: Integer;
-
   nColeccion, nCampo : Integer;
-
   nRelacion, nRelacionMuchos: Integer;
-
   nCampoFK, nCampoClave: Integer;
 begin
   Result:=True;
@@ -304,6 +299,7 @@ begin
     end;
 
     sVarAux := StringReplace(sVarAux, '<NombreEntidad>',  EntidadActiva.Nombre, [rfReplaceAll]);
+    sVarAux := StringReplace(sVarAux, '<AliasEntidad>',   EntidadActiva.Alias, [rfReplaceAll]);
     sVarAux := StringReplace(sVarAux, '<IndiceCampo>',    IntToStr(i), [rfReplaceAll]);
     sVarAux := StringReplace(sVarAux, '<NombreCampo>',    EntidadActiva.Campos.Campo[i].Nombre, [rfReplaceAll]);
     sVarAux := StringReplace(sVarAux, '<TipoCampo>',      EntidadActiva.Campos.Campo[i].TipoVariable, [rfReplaceAll]);
@@ -376,6 +372,7 @@ begin
      Inc(j);
      sVarAux := sVariableContexto;
      sVarAux := StringReplace(sVarAux, '<NombreEntidad>',     EntidadActiva.Nombre, [rfReplaceAll]);
+     sVarAux := StringReplace(sVarAux, '<AliasEntidad>',      EntidadActiva.Alias, [rfReplaceAll]);
      sVarAux := StringReplace(sVarAux, '<IndiceCampoClave>',  IntToStr(i), [rfReplaceAll]);
      sVarAux := StringReplace(sVarAux, '<NombreCampoClave>',  EntidadActiva.Campos.Campo[i].Nombre, [rfReplaceAll]);
      sVarAux := StringReplace(sVarAux, '<TipoCampoClave>',    EntidadActiva.Campos.Campo[i].TipoVariable, [rfReplaceAll]);
@@ -541,6 +538,8 @@ begin
       sVarAux       := ContextoBlobType(Tablas.Tabla[i],sVarAux);
       sVarAux       := StringReplace(sVarAux, '<IndiceEntidad>', IntToStr(i), [rfReplaceAll]);
       sVarAux       := StringReplace(sVarAux, '<NombreEntidad>', Tablas.Tabla[i].Nombre, [rfReplaceAll]);
+      sVarAux       := StringReplace(sVarAux, '<AliasEntidad>', Tablas.Tabla[i].Alias, [rfReplaceAll]);
+
       if i<(Tablas.Count - 1) then begin
         sVarAux     := StringReplace(sVarAux, '</ComaParaEnum>',  ',', [rfReplaceAll]);
         sVarAux     := StringReplace(sVarAux, '</PComaParaEnum>', ';', [rfReplaceAll]);
@@ -729,9 +728,9 @@ begin
         nPosStart := Pos('<PorCadaCampoClave>', sVarAux);
       end;
 
-
       sVarAux := StringReplace(sVarAux, '<IndiceEntidad>', IntToStr(nTabla), [rfReplaceAll]);
       sVarAux := StringReplace(sVarAux, '<NombreEntidad>', Tablas.Tabla[nTabla].Nombre, [rfReplaceAll]);
+      sVarAux := StringReplace(sVarAux, '<AliasEntidad>', Tablas.Tabla[nTabla].Alias, [rfReplaceAll]);
       sVarAux := StringReplace(sVarAux, '<NombreGenerador>', Tablas.Tabla[nTabla].NombreGenerador, [rfReplaceAll]);
       if nTabla < (Tablas.Count - 1) then
       begin
@@ -908,6 +907,7 @@ begin
       sVarAux := StringReplace( sVarAux, '<NombreEntidadRelacionada>',
                                 ListaEntidad.Relaciones.Relacion[nRelacion].CamposFK.TablaDestino,
                                 [rfReplaceAll]);
+
       sVarAux := StringReplace( sVarAux, '<TipoRelacion>',
                                 ListaEntidad.Relaciones.Relacion[nRelacion].TipoRelacion,
                                 [rfReplaceAll]);
