@@ -904,12 +904,17 @@ begin
       sVarAux := StringReplace(sVarAux, '<NombreEntidad>',
                                 ListaEntidad.Relaciones.Relacion[nRelacion].CamposFK.TablaOrigen,
                                 [rfReplaceAll]);
+
       sVarAux := StringReplace( sVarAux, '<NombreEntidadRelacionada>',
                                 ListaEntidad.Relaciones.Relacion[nRelacion].CamposFK.TablaDestino,
                                 [rfReplaceAll]);
 
       sVarAux := StringReplace( sVarAux, '<TipoRelacion>',
                                 ListaEntidad.Relaciones.Relacion[nRelacion].TipoRelacion,
+                                [rfReplaceAll]);
+
+      sVarAux := StringReplace( sVarAux, '<AliasRelacion>',
+                                ListaEntidad.Relaciones.Relacion[nRelacion].AliasRelacion,
                                 [rfReplaceAll]);
 
       Result := Result + sVarAux;
