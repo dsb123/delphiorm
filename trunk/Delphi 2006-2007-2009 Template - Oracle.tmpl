@@ -38,21 +38,23 @@ public
 	class function CrearNuevaEntidadConexion(ConexionPublica: boolean = false): TORMEntidadConexion;
 end;
 <PorCadaEntidad>
-<IfTieneRelacion>
+<IfEntidadConRelaciones>
 TRelaciones<NombreEntidad>=class
 public
+<IfTieneRelacion>
 	{Relaciones 1 a 1}
 <PorCadaEntidadAsociada>
-	class function <NombreRelacion>(TipoRelacion: TORMTipoRelacion=TrAmbas): TORMRelacion;
+	class function <NombreRelacion>(NombreRelacion: string=''; TipoRelacion: TORMTipoRelacion=TrAmbas): TORMRelacion;
 </PorCadaEntidadAsociada>
+</IfTieneRelacion>
 <IfTieneRelacionAMuchos>
 	{Relaciones 1 a n}
 <PorCadaColeccionAsociada>
-	class function <NombreRelacionAMuchos>(TipoRelacion: TORMTipoRelacion = TrAmbas): TORMRelacion;
+	class function <NombreRelacionAMuchos>(NombreRelacion: string=''; TipoRelacion: TORMTipoRelacion = TrAmbas): TORMRelacion;
 </PorCadaColeccionAsociada>
 </IfTieneRelacionAMuchos>
 end;
-</IfTieneRelacion>
+</IfEntidadConRelaciones>
 </PorCadaEntidad>
 
 
@@ -213,7 +215,7 @@ class function TFabrica<NombreUnidad>.CrearNuevaEntidadConexion(ConexionPublica:
 begin
 	if not assigned(SingleConnection) then
 	begin
-		Result := TORMEntidadConexion.Create(SQLConnectionGenerator.GetConnection('<NombreUnidad>'), TOracleSQLStatementManager.Create); 
+		Result := TORMEntidadConexion.Create(SQLConnectionGenerator.GetConnection('<NombreUnidad>'), TFBSQLStatementManager.Create); 
 		Result.ConexionPublica := ConexionPublica;
 	end
 	else
@@ -294,6 +296,12 @@ begin
 	select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[TIndice<NombreEntidad>.<NombreCampoClave>], tcIgual, <NombreCampoClave>));
 	</PorCadaCampoClave>
 	Result := AsignarCamposDesdeSeleccion(select);
+	if not Result then
+	begin
+		<PorCadaCampoClave>
+		FCampos.ORMCampo[TIndice<NombreEntidad>.<NombreCampoClave>].<AsKeyWord> := <NombreCampoClave>; 
+		</PorCadaCampoClave>
+	end;
 	select.Free;
 end;
 <PorCadaEntidadAsociada>
@@ -426,11 +434,12 @@ begin
 end;
 </PorCadaColeccion>
 <PorCadaEntidad>
+<IfEntidadConRelaciones>
 <IfTieneRelacion>
 <PorCadaEntidadAsociada>
 {TRelaciones<NombreEntidad>}
 
-class function TRelaciones<NombreEntidad>.<NombreRelacion>(TipoRelacion: TORMTipoRelacion): TORMRelacion;
+class function TRelaciones<NombreEntidad>.<NombreRelacion>(NombreRelacion: string; TipoRelacion: TORMTipoRelacion): TORMRelacion;
 var
 	sCamposOrigen, sCamposDestino: TStringList;
 	CamposOrigen, CamposDestino: TORMCamposRelacion; 
@@ -445,15 +454,17 @@ begin
 	CamposOrigen := TORMCamposRelacion.Create('<NombreEntidad>', sCamposOrigen);
 	CamposDestino:= TORMCamposRelacion.Create('<NombreEntidadAsociada>', sCamposDestino);  
 	Result := TORMRelacion.Create(CamposOrigen, CamposDestino, TipoRelacion);
+	Result.Alias := NombreRelacion;
 	FreeAndNil(CamposOrigen);
 	FreeAndNil(CamposDestino);    
 	FreeAndNil(sCamposOrigen);
 	FreeAndNil(sCamposDestino);	   	  														   				  						   
 end;
 </PorCadaEntidadAsociada>
+</IfTieneRelacion>
 <IfTieneRelacionAMuchos>
 <PorCadaColeccionAsociada>
-class function TRelaciones<NombreEntidad>.<NombreRelacionAMuchos>(TipoRelacion: TORMTipoRelacion): TORMRelacion;
+class function TRelaciones<NombreEntidad>.<NombreRelacionAMuchos>(NombreRelacion: string; TipoRelacion: TORMTipoRelacion): TORMRelacion;
 var
 	sCamposOrigen, sCamposDestino: TStringList;
 	CamposOrigen, CamposDestino: TORMCamposRelacion; 
@@ -469,6 +480,8 @@ begin
 	CamposOrigen:= TORMCamposRelacion.Create('<NombreEntidad>', sCamposOrigen);
 	CamposDestino:= TORMCamposRelacion.Create('<NombreEntidadAsociada>', sCamposDestino); 
 	Result := TORMRelacion.Create(CamposOrigen, CamposDestino, TipoRelacion);
+	Result.Alias := NombreRelacion;
+
 	FreeAndNil(CamposOrigen);
 	FreeAndNil(CamposDestino);    	   	  		
 	FreeAndNil(sCamposOrigen);
@@ -476,7 +489,7 @@ begin
 end;
 </PorCadaColeccionAsociada>
 </IfTieneRelacionAMuchos>
-</IfTieneRelacion>
+</IfEntidadConRelaciones>
 </PorCadaEntidad>
 <PorCadaLista>
 <PorCadaListaEntidad>
@@ -487,7 +500,7 @@ begin
 	FTabla:='<NombreListaEntidad>';
 
 	<PorCadaCampo>
-	FCampos.Agregar(TORMCampo.Create('<AliasEntidad>','<NombreCampo>', '','<AliasCampo>','',TIndice<NombreListaEntidad>.<AliasCampo>, <LongitudCampo>,  <PrecisionCampo>, <EscalaCampo>, false, false,false,false,<tdTipoCampo>, faNinguna,''));
+	FCampos.Agregar(TORMCampo.Create('<AliasEntidad>','<NombreCampo>', '','<AliasCampo>','',TIndice<NombreListaEntidad>.<AliasCampo>, <LongitudCampo>,  <PrecisionCampo>, <EscalaCampo>,  false, false,false,false,<tdTipoCampo>, faNinguna,''));
 	</PorCadaCampo>
 end;
 
@@ -552,7 +565,7 @@ begin
 	begin
 		Relacion := TExpresionRelacion.Create;
 		<PorCadaRelacion>
-		Relacion.Agregar(TRelaciones<NombreEntidad>.<NombreEntidadRelacionada>);
+		Relacion.Agregar(TRelaciones<NombreEntidad>.<NombreRelacion>('<AliasRelacion>', tr<TipoRelacion>));
 		</PorCadaRelacion>
 		bLiberarRelaciones := true;
 	end;
@@ -580,7 +593,7 @@ begin
 		begin
 			Relaciones := TExpresionRelacion.Create;
 			<PorCadaRelacion>
-			Relaciones.Agregar(TRelaciones<NombreEntidad>.<NombreEntidadRelacionada>);
+			Relaciones.Agregar(TRelaciones<NombreEntidad>.<NombreRelacion>('<AliasRelacion>', tr<TipoRelacion>));
 			</PorCadaRelacion>
 			bLiberarRelaciones := true;
 		end;
@@ -648,7 +661,7 @@ end;
 <PorCadaCampo>
 class function TFabricaCampo<NombreEntidad>.<NombreCampo>: TORMCampo;
 begin
-	Result := TORMCampo.Create('<NombreEntidad>','<NombreCampo>', '<TieneGenerador>','','',TIndice<NombreEntidad>.<NombreCampo>, <LongitudCampo>,  <PrecisionCampo>, <EscalaCampo>, <bTieneGenerador>, <bEsClavePrimaria>,<bEsClaveForanea>, <bAceptaNull>, <tdTipoCampo>, faNinguna,<TipoORM>); 
+	Result := TORMCampo.Create('<NombreEntidad>','<NombreCampo>', '<TieneGenerador>','','',TIndice<NombreEntidad>.<NombreCampo>, <LongitudCampo>,  <PrecisionCampo>, <EscalaCampo>,  <bTieneGenerador>, <bEsClavePrimaria>,<bEsClaveForanea>, <bAceptaNull>, <tdTipoCampo>, faNinguna,<TipoORM>); 
 end;
 </PorCadaCampo>
 </PorCadaEntidad>
