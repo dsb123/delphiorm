@@ -154,6 +154,7 @@ public
 	constructor Create(Coleccion: TCollection = nil); overload;
 	destructor Destroy; override;
 	function CrearNuevaConexionEntidad: TORMEntidadConexion; override;
+	function GetRelacionesDefault(OwnObjects: Boolean=True): TExpresionRelacion; override;
 published
 	<PorCadaCampo>
 	property <AliasCampo>: <TipoCampo> read Get<AliasCampo> write Set<AliasCampo>;
@@ -508,9 +509,27 @@ destructor TFila<NombreListaEntidad>.Destroy;
 begin
 	inherited;
 end;
+
 function TFila<NombreListaEntidad>.CrearNuevaConexionEntidad: TORMEntidadConexion; 
 begin
+	Result := TFabrica<NombreUnidad>.CrearNuevaEntidadConexion; 
+	if assigned(On<NombreUnidad>Exception) then
+	   Result.SQLManager.OnExceptionEvent := On<NombreUnidad>Exception; 
+end;
+
+function TFila<NombreListaEntidad>.GetRelacionesDefault(OwnObjects: Boolean): TExpresionRelacion;
+var
+	nRel : integer;
+begin
 	Result := nil;
+	nRel := <TotalEntidades>; 
+	if nRel > 1 then
+	begin
+		Result := TExpresionRelacion.Create(OwnObjects);
+		<PorCadaRelacion>
+		Result.Agregar(TRelaciones<NombreEntidad>.<NombreRelacion>('<AliasRelacion>', tr<TipoRelacion>));
+		</PorCadaRelacion>
+	end;
 end;
 <PorCadaCampo>
 function TFila<NombreListaEntidad>.Get<AliasCampo>: <TipoCampo>;
