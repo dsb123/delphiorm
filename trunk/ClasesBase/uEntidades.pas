@@ -99,7 +99,7 @@ type
 
     function AgregarEntidadAsociada(Entidad: TORMEntidadBase): integer;
     procedure EliminarEntidadAsociada(Entidad: TORMEntidadBase);
-    
+
     procedure AgregarCamposAsociadosEntidad(nEntidadAsociada, nCampoOrigen, nCampoDestino: integer);
 
     function AgregarColeccionAsociada(ColeccionEntidades: TORMColeccionEntidades): integer;
@@ -109,6 +109,7 @@ type
 
     function Guardar: boolean; virtual;
     function Eliminar: boolean; virtual;
+    function GetRelacionesDefault(OwnObjects: Boolean=True): TExpresionRelacion; virtual;
 
     procedure CargarCombo(IndiceCampoDato: integer;
                           IndiceCampoDescripcion: integer;
@@ -403,6 +404,11 @@ begin
   Result := FEntidadesAsociadas;
 end;
 
+function TORMEntidadBase.GetRelacionesDefault(OwnObjects: Boolean): TExpresionRelacion;
+begin
+  Result := nil;
+end;
+
 function TORMEntidadBase.Guardar: boolean;
 var
   bComienzoTransaccion : boolean;
@@ -495,7 +501,8 @@ var
   CamposCombo: TORMColeccionCampos;
   ChangeEvent : TNotifyEvent;
   Sorted : boolean;
-  nCondicion: Integer;
+  nAux: Integer;
+  Relaciones: TExpresionRelacion;
 begin
   CamposCombo := TORMColeccionCampos.Create;
   CamposCombo.Agregar(FCampos.ORMCampo[IndiceCampoDato].Clonar);
@@ -504,11 +511,20 @@ begin
   select.SinDuplicados := SinDuplicados;
   select.Orden.Agregar( FCampos.ORMCampo[IndiceCampoDescripcion], toAscendente);
 
-  for nCondicion := 0 to Length(aIndiceCampoCondicion) - 1 do
+  for nAux := 0 to Length(aIndiceCampoCondicion) - 1 do
   begin
-    if (aIndiceCampoCondicion[nCondicion] > -1) then
-      select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[aIndiceCampoCondicion[nCondicion]],
-                                aTipoCondicion[nCondicion], aValorCondicion[nCondicion]));
+    if (aIndiceCampoCondicion[nAux] > -1) then
+      select.Condicion.Agregar(TCondicionComparacion.Create(FCampos.ORMCampo[aIndiceCampoCondicion[nAux]],
+                                aTipoCondicion[nAux], aValorCondicion[nAux]));
+  end;
+
+  Relaciones := GetRelacionesDefault(False);
+  if Assigned(Relaciones) then
+  begin
+    for nAux := 0 to Relaciones.Count - 1 do
+    begin
+      select.Relaciones.Agregar(Relaciones.Relacion[nAux]);
+    end;
   end;
 
   Conexion.SQLManager.EjecutarSelect(select);
@@ -526,8 +542,9 @@ begin
     Items.AddObject(Select.Datos.Fields[1].AsString, TDatoCombo.Create(Select.Datos.Fields[0].AsVariant));
     select.Datos.Next;
   end;
-  Select.Free;
-  CamposCombo.Free;
+  FreeAndNil(Select);
+  FreeAndNil(CamposCombo);
+  FreeAndNil(Relaciones);
   Items.Sorted := Sorted;
   if Assigned(ChangeEvent) then
   begin
