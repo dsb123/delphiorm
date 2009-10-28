@@ -50,8 +50,8 @@ type
     procedure CargarComboDrivers(sModulo: string);
     procedure ControlarCambios(TablasNuevas: TColeccionTabla); overload;
     procedure ControlarCambios(GeneradoresNuevos: TColeccionGenerador); overload;
-    procedure ControlarTabla(unaTablaNueva, unaTablaOriginal: TTabla);
-    procedure ControlarRelaciones(unaTablaNueva, unaTablaOriginal: TTabla);
+    procedure ControlarTabla(unaTablaNueva, unaTablaOriginal: TTabla; ControlarClones: Boolean=true);
+    procedure ControlarRelaciones(unaTablaNueva, unaTablaOriginal: TTabla; ControlarClones: Boolean=true);
     procedure ControlarCampo(CampoOriginal, CampoNuevo: TCampo);
     procedure EliminarCampoDeListas(const sTabla, sCampo: string);
     procedure EliminarListaConRelacion(unCampoFK: TCamposFK);
@@ -362,9 +362,10 @@ begin
 end;
 
 procedure TFrmMetadataHandler.ControlarRelaciones(unaTablaNueva,
-  unaTablaOriginal: TTabla);
+  unaTablaOriginal: TTabla;ControlarClones: Boolean);
 var
   nCampoFK: integer;
+  nTabla: integer;
   unCampoFK: TCamposFK;
 begin
   for nCampoFK := (unaTablaOriginal.CamposFK.Count - 1) downto 0 do
@@ -416,13 +417,24 @@ begin
     end;
   end;
 
+  if (ControlarClones) then
+  begin
+    //Actualizo los clones, si los hay
+    for nTabla := 0 to FColeccionTablas.Count-1 do
+    begin
+      if ((unaTablaNueva.Nombre = FColeccionTablas.Tabla[nTabla].Nombre) and
+          (FColeccionTablas.Tabla[nTabla].Alias <> '')) then
+        ControlarRelaciones(unaTablaNueva, FColeccionTablas.Tabla[nTabla], false);
+    end;
+  end;
 end;
 
 procedure TFrmMetadataHandler.ControlarTabla(unaTablaNueva,
-  unaTablaOriginal: TTabla);
+  unaTablaOriginal: TTabla; ControlarClones: Boolean);
 var
   unCampo: TCampo;
   nCampo: integer;
+  nTabla: Integer;
 begin
   if unaTablaNueva.TieneGenerador and (not unaTablaOriginal.TieneGenerador) then
   begin
@@ -469,6 +481,16 @@ begin
     end;
   end;
 
+  if (ControlarClones) then
+  begin
+    //Actualizo los clones, si los hay
+    for nTabla := 0 to FColeccionTablas.Count-1 do
+    begin
+      if ((unaTablaNueva.Nombre = FColeccionTablas.Tabla[nTabla].Nombre) and
+          (FColeccionTablas.Tabla[nTabla].Alias <> '')) then
+        ControlarTabla(unaTablaNueva, FColeccionTablas.Tabla[nTabla], false);
+    end;
+  end;
 end;
 
 procedure TFrmMetadataHandler.EliminarCampoDeListas(const sTabla,
