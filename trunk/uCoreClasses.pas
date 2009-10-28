@@ -381,7 +381,7 @@ var
 begin
   Result := nil;
   for i := 0 to Count - 1 do begin
-    if ((Tabla[i].Nombre = sNombre) or (Tabla[i].Alias = sNombre)) then
+    if ((Tabla[i].Nombre = sNombre) and (Tabla[i].Alias = '')) then
     begin
       Result := Tabla[i];
       exit;
