@@ -143,7 +143,11 @@ begin
     tcMayor: Result := Result + '>';
     tcMayorIgual: Result := Result + '>=';
   end;
-  Result := Result + ':' + AgregarParametro(Condicion.Campo.TipoDato,Condicion.Valor);
+
+  if Assigned(Condicion.CampoValor) then
+    Result := Result + NombreCampo(Condicion.CampoValor.Tabla, Condicion.CampoValor.Nombre)
+  else
+    Result := Result + ':' + AgregarParametro(Condicion.Campo.TipoDato,Condicion.Valor);
 end;
 
 function TGenCondicionSQL.CondicionInclusionString(

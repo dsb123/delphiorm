@@ -43,6 +43,7 @@ type
     function EjecutarInsert(insert: TInsertStatement): boolean; virtual; abstract;
     function EjecutarUpdate(update: TUpdateStatement): boolean; virtual; abstract;
     function EjecutarDelete(delete: TDeleteStatement): boolean; virtual; abstract;
+    function ObtenerSecuencia(sSecuencia: string): Integer; virtual; abstract;
 
     property LastException: Exception read FLastException write SetLastException;
     property OnExceptionEvent: TORMOnExceptionEvent read FOnExceptionEvent write SetOnExceptionEvent;
