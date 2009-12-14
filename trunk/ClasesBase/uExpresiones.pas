@@ -170,12 +170,16 @@ type
   TCondicionComparacion = class(TCondicion)
   private
     FCampo : TORMCampo;
+    FCampoValor : TORMCampo;
+
     FTipoComparacion : TORMTipoComparacion;
     FValor : variant;
   public
-    constructor Create(Campo: TORMCampo; const TipoComparacion: TORMTipoComparacion; const Valor: variant);
+    constructor Create(Campo: TORMCampo; const TipoComparacion: TORMTipoComparacion; const Valor: variant); overload;
+    constructor Create(Campo: TORMCampo; const TipoComparacion: TORMTipoComparacion; CampoValor: TORMCampo); overload;
     destructor Destroy; override;
     property Campo: TORMCampo read FCampo;
+    property CampoValor: TORMCampo read FCampoValor;
     property TipoComparacion: TORMTipoComparacion read FTipoComparacion;
     property Valor: variant read FValor;
   end;
@@ -559,15 +563,29 @@ constructor TCondicionComparacion.Create(Campo: TORMCampo;
   const TipoComparacion: TORMTipoComparacion; const Valor: variant);
 begin
   FCampo := Campo;
+  FCampoValor := nil;
 
   FTipoComparacion := TipoComparacion;
   FValor := Valor;
+end;
+
+constructor TCondicionComparacion.Create(Campo: TORMCampo;
+  const TipoComparacion: TORMTipoComparacion; CampoValor: TORMCampo);
+begin
+  FCampo := Campo;
+  FCampoValor := CampoValor;
+
+  FTipoComparacion := TipoComparacion;
+  FValor := 0;
 end;
 
 destructor TCondicionComparacion.Destroy;
 begin
   if not assigned(FCampo.Padre) then
     FCampo.Free;
+
+  if not assigned(FCampoValor.Padre) then
+    FCampoValor.Free;
 
   inherited;
 end;

@@ -46,7 +46,7 @@ var
   Relacion : TORMRelacion;
   nRelacion : integer;
   nCampo: Integer;
-  sAlias: string;
+  //sAlias: string;
 begin
   Result := '';
   for nRelacion := 0 to Relaciones.Count - 1 do

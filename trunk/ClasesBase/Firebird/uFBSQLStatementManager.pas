@@ -28,6 +28,8 @@ type
     function EjecutarInsert(insert: TInsertStatement): boolean; override;
     function EjecutarUpdate(update: TUpdateStatement): boolean; override;
     function EjecutarDelete(delete: TDeleteStatement): boolean; override;
+    function ObtenerSecuencia(sSecuencia: string): Integer; override;
+
   end;
 
 implementation
@@ -91,6 +93,28 @@ begin
       Result := false;
     end;
   end;
+end;
+
+function TFBSQLStatementManager.ObtenerSecuencia(sSecuencia: string): Integer;
+var
+  SQLDataSet : TSQLQuery;
+  sSQLCommand: string;
+begin
+  SQLDataSet := TSQLQuery.Create(nil);
+  SQLDataSet.SQLConnection := FSQLConnection;
+
+  sSQLCommand := 'SELECT GEN_ID("' + sSecuencia + '", 1) FROM RDB$DATABASE';
+  {$ifdef DELPHI2006UP}
+  SQLDataSet.CommandText := sSQLCommand;
+  {$else}
+  SQLDataSet.SQL.Text := sSQLCommand;
+  {$endif}
+  SQLDataSet.Open;
+  if not (SQLDataSet.Eof and SQLDataSet.Bof) then begin
+    Result := SQLDataSet.Fields[0].AsInteger;
+  end;
+  SQLDataset.Close;
+  SQLDataset.Free;
 end;
 
 function TFBSQLStatementManager.EjecutarSelect(
