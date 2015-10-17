@@ -1,0 +1,3 @@
+Este proyecto pretende implementar un ORM para Delphi. Decidí comenzar uno nuevo porque los que existian (para Delphi) no me satisfacían.
+Este es un proyecto en desarrollo y aunque ya se encuentra funcional (y en proyectos en producción) pueden haber muchas cosas que cambien.
+El proyecto está desarrollado en español principalmente. Puede reescribirse en ingles solo si se ve la necesidad y este proyecto llama la atención.
